@@ -150,6 +150,7 @@ Saldo = Saldo anterior - Capital amortizado
 Ejemplo de Tabla de amortización
 
 | | | | | | | |
+|-|-|-|-|-|-|-|
 |Tabla de amortización| | | | | | |
 |NÚMERO DE CUOTA|CUOTA A PAGAR|PAGO ANTICIPADO|TOTAL PAGADO|INTERÉS|CAPITAL AMORTIZADO|SALDO|
 |0| | | | | |150000|
@@ -172,7 +173,7 @@ Ejemplo de Tabla de amortización
 |17|6784.093718| |6784.093718|131.6998845|6652.393834|13102.58883|
 |18|6784.093718| |6784.093718|87.35059223|6696.743126|6405.845708|
 |19|6784.093718| |6405.845708|42.70563805|6363.14007|0|
-|20|6784.093718| |0|0|0|0|
+
 
 
 Cálculo de interés para los CDP
