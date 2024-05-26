@@ -50,7 +50,7 @@ En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades
 
 **Estado de cuenta del cliente**: es un documento que muestra todas las transacciones realizadas en una cuenta bancaria durante un período de tiempo seleccionado. Incluye depósitos, retiros, transferencias, intereses ganados y cargos aplicados. (BBVA México, 2024)
 
-**Tipo de cuenta bancaria**: determina la moneda en la que está denominada la cuenta bancaria. Puede ser en dólares (USD) o en colones (CRC).
+**Tipo de cuenta bancaria**: determina la moneda en la que está denominada la cuenta bancaria. Puede ser en dólares (USD) o en colones (CRC). (Raisin GmbH, 2024)
 
 **Certificados de Depósito a Plazo (CDP)**: instrumento financiero emitido por una entidad bancaria que representa una suma de dinero depositada por un cliente durante un período de tiempo específico, conocido como plazo. A cambio de mantener el dinero en el banco durante ese tiempo, el banco paga al cliente una tasa de interés fija. Los CDPs se emiten en diferentes monedas y plazos, y la tasa de interés puede variar según el monto del depósito y la duración del plazo. Al vencimiento del CDP, el cliente recibe el capital depositado inicialmente junto con los intereses generados. Cada banco determinará las condiciones correspondiente en caso de hacer efectivo el CDP antes del vencimiento. (INA, 2020)
 
@@ -62,76 +62,37 @@ En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades
 
 **Tasa de interés**: magnitud, generalmente expuesta como un porcentaje (o tasa) que paga una persona física o jurídica por el uso del dinero que toma de un prestamista. (Etecé, 2021)
 
-**Cuota mensual predefinida**: Cantidad fija que el prestatario debe pagar mensualmente, la cual incluye tanto el principal como los intereses del préstamo.
+**Cuota mensual predefinida**: Cantidad fija que el prestatario debe pagar mensualmente, la cual incluye tanto el principal como los intereses del préstamo. (Raisin GmbH, 2024)
 
-**Principal**: cantidad de dinero inicial que le presta una entidad bancaria, en este caso.
+**Principal**: cantidad de dinero inicial que le presta una entidad bancaria, en este caso. (Rocket Mortgage, 2023)
+ 
+**Amortización:** cuotas periódicas pagadas por el préstamo, incluyen tanto el principal como los intereses. (Giift, 2023)
 
-**Amortización:** cuotas periódicas pagadas por el préstamo, incluyen tanto el principal como los intereses.
+**Abono a préstamos**: pago realizado para reducir el saldo pendiente del préstamo. Puede ser el pago de la cuota mensual o un pago adicional. (Raisin GmbH, 2024)
 
-**Abono a préstamos**: pago realizado para reducir el saldo pendiente del préstamo. Puede ser el pago de la cuota mensual o un pago adicional.
-
-**Abono extraordinario a préstamo**: pago adicional al pago mensual regular, destinado a reducir el saldo del principal del préstamo. Esto puede disminuir el tiempo total del préstamo y los intereses pagados.
-
-
+**Abono extraordinario a préstamo**: pago adicional al pago mensual regular, destinado a reducir el saldo del principal del préstamo. Esto puede disminuir el tiempo total del préstamo y los intereses pagados. (Raisin GmbH, 2024)
 
 
-
-### Supuestos:
+## Alcances y limitaciones:
 - Los préstamos y cuentas tomadas en cuenta son únicamente personales. No se toma en cuenta los DIMEX ni las cuentas empresariales.
 
-- Solo se tomará en cuenta para dicho ejercicio 5 tipos de préstamos. 
+- Solo se tomará en cuenta para dicho programa 5 tipos de préstamos preselectos (hipotecarios, prendarios, personales, vehiculares y de vivienda).
 
-- Las tasas de interés son tomadas del Banco Popular:
-chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
-
-
-
-## Esquema inicial Menú
-Pedir ID del cliente (verificación)
-## Modalidades
-1. Modalidad de atención a clientes
-- Estado de cuenta del cliente
-  - Selecciona rango de fechas y tipo de cuenta bancaria (dol o col)
-  - Si la cuenta no existe, la crea.
-	
-Consultar CDPs
-Crear CDP
-Indica la cuenta (dol o col)
-Indica el monto 
-Se le muestra el plazo y de acuerdo al plazo se le aplica el interés
-Transferencia
-Resta la cantidad seleccionada y la suma a la cuenta seleccionada
-Depósito
-Suma la cantidad seleccionada a la cuenta.
-Préstamos
-Crear
-Colones o dólares
-Tipo de préstamo
-Tasa de interés de acuerdo al tipo de préstamo
-Periodo en meses predefinidos según el tipo de préstamo
-Cuota mensual predefinido
-Abono a préstamos
-Abono extraordinario a préstamo
-Obtener información sobre préstamos **
-
-Tipos de préstamos
-Hipotecarios
-Prendarios
-Personales
-Vehículo
-Vivienda
-
-Tabla de pagos
-Ingrese monto
-Cuota mensual predef.
-Cantidad de cuotas
-Tasa de interés predef.
-Periodo en meses predef.
-
-Salir
-
-2. Información general sobre préstamos bancarios **
+- Las tasas de interés para cada entidad bancaria es distinta. En nuestro caso se utilizarán las del Banco Popular:
+www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
 
 
-Cliente
-Identificación de cliente: Cédula
+## Referencias
+-BBVA México. (2024). Estado de Cuenta. https://www.bbva.mx/educacion-financiera/e/estado_de_cuenta.html
+
+-Instituto Nacional de Aprendizaje (INA). (2020). Instrumentos financieros para ahorrar. https://www.inavirtual.ed.cr/pluginfile.php/1932699/mod_resource/content/2/SERVER%20GUIA%20MEIC%20BLOQUE4%20ACT%20/t2apt1.html
+
+-Etecé. (2021). ¿Qué es interés?. https://concepto.de/interes/#:~:text=En%20econom%C3%ADa%2C%20el%20inter%C3%A9s%20es,que%20toma%20de%20un%20prestamista.
+
+-Giift. (2023). Amortización. https://www.getcompass.ai/es/glossary/amortization
+
+-Raisin GmbH. (2024). Glosario de términos bancarios. https://www.raisin.es/glosario/
+
+-Rocket Mortgage. (2023). Principal e intereses: fundamentos del pago hipotecario. https://www.rocketmortgage.com/es/learn/principal-e-intereses#:~:text=El%20principal%20es%20la%20cantidad%20que%20te%20presta%20el%20prestamista,cuenta%20de%20dep%C3%B3sito%20en%20garant%C3%ADa.
+
+
