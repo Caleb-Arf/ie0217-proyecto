@@ -126,6 +126,63 @@ Nota: Se va a suponer que ya la información financiera del cliente ya se revis�
 - **Abono extraordinario a préstamo**: pago adicional al pago mensual regular, destinado a reducir el saldo del principal del préstamo. Esto puede disminuir el tiempo total del préstamo y los intereses pagados. (Raisin GmbH, 2024)
 
 
+Es importante tener en cuenta que los intereses mensuales se calculan de la siguiente manera:
+````
+Tasa de interés mensual (i% mensual)  = Tasa nominal anual / 12 (meses)
+
+Intereses (mensuales) = (Saldo principal pendiente al mes anterior) x (i% mensual) 
+
+Cuota mensual = (P * i) / (1 - (1 + i) ^ (-n))
+
+Donde:
+
+P = Monto del préstamo
+i = Tasa de interés mensual
+n = Plazo del crédito en meses - Cantidad de cuotas totales - (años * 12)
+
+Total pagado (mensual) = Cuota mensual + abono extraordinario
+
+Capital amortizado = Total pagado (mensual)  - Intereses (mensuales)
+
+Saldo = Saldo anterior - Capital amortizado
+
+`````
+Ejemplo de Tabla de amortización
+`````
+|Tabla de amortización| | | | | | |
+|NÚMERO DE CUOTA|CUOTA A PAGAR|PAGO ANTICIPADO|TOTAL PAGADO|INTERÉS|CAPITAL AMORTIZADO|SALDO|
+|0| | | | | |150000|
+|1|6784.093718|10000|16784.09372|1000|15784.09372|134215.9063|
+|2|6784.093718|10000|16784.09372|894.7727085|15889.32101|118326.5853|
+|3|6784.093718|10000|16784.09372|788.8439018|15995.24982|102331.3355|
+|4|6784.093718| |6784.093718|682.208903|6101.884815|96229.45064|
+|5|6784.093718| |6784.093718|641.5296709|6142.564047|90086.88659|
+|6|6784.093718| |6784.093718|600.5792439|6183.514474|83903.37212|
+|7|6784.093718| |6784.093718|559.3558141|6224.737904|77678.63421|
+|8|6784.093718| |6784.093718|517.8575614|6266.236157|71412.39806|
+|9|6784.093718| |6784.093718|476.0826537|6308.011065|65104.38699|
+|10|6784.093718| |6784.093718|434.0292466|6350.064472|58754.32252|
+|11|6784.093718| |6784.093718|391.6954835|6392.398235|52361.92428|
+|12|6784.093718| |6784.093718|349.0794952|6435.014223|45926.91006|
+|13|6784.093718| |6784.093718|306.1794004|6477.914318|39448.99574|
+|14|6784.093718| |6784.093718|262.993305|6521.100413|32927.89533|
+|15|6784.093718| |6784.093718|219.5193022|6564.574416|26363.32091|
+|16|6784.093718| |6784.093718|175.7554728|6608.338246|19754.98267|
+|17|6784.093718| |6784.093718|131.6998845|6652.393834|13102.58883|
+|18|6784.093718| |6784.093718|87.35059223|6696.743126|6405.845708|
+|19|6784.093718| |6405.845708|42.70563805|6363.14007|0|
+|20|6784.093718| |0|0|0|0|
+
+`````
+
+Cálculo de interés para los CDP
+Los intereses netos mensuales son calculados de la siguiente manera:
+• Intereses Brutos = (Monto del CDP * Tasa de Interés)*30/360.
+• Impuesto (15%) = Interés Bruto * 15%.
+• Interés Neto = Interés Devengado - Impuesto.
+
+
+
 ## Alcances y limitaciones:
 - Los préstamos y cuentas tomadas en cuenta son únicamente personales. No se toma en cuenta los DIMEX ni las cuentas empresariales.
 
