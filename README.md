@@ -43,8 +43,8 @@ Se le pide al cliente depositar al menos 5000 colones o 10 d처lares para activar
 **Opci처n 1**. Modalidad de atenci처n a clientes
 
 1. Estado de cuenta del cliente: 
-   - Selecciona rango de fechas y tipo de cuenta bancaria (dol o col)
-   - Si la cuenta no existe, la crea.
+   1. Selecciona rango de fechas y tipo de cuenta bancaria (dol o col)
+   1. Si la cuenta no existe, la crea.
 1. Crear CDP
    1. Seleccionar el id\_cuenta (d처lares o colones)
    1. Debe indicar el monto a retirar de la cuenta actual
@@ -89,7 +89,7 @@ Nota: Se va a suponer que ya la informaci처n financiera del cliente ya se revis�
    1. Seleccione el tipo de moneda
    1. Ingrese el monto
    1. Ingrese el plazo
-   - Seleccione calcular
+   1. Seleccione calcular
 
 **Opci처n 3**. Salir
 
