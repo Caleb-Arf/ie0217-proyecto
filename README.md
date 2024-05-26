@@ -150,7 +150,6 @@ Saldo = Saldo anterior - Capital amortizado
 Ejemplo de Tabla de amortización
 
 | | | | | | | |
-|-|-|-|-|-|-|-|
 |Tabla de amortización| | | | | | |
 |NÚMERO DE CUOTA|CUOTA A PAGAR|PAGO ANTICIPADO|TOTAL PAGADO|INTERÉS|CAPITAL AMORTIZADO|SALDO|
 |0| | | | | |150000|
