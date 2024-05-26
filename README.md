@@ -78,27 +78,31 @@ En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades
 
 - Solo se tomará en cuenta para dicho programa 5 tipos de préstamos preselectos (hipotecarios, prendarios, personales, vehiculares y de vivienda).
 
-- Las tasas de interés para cada entidad bancaria es distinta. En nuestro caso se utilizarán las del Banco Popular:
-www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
+-  Las tasas de interés para cada entidad bancaria es distinta. En nuestro caso se utilizarán las del Banco Popular para préstamos y las del Banco de Costa Rica para CDPs.
 
 
 ## Referencias
 1. BBVA México. (2024). Estado de Cuenta. 
 https://www.bbva.mx/educacion-financiera/e/estado_de_cuenta.html
 
-2. Instituto Nacional de Aprendizaje (INA). (2020). Instrumentos financieros para ahorrar. 
+2. Banco de Costa Rica. (2024). Tasas de Interés para CDPs. https://www.bancobcr.com/wps/portal/bcr/bancobcr/personas/inversiones/certificados_de_deposito_a_plazo/tasas_de_interes_para_cdps/
+
+3. Banco Popular. (2024). Banco Popular y de Desarrollo Comunal Tasa Efectiva Mayo 2024. www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
+
+4. Instituto Nacional de Aprendizaje (INA). (2020). Instrumentos financieros para ahorrar. 
 https://www.inavirtual.ed.cr/pluginfile.php/1932699/mod_resource/content/2/SERVER%20GUIA%20MEIC%20BLOQUE4%20ACT%20/t2apt1.html
 
-3. Etecé. (2021). ¿Qué es interés?. 
+5. Etecé. (2021). ¿Qué es interés?. 
 https://concepto.de/interes/#:~:text=En%20econom%C3%ADa%2C%20el%20inter%C3%A9s%20es,que%20toma%20de%20un%20prestamista.
 
-4. Giift. (2023). Amortización. 
+6. Giift. (2023). Amortización. 
 https://www.getcompass.ai/es/glossary/amortization
 
-5. Raisin GmbH. (2024). Glosario de términos bancarios. 
+7. Raisin GmbH. (2024). Glosario de términos bancarios. 
 https://www.raisin.es/glosario/
 
-6. Rocket Mortgage. (2023). Principal e intereses: fundamentos del pago hipotecario. 
+8. Rocket Mortgage. (2023). Principal e intereses: fundamentos del pago hipotecario. 
 https://www.rocketmortgage.com/es/learn/principal-e-intereses#:~:text=El%20principal%20es%20la%20cantidad%20que%20te%20presta%20el%20prestamista,cuenta%20de%20dep%C3%B3sito%20en%20garant%C3%ADa.
+
 
 
