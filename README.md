@@ -184,6 +184,26 @@ Los intereses netos mensuales son calculados de la siguiente manera:
 - Interés Neto = Interés Devengado - Impuesto.
 
 
+### Tipos de Préstamos
+A continuación, se describen los tipos de préstamos cubiertos dentro del sistema de gestión bancaria:
+
+1. Préstamos Hipotecarios:
+   - Los préstamos hipotecarios están destinados a la compra de bienes raíces, como casas o terrenos. El bien inmueble adquirido se utiliza como garantía del préstamo.
+   - Tasa de Interés: Varían entre el 7% y el 9% anual, dependiendo del banco y las condiciones específicas del préstamo.
+2. Préstamos Prendarios:
+   - Los préstamos prendarios son aquellos que utilizan un bien mueble, como un vehículo, joyas, o maquinaria, como garantía del préstamo. Son comunes para obtener liquidez rápida.
+   - Tasa de Interés: Las tasas de interés para préstamos prendarios suelen ser más altas que las de los hipotecarios, vaiando entre el 10% y el 15% anual.
+3. Préstamos Personales:
+   - Los préstamos personales se otorgan para diversos fines, como consolidación de deudas, gastos médicos, viajes, etc. No requieren una garantía específica, aunque pueden depender de la solvencia del solicitante.
+   - Tasa de Interés: Varían típicamente entre el 12% y el 25% anual, dependiendo del perfil crediticio del solicitante y el banco.
+4. Préstamos para Vehículo:
+   - Estos préstamos están diseñados específicamente para la compra de vehículos nuevos o usados. El vehículo adquirido generalmente se utiliza como garantía del préstamo.
+   - Tasa de Interés: Dicha tasa de interés suele estar en el rango del 7% al 12% anual, dependiendo del modelo del vehículo y la institución financiera.
+5. Préstamos para Vivienda:
+   - Estos están destinados a la adquisición, construcción, o mejora de una vivienda. La vivienda puede ser la garantía del préstamo.
+   - Tasa de Interés: Oscilar entre el 6% y el 9% anual, dependiendo de las condiciones del préstamo y la institución financiera.
+
+
 
 ## Alcances y limitaciones:
 - Los préstamos y cuentas tomadas en cuenta son únicamente personales. No se toma en cuenta los DIMEX ni las cuentas empresariales.
