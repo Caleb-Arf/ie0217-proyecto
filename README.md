@@ -85,14 +85,14 @@ www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
 ## Referencias
 -BBVA México. (2024). Estado de Cuenta. https://www.bbva.mx/educacion-financiera/e/estado_de_cuenta.html
 
--Instituto Nacional de Aprendizaje (INA). (2020). Instrumentos financieros para ahorrar. https://www.inavirtual.ed.cr/pluginfile.php/1932699/mod_resource/content/2/SERVER%20GUIA%20MEIC%20BLOQUE4%20ACT%20/t2apt1.html
+- Instituto Nacional de Aprendizaje (INA). (2020). Instrumentos financieros para ahorrar. https://www.inavirtual.ed.cr/pluginfile.php/1932699/mod_resource/content/2/SERVER%20GUIA%20MEIC%20BLOQUE4%20ACT%20/t2apt1.html
 
--Etecé. (2021). ¿Qué es interés?. https://concepto.de/interes/#:~:text=En%20econom%C3%ADa%2C%20el%20inter%C3%A9s%20es,que%20toma%20de%20un%20prestamista.
+- Etecé. (2021). ¿Qué es interés?. https://concepto.de/interes/#:~:text=En%20econom%C3%ADa%2C%20el%20inter%C3%A9s%20es,que%20toma%20de%20un%20prestamista.
 
--Giift. (2023). Amortización. https://www.getcompass.ai/es/glossary/amortization
+- Giift. (2023). Amortización. https://www.getcompass.ai/es/glossary/amortization
 
--Raisin GmbH. (2024). Glosario de términos bancarios. https://www.raisin.es/glosario/
+- Raisin GmbH. (2024). Glosario de términos bancarios. https://www.raisin.es/glosario/
 
--Rocket Mortgage. (2023). Principal e intereses: fundamentos del pago hipotecario. https://www.rocketmortgage.com/es/learn/principal-e-intereses#:~:text=El%20principal%20es%20la%20cantidad%20que%20te%20presta%20el%20prestamista,cuenta%20de%20dep%C3%B3sito%20en%20garant%C3%ADa.
+- Rocket Mortgage. (2023). Principal e intereses: fundamentos del pago hipotecario. https://www.rocketmortgage.com/es/learn/principal-e-intereses#:~:text=El%20principal%20es%20la%20cantidad%20que%20te%20presta%20el%20prestamista,cuenta%20de%20dep%C3%B3sito%20en%20garant%C3%ADa.
 
 
