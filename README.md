@@ -18,6 +18,41 @@ I Semestre 2024
 
 
 # Propuesta de investigación y diseño para un sistema de gestión bancaria
+
+## Explciación por pasos del sistema de gestión bancaria
+
+### Paso 1:  Verificación de id_cliente del cliente
+
+En caso de no existir el cliente: Creación del id_cliente
+
+A partir de la cédula del cliente se crea un usuario o id_cliente el cual contiene la información  de este. Contiene el nombre, la dirección de vivienda, el número de teléfono y correo electrónico.
+
+Luego se elige la cuenta que desea crear: Colones o Dólares. A partir de la selección anterior, se genera un id_cuenta que comienza con 01 en caso de la cuenta de colones o 02 en caso de cuenta en dólares.
+
+Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar la cuenta y que quede con un fondo base.
+
+En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades. 
+
+### Paso 2: Menú de modalidades
+
+
+
+
+
+
+
+
+
+### Supuestos:
+- Los préstamos y cuentas tomadas en cuenta son únicamente personales. No se toma en cuenta los DIMEX ni las cuentas empresariales.
+
+- Solo se tomará en cuenta para dicho ejercicio 5 tipos de préstamos. 
+
+- Las tasas de interés son tomadas del Banco Popular:
+chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://www.bancopopular.fi.cr/wp-content/uploads/2024/05/Banca-Personas.pdf
+
+
+
 ## Esquema inicial Menú
 Pedir ID del cliente (verificación)
 ## Modalidades
