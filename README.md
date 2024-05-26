@@ -126,7 +126,7 @@ Nota: Se va a suponer que ya la información financiera del cliente ya se revis�
 - **Abono extraordinario a préstamo**: pago adicional al pago mensual regular, destinado a reducir el saldo del principal del préstamo. Esto puede disminuir el tiempo total del préstamo y los intereses pagados. (Raisin GmbH, 2024)
 
 
-Es importante tener en cuenta que los intereses mensuales se calculan de la siguiente manera:
+### Algunos cálculos importantes
 ````
 Tasa de interés mensual (i% mensual)  = Tasa nominal anual / 12 (meses)
 
@@ -147,7 +147,7 @@ Capital amortizado = Total pagado (mensual)  - Intereses (mensuales)
 Saldo = Saldo anterior - Capital amortizado
 
 `````
-Ejemplo de Tabla de amortización
+### Ejemplo de Tabla de amortización:
 
 | | | | | | | |
 |-|-|-|-|-|-|-|
@@ -176,11 +176,12 @@ Ejemplo de Tabla de amortización
 
 
 
-Cálculo de interés para los CDP
+### Cálculo de interés para los CDP
+
 Los intereses netos mensuales son calculados de la siguiente manera:
-• Intereses Brutos = (Monto del CDP * Tasa de Interés)*30/360.
-• Impuesto (15%) = Interés Bruto * 15%.
-• Interés Neto = Interés Devengado - Impuesto.
+- Intereses Brutos = (Monto del CDP * Tasa de Interés)*30/360.
+- Impuesto (15%) = Interés Bruto * 15%.
+- Interés Neto = Interés Devengado - Impuesto.
 
 
 
