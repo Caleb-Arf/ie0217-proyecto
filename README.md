@@ -19,6 +19,11 @@ I Semestre 2024
 
 # Propuesta de investigación y diseño para un sistema de gestión bancaria
 
+## Objetivo principal
+
+Crear una interfaz gráfica de un sistema de gestión bancaria que pueda realizar las operaciones básicas de un banco, así como mostrar información general sobre préstamos bancarios.
+
+
 ## Explciación por pasos del sistema de gestión bancaria
 
 ### Paso 1:  Verificación de id_cliente del cliente
