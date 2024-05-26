@@ -24,21 +24,74 @@ I Semestre 2024
 Crear una interfaz gráfica de un sistema de gestión bancaria que pueda realizar las operaciones básicas de un banco, así como mostrar información general sobre préstamos bancarios.
 
 
-## Explicación por pasos del sistema de gestión bancaria
+## Desarrollo del sistema
 
-### Paso 1:  Verificación de id_cliente del cliente
+### Sección 1:  Verificación de id\_cliente del cliente
 
-En caso de no existir el cliente: Creación del id_cliente
+1. En caso de no existir el cliente: \*Creación del id\_cliente\*
 
-A partir de la cédula del cliente se crea un usuario o id_cliente el cual contiene la información  de este. Contiene el nombre, la dirección de vivienda, el número de teléfono y correo electrónico.
+A partir de la cédula del cliente se crea un usuario o id\_cliente el cual contiene la información  de este. Contiene el nombre, la dirección de vivienda, el número de teléfono y correo electrónico.
 
-Luego se elige la cuenta que desea crear: Colones o Dólares. A partir de la selección anterior, se genera un id_cuenta que comienza con 01 en caso de la cuenta de colones o 02 en caso de cuenta en dólares.
+Luego se elige el tipo de cuenta que desea crear: Colones o Dólares. A partir de la selección anterior, se genera un id\_cuenta que comienza con 01 en caso de la cuenta de colones o 02 en caso de cuenta en dólares.
 
 Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar la cuenta y que quede con un fondo base.
 
-En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades. 
+1. En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades. 
 
-### Paso 2: Menú de modalidades
+### Sección 2: Menú de modalidades
+
+**Opción 1**. Modalidad de atención a clientes
+
+1. Estado de cuenta del cliente: 
+   - Selecciona rango de fechas y tipo de cuenta bancaria (dol o col)
+   - Si la cuenta no existe, la crea.
+1. Crear CDP
+   1. Seleccionar el id\_cuenta (dólares o colones)
+   1. Debe indicar el monto a retirar de la cuenta actual
+   1. Se le muestra el plazo y de acuerdo al plazo se le aplica el interés
+1. Consultar CDP
+1. Transferencia
+   1. Seleccionar el id\_cuenta (dólares o colones) de origen
+   1. Ingresar el id\_cuenta al que se le va a realizar la transferencia (destino)
+   1. Digitar monto a transferir
+   1. Seleccionar aceptar
+1. Depósito
+   1. Ingresar el id\_cuenta (dólares o colones) destino
+   1. Digitar monto a transferir
+   1. Seleccionar aceptar
+1. Solicitar préstamo
+   1. Digitar monto y plazo en meses. Se le despliega la tasa de interés predeterminada así como el monto de las cuotas. (Se crea un nuevo id\_prestamo con la información del préstamo nuevo)
+
+Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
+
+1. Abono a préstamo
+   1. Selecciona el id\_préstamo
+   1. Le aparece la información general del préstamo (número de cuota, deuda pendiente, monto del principal más interés del periodo (amortización) y la casilla para ingresar el monto a pagar)
+   1. Seleccionar aceptar
+1. Abono extraordinario a préstamo
+   1. Selecciona el id\_préstamo
+   1. Le aparece la información general del préstamo (deuda pendiente y la casilla para ingresar el monto extraordinario a pagar)
+   1. Seleccionar aceptar
+
+
+
+**Opción 2**. Obtener información sobre préstamos bancarios
+
+1. Tipos de préstamos
+   1. Hipotecarios
+   1. Prendarios
+   1. Personales
+   1. Vehículo
+   1. Vivienda
+1. Tasas de interés
+1. Generar tabla de pagos esperada
+   1. Seleccione el tipo de préstamo
+   1. Seleccione el tipo de moneda
+   1. Ingrese el monto
+   1. Ingrese el plazo
+   - Seleccione calcular
+
+**Opción 3**. Salir
 
 
 
