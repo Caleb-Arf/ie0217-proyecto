@@ -236,6 +236,11 @@ A continuación, se describen los tipos de préstamos cubiertos dentro del siste
 | Aramar documento de presentación final                  |       |        |        |        |       | Todos |
 | Presentación final                                      |       |        |        |        |       | Todos |
 
+
+## Anexos
+1. Diagrama UML que explica el abordaje del problema.
+https://raw.githubusercontent.com/Caleb-Arf/ie0217-proyecto/main/anexos/Proyecto_UML.png
+
 ## Referencias
 1. BBVA México. (2024). Estado de Cuenta. 
 https://www.bbva.mx/educacion-financiera/e/estado_de_cuenta.html
