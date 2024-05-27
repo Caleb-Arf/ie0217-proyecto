@@ -240,7 +240,7 @@ Para ver los diagramas puede ingresar al repositorio y buscar los archivos **Dia
 
 ## Anexos
 
-<span>![</span><span>Diagrama UML que explica el abordaje del problema.</span><span>]</span><span>(</span><span>https://github.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_UML.png</span><span>)</span>
+![Diagrama UML del proyecto.](https://github.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_UML.png)
 
  
 
