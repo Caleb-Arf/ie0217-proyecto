@@ -28,7 +28,7 @@ Crear un sistema de gestión bancaria que pueda realizar las operaciones básica
 
 ### Sección 1:  Verificación de id\_cliente del cliente
 
-1. En caso de no existir el cliente: \*Creación del id\_cliente\*
+1. En caso de no existir el cliente: **Creación del id_cliente**
 
 A partir de la cédula del cliente se crea un usuario o id\_cliente el cual contiene la información  de este. Contiene el nombre, la dirección de vivienda, el número de teléfono y correo electrónico.
 
@@ -62,9 +62,9 @@ Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar
 1. Solicitar préstamo
    1. Digitar monto y plazo en meses. Se le despliega la tasa de interés predeterminada así como el monto de las cuotas. (Se crea un nuevo id\_prestamo con la información del préstamo nuevo)
 
-Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
+   Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
 
-1. Abono a préstamo
+1. Abonar a préstamo
    1. Selecciona el id\_préstamo
    1. Le aparece la información general del préstamo (número de cuota, deuda pendiente, monto del principal más interés del periodo (amortización) y la casilla para ingresar el monto a pagar)
    1. Seleccionar aceptar
