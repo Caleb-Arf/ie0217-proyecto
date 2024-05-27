@@ -214,7 +214,6 @@ A continuación, se describen los tipos de préstamos cubiertos dentro del siste
 
 
 ## Cronograma
-
 |                                                         | MAYO  | JUNIO  | JULIO  |
 | ------------------------------------------------------- | ----- | ------ | ------ |
 |                                                         | 27-31 | 3-7    | 10-14  | 17-21 | 24-28 | 1-5 |
