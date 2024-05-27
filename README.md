@@ -62,7 +62,7 @@ Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar
 1. Solicitar préstamo
    1. Digitar monto y plazo en meses. Se le despliega la tasa de interés predeterminada así como el monto de las cuotas. (Se crea un nuevo id\_prestamo con la información del préstamo nuevo)
 
-Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
+   Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
 
 1. Abonar a préstamo
    1. Selecciona el id\_préstamo
