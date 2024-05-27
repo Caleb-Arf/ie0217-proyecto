@@ -21,7 +21,7 @@ I Semestre 2024
 
 ## Objetivo principal
 
-Crear una interfaz gráfica de un sistema de gestión bancaria que pueda realizar las operaciones básicas de un banco, así como mostrar información general sobre préstamos bancarios.
+Crear un sistema de gestión bancaria que pueda realizar las operaciones básicas de un banco, así como mostrar información general sobre préstamos bancarios.
 
 
 ## Desarrollo del sistema
