@@ -28,7 +28,7 @@ Crear un sistema de gestión bancaria que pueda realizar las operaciones básica
 
 ### Sección 1:  Verificación de id\_cliente del cliente
 
-1. En caso de no existir el cliente: \*Creación del id\_cliente\*
+1. En caso de no existir el cliente: **Creación del id_cliente**
 
 A partir de la cédula del cliente se crea un usuario o id\_cliente el cual contiene la información  de este. Contiene el nombre, la dirección de vivienda, el número de teléfono y correo electrónico.
 
