@@ -242,7 +242,8 @@ Para ver los diagramas puede ingresar al repositorio y buscar los archivos **Dia
 1. Diagrama UML del proyecto.
 ![Diagrama UML del proyecto.](https://github.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_UML.png)
 
- 
+2. Database schema del proyecto. 
+![Database schema del proyecto.](https://github.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_Schema.png)
 
 ## Referencias
 1. BBVA México. (2024). Estado de Cuenta. 
