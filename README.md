@@ -36,7 +36,7 @@ Luego se elige el tipo de cuenta que desea crear: Colones o Dólares. A partir d
 
 Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar la cuenta y que quede con un fondo base.
 
-1. En caso de existir el cliente pasa al paso 2, el ingreso al menú de modalidades. 
+2. En caso de existir el cliente pasa a la sección 2, el ingreso al menú de modalidades. 
 
 ### Sección 2: Menú de modalidades
 
