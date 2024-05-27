@@ -64,7 +64,7 @@ Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar
 
 Nota: Se va a suponer que ya la información financiera del cliente ya se revisó y verificó con anterioridad y ya tiene permiso para crear uno.
 
-1. Abono a préstamo
+1. Abonar a préstamo
    1. Selecciona el id\_préstamo
    1. Le aparece la información general del préstamo (número de cuota, deuda pendiente, monto del principal más interés del periodo (amortización) y la casilla para ingresar el monto a pagar)
    1. Seleccionar aceptar
