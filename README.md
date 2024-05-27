@@ -213,6 +213,31 @@ A continuación, se describen los tipos de préstamos cubiertos dentro del siste
 -  Las tasas de interés para cada entidad bancaria es distinta. En nuestro caso se utilizarán las del Banco Popular para préstamos y las del Banco de Costa Rica para CDPs.
 
 
+## Cronograma
+
+|                                                         | MAYO  | JUNIO  | JULIO  |
+| ------------------------------------------------------- | ----- | ------ | ------ |
+|                                                         | 27-31 | 3-7    | 10-14  | 17-21 | 24-28 | 1-5 |
+| Propuesta del proyecto                                  | Todos |        |        |  |  |  |
+| Menú general                                            | Todos |        |        |  |  |  |
+| Creación de clases: clientes e información de prestamos |       | Daniel |        |  |  |  |
+| Buscar información de librerías para integrar SQL       |       | Todos  |        |  |  |  |
+| Creación de clases: operaciones                         |       | Caleb  |        |  |  |  |
+| Creación de clases: préstamos                           |       | Evelyn |        |  |  |  |
+| Creación de clases: cuentas y CDP                       |       | Daniel |        |  |  |  |
+| Creación de métodos para las clases                     |       |        |        |  |  |  |
+| Péstamos                                                |       |        | Caleb  | Caleb |  |  |
+| Operaciones                                             |       |        | Evelyn | Evelyn |  |  |
+| Cuentas y CDP                                           |       |        | Daniel | Daniel |  |  |
+| Aramar documento de avance                              |       |        |        | Todos |  |  |
+| Primeras pruebas del proyecto                           |       |        |        | Todos |  |  |
+| Avance del proyecto                                     |       |        |        | Todos |  |  |
+| Depuraciones                                            |       |        |        |  | Todos |  |
+| Pruebas y verificaciones                                |       |        |        |  | Todos |  |
+| Aramar documento de presentación final                  |       |        |        |  |  | Todos |
+| Presentación final                                      |       |        |        |  |  | Todos |
+
+
 ## Referencias
 1. BBVA México. (2024). Estado de Cuenta. 
 https://www.bbva.mx/educacion-financiera/e/estado_de_cuenta.html
