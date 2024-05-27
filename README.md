@@ -203,7 +203,8 @@ A continuación, se describen los tipos de préstamos cubiertos dentro del siste
    - Estos están destinados a la adquisición, construcción, o mejora de una vivienda. La vivienda puede ser la garantía del préstamo.
    - Tasa de Interés: Oscilar entre el 6% y el 9% anual, dependiendo de las condiciones del préstamo y la institución financiera.
 
-
+## Diagramas UML y SQL
+Para ver los diagramas puede ingresar al repositorio y buscar los archivos **Diagrama UML.jpeg** y **Diagrama SQL.jpeg**
 
 ## Alcances y limitaciones:
 - Los préstamos y cuentas tomadas en cuenta son únicamente personales. No se toma en cuenta los DIMEX ni las cuentas empresariales.
