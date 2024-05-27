@@ -239,7 +239,7 @@ Para ver los diagramas puede ingresar al repositorio y buscar los archivos **Dia
 
 
 ## Anexos
-
+1. Diagrama UML del proyecto.
 ![Diagrama UML del proyecto.](https://github.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_UML.png)
 
  
