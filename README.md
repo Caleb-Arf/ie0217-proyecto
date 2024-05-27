@@ -239,7 +239,7 @@ A continuación, se describen los tipos de préstamos cubiertos dentro del siste
 
 ## Anexos
 1. Diagrama UML que explica el abordaje del problema.
-https://raw.githubusercontent.com/Caleb-Arf/ie0217-proyecto/main/anexos/Proyecto_UML.png
+https://raw.githubusercontent.com/Caleb-Arf/ie0217-proyecto/blob/main/Anexos/Proyecto_UML.png
 
 ## Referencias
 1. BBVA México. (2024). Estado de Cuenta. 
