@@ -1,20 +1,22 @@
-//Tabla de tasas de interes para CDPs
 #include <iostream>
 #include <sqlite3.h>
+#include <iomanip>
 
 static int callback(void *data, int argc, char **argv, char **azColName) {
     for (int i = 0; i < argc; i++) {
         std::cout << azColName[i] << ": " << (argv[i] ? argv[i] : "NULL") << std::endl;
     }
+    std::cout << std::endl;
     return 0;
 }
 
 void create_table(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS tasas ("
-        "plazo TEXT PRIMARY KEY,"
-        "fisico_negociable_en_bolsa TEXT,"
-        "negociable_en_banco TEXT"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "plazo TEXT UNIQUE,"
+        "fisico_negociable_en_bolsa REAL,"
+        "negociable_en_banco REAL"
         ");";
     
     char *err_msg = nullptr;
@@ -31,27 +33,27 @@ void create_table(sqlite3 *db) {
 void insert_data(sqlite3 *db) {
     const char *sql_insert_data = 
         "INSERT INTO tasas (plazo, fisico_negociable_en_bolsa, negociable_en_banco) VALUES"
-        "('1-6', 'N/A', '0.18%'),"
-        "('7-13', 'N/A', '0.20%'),"
-        "('14-20', 'N/A', '0.62%'),"
-        "('21-29', 'N/A', '1.21%'),"
-        "('30-59', '3.01%', '3.11%'),"
-        "('60-80', '3.45%', '3.55%'),"
-        "('90-119', '3.88%', '3.98%'),"
-        "('120-149', '4.53%', '4.63%'),"
-        "('150-179', '5.01%', '5.11%'),"
-        "('180*-209', '5.19%', '5.29%'),"
-        "('210-239', '5.19%', '5.29%'),"
-        "('240-269', '5.44%', '5.54%'),"
-        "('270-299', '5.45%', '5.55%'),"
-        "('300-329', '5.49%', '5.59%'),"
-        "('330-359', '5.54%', '5.64%'),"
-        "('360-539', '5.59%', '5.69%'),"
-        "('540-719', '5.69%', '5.79%'),"
-        "('720-1079', '6.04%', '6.14%'),"
-        "('1080-1439', '6.24%', '6.34%'),"
-        "('1440-1799', '6.38%', '6.48%'),"
-        "('De 1800', '6.52%', '6.62%');";
+        "('1-6', NULL, 0.0018),"
+        "('7-13', NULL, 0.0020),"
+        "('14-20', NULL, 0.0062),"
+        "('21-29', NULL, 0.0121),"
+        "('30-59', 0.0301, 0.0311),"
+        "('60-80', 0.0345, 0.0355),"
+        "('90-119', 0.0388, 0.0398),"
+        "('120-149', 0.0453, 0.0463),"
+        "('150-179', 0.0501, 0.0511),"
+        "('180*-209', 0.0519, 0.0529),"
+        "('210-239', 0.0519, 0.0529),"
+        "('240-269', 0.0544, 0.0554),"
+        "('270-299', 0.0545, 0.0555),"
+        "('300-329', 0.0549, 0.0559),"
+        "('330-359', 0.0554, 0.0564),"
+        "('360-539', 0.0559, 0.0569),"
+        "('540-719', 0.0569, 0.0579),"
+        "('720-1079', 0.0604, 0.0614),"
+        "('1080-1439', 0.0624, 0.0634),"
+        "('1440-1799', 0.0638, 0.0648),"
+        "('De 1800', 0.0652, 0.0662);";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
