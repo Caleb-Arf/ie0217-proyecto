@@ -53,7 +53,7 @@ main(){
                     std::cout << "7. Realizar un abono a un préstamo (existente)." << std::endl;
                     std::cout << "8. Realizar un abono extraordinario a un préstamo (existente)." << std::endl;
                     std::cout << "9. Regresar al menú principal." << std::endl;
-                    std::cout << "Seleccione una opción: ";
+                    std::cout << "Seleccione una operación a realizar: ";
                     std::cin >> operacion;
                     std::cout << std::endl;
 
@@ -87,7 +87,7 @@ main(){
                             std::cout << "Regresando al menú principal...";
                             break;
                         default:
-                            std::cout << "Opcion no valida. Intente de nuevo...\n";
+                            std::cout << "Opcion no válida. Intente de nuevo...\n";
                             break;
                     }
                 }
@@ -99,11 +99,12 @@ main(){
                 std::cout << "Saliendo del programa...\n";
                 break;
             default:
-                std::cout << "Opcion no valida. Intente de nuevo...\n"; 
+                std::cout << "Opcion no válida. Intente de nuevo...\n"; 
                 break;   
         }
     }
     while(opcion != SALIR);
+    
     return 0;
 }
 
