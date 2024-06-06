@@ -7,7 +7,7 @@ Prestamo::Prestamo(int id, double monto, double interes, int meses, int anios, s
       plazoAnios(anios), FrecuenciaPagoMensual(frecuencia), numCuotas(0), 
       CuotaAPagar(0.0), PagosAdelantados(0.0), InteresTotal(0.0) {}
 
-// Method to solicit a loan
+
 void Prestamo::solicitarPrestamo(double monto, double interes, int meses, int anios, string frecuencia) {
     montoPrestamo = monto;
     interesMensual = interes;
@@ -20,7 +20,7 @@ void Prestamo::solicitarPrestamo(double monto, double interes, int meses, int an
     cout << "Prestamo solicitado con exito!" << endl;
 }
 
-// Method to check loan status
+
 void Prestamo::estadoPrestamo() {
     cout << "ID Prestamo: " << idPrestamo << endl;
     cout << "Monto Prestamo: " << montoPrestamo << endl;
@@ -34,13 +34,13 @@ void Prestamo::estadoPrestamo() {
     cout << "Interes Total: " << InteresTotal << endl;
 }
 
-// Method to make a payment
+
 void Prestamo::abonoPrestamo(double monto) {
     PagosAdelantados += monto;
     cout << "Pago realizado con exito!" << endl;
 }
 
-// Method to make an extra payment
+
 void Prestamo::abonoExtraordinario(double monto) {
     PagosAdelantados += monto;
     cout << "Abono extraordinario realizado con exito!" << endl;
