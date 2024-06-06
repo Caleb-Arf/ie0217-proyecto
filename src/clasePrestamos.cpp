@@ -1,4 +1,4 @@
-#include "prestamos.hpp"
+#include "clasePrestamos.hpp"
 
 // Constructor
 Prestamo::Prestamo(int id, double monto, double interes, int meses, int anios, string frecuencia)
