@@ -1,5 +1,6 @@
 #include <iostream>
 #include "prestamos.hpp"
+#include "claseOperaciones.hpp"
 
 // Enum para el menú principal.
 enum Opciones {
@@ -67,9 +68,23 @@ int main() {
                             
                             break;
                         case TRANSFERENCIA:
-                            
+                            //Utilizar la clase cliente para poder pasarle la info a la clase operaciones.
+                            double montoActual;
+                            double montoTransferencia;
+                            int cuentaDestino;
+                            Operacion Transferencia(idCliente, montoActual); 
+                            std::cout << "Ingrese el monto a transferir: ";
+                            std::cin >> montoTransferencia;
+                            std::cout << "\nIngrese la ID de cuenta destino: ";
+                            std::cin >> cuentaDestino;
+                            Transferencia.transferencia(cuentaDestino, montoTransferencia);
                             break;
                         case DEPOSITO:
+                            double montoDeposito;
+                            std::cout << "Ingrese el monto a depositar: ";
+                            std::cin >> montoDeposito;
+                            Operacion Deposito(idCliente, montoActual);
+                            Deposito.deposito(montoDeposito);
                             break;
                         case SOLICITARP:
                           
