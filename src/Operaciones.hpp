@@ -1,22 +1,19 @@
-#ifndef OPERACION_HPP
-#define OPERACION_HPP
+#ifndef OPERACIONES_HPP
+#define OPERACIONES_HPP
 
-#include <iostream>
-#include <string>
-
+#include <sqlite3.h>
+#include "funciones.hpp"
 class Operacion {
 private:
-    int id_cuenta;
-    double monto;
+    sqlite3* db;
+    int idCliente;
 
 public:
-    // Constructor
-    Operacion(const int& id, double m);
+    Operacion(sqlite3* db, int idCliente);
 
-    // Métodos para Transferencia y Depósito
-    void transferencia(const int& id_cuenta_destino, double monto_transferir);
-    void deposito(double monto_depositar);
-
+    void transferencia(double montoTransferencia, int idDestino);
+    
+    void deposito(double montoDeposito);
 };
 
-#endif // OPERACION_HPP
+#endif // OPERACIONES_HPP
