@@ -1,29 +1,35 @@
+// ClaseCuentasCDP.hpp
+
 #ifndef CLASECUENTASCDP_HPP
 #define CLASECUENTASCDP_HPP
 
 #include <string>
-#include <vector>
-#include <iostream>
 
-class Cuenta {
+// Clase que representa una Cuenta CDP (Certificado de Depósito a Plazo)
+class CuentasCDP {
+private:
+    std::string numeroCuenta; // Número de la cuenta CDP
+    double monto;             // Monto depositado en la cuenta CDP
+    double tasaInteres;       // Tasa de interés de la cuenta CDP
+    int plazo;                // Plazo de la cuenta CDP en meses
+
 public:
-    std::string idCuenta;
-    std::string moneda;
-    double saldo;
+    // Constructor
+    CuentasCDP(const std::string& numeroCuenta, double monto, double tasaInteres, int plazo);
+    //Placeholders
+    std::string getNumeroCuenta() const;
+    void setNumeroCuenta(const std::string& numeroCuenta);
 
-    Cuenta(std::string moneda, double saldo);
-    void mostrarInfo() const;
-};
+    double getMonto() const;
+    void setMonto(double monto);
 
-class CDP {
-public:
-    double monto;
-    double tasaInteres;
-    int plazo; // en meses
+    double getTasaInteres() const;
+    void setTasaInteres(double tasaInteres);
 
-    CDP(double monto, double tasaInteres, int plazo);
-    void mostrarInfo() const;
-    double calcularInteres() const;
+    int getPlazo() const;
+    void setPlazo(int plazo);
+
+    void mostrarCuentaCDP() const;
 };
 
 #endif // CLASECUENTASCDP_HPP

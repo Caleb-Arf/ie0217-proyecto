@@ -1,21 +1,46 @@
-#include "claseCuentasCDP.hpp"
-#include <iomanip>
-#include <fstream>
+// ClaseCuentasCDP.cpp
 
-Cuenta::Cuenta(std::string moneda, double saldo)
-    : moneda(moneda), saldo(saldo) {}
+#include "ClaseCuentasCDP.hpp"
+#include <iostream>
 
-void Cuenta::mostrarInfo() const {
-    std::cout << "Cuenta en " << moneda << ": " << saldo << "\n";
+// Constructor
+CuentasCDP::CuentasCDP(const std::string& numeroCuenta, double monto, double tasaInteres, int plazo)
+    : numeroCuenta(numeroCuenta), monto(monto), tasaInteres(tasaInteres), plazo(plazo) {}
+// Placeholder
+
+std::string CuentasCDP::getNumeroCuenta() const {
+    return numeroCuenta;
 }
 
-CDP::CDP(double monto, double tasaInteres, int plazo)
-    : monto(monto), tasaInteres(tasaInteres), plazo(plazo) {}
-
-void CDP::mostrarInfo() const {
-    std::cout << "CDP - Monto: " << monto << ", Tasa de Interés: " << tasaInteres << "%, Plazo: " << plazo << " meses\n";
+void CuentasCDP::setNumeroCuenta(const std::string& numeroCuenta) {
+    this->numeroCuenta = numeroCuenta;
 }
 
-double CDP::calcularInteres() const {
-    return monto * (tasaInteres / 100) * (plazo / 12.0);
+double CuentasCDP::getMonto() const {
+    return monto;
+}
+
+void CuentasCDP::setMonto(double monto) {
+    this->monto = monto;
+}
+
+double CuentasCDP::getTasaInteres() const {
+    return tasaInteres;
+}
+
+void CuentasCDP::setTasaInteres(double tasaInteres) {
+    this->tasaInteres = tasaInteres;
+}
+
+int CuentasCDP::getPlazo() const {
+    return plazo;
+}
+
+void CuentasCDP::setPlazo(int plazo) {
+    this->plazo = plazo;
+}
+
+// Método para mostrar la información de la cuenta CDP
+void CuentasCDP::mostrarCuentaCDP() const {
+    std::cout << "\nNumero de Cuenta CDP: " << numeroCuenta << "\nMonto: " << monto << "\nTasa de Interes: " << tasaInteres << "\nPlazo: " << plazo << std::endl;
 }
