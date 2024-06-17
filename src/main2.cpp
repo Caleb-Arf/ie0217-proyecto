@@ -3,6 +3,8 @@
 #include <sqlite3.h>
 #include "tablacdp.hpp"
 #include "prestamos_colones.hpp"
+#include "prestamos_dolares.hpp"
+
 // Enum para el menu principal.
 enum Opciones {
     ATENCION = 1,
@@ -50,7 +52,7 @@ int main() {
     crearTabla1(db);
     insertarData1(db);
 
-        // Crear e insertar la tabla CDP
+    // Crear e insertar la tabla CDP
     crearDolares(db);
     insertarDolares(db);
 
@@ -62,7 +64,7 @@ int main() {
     
     int opcion;
     do {
-        std::cout << "1. Atencion al cliente." << std::endl;
+        std::cout << "\n1. Atencion al cliente." << std::endl;
         std::cout << "2. Obtener informacion sobre prestamos bancarios." << std::endl;
         std::cout << "3. Salir." << std::endl;
         std::cout << "Seleccione una opcion: ";
@@ -73,7 +75,7 @@ int main() {
             case ATENCION: {
                 int operacion;
                 do {
-                    std::cout << "1. Consultar el estado de cuenta." << std::endl;
+                    std::cout << "\n1. Consultar el estado de cuenta." << std::endl;
                     std::cout << "2. Crear un certificado de deposito a plazo." << std::endl;
                     std::cout << "3. Consultar certificado de deposito a plazo." << std::endl;
                     std::cout << "4. Realizar una transferencia." << std::endl;
@@ -134,10 +136,10 @@ int main() {
                 } while(operacion != REGRESAR);
                 break;
             }
-                        case INFO: {
+                case INFO: {
                 int operacion_info;
                 do {
-                    std::cout << "1. Tipos de prestamos" << std::endl;
+                    std::cout << "\n1. Tipos de prestamos" << std::endl;
                     std::cout << "2. Tasas de interes" << std::endl;
                     std::cout << "3. Generar tabla de pagos esperada" << std::endl;
                     std::cout << "4. Regresar al menu principal." << std::endl;
@@ -147,7 +149,7 @@ int main() {
 
                     switch(operacion_info) {
                         case TIPOPRESTAMOS:
-                            //
+                            prestamo1.tipoPrestamo();
                             break;
                         case TABLAINTERES:
                             selectData1(db);
@@ -160,12 +162,13 @@ int main() {
                             // Regresar al menu principal.
                             std::cout << "Regresando al menu principal...\n";
                             break;
+                            break;
 
                         default:
                             std::cout << "Opcion no valida. Intente de nuevo...\n";
                             break;
                     }
-                } while(operacion_info != TABLAPAGOS && operacion_info != REGRESAR);
+                } while(operacion_info != REGRESAR);
                 break;
             }
             case SALIR:
