@@ -1,21 +1,27 @@
-#include "claseOperaciones.hpp"
+#include "Operaciones.hpp"
+#include <iostream> // Asegúrate de incluir <iostream> para usar std::cout
 
-// Constructor
-Operacion::Operacion(const int& id, double m) : id_cuenta(id), monto(m) {}
+Operacion::Operacion(sqlite3* db, int idCliente) : db(db), idCliente(idCliente) {}
 
-// Métodos para Transferencia y Depósito
-void Operacion::transferencia(const int& idCuentaDestino, double montoTransferencia) {
-    std::cout << "Transferencia:\n";
-    std::cout << "De la cuenta: " << id_cuenta << "\n";
-    std::cout << "A la cuenta: " << idCuentaDestino << "\n";
-    std::cout << "Monto: " << montoTransferencia<< "\n";
-    // Lógica para realizar la transferencia
+void Operacion::transferencia(double montoTransferencia, int idDestino) {
+    double balanceOrigen = obtenerBalance(db, idCliente);
+    double balanceDestino = obtenerBalance(db, idDestino);
+    
+    if (balanceOrigen < montoTransferencia) {
+        std::cout << "Saldo insuficiente para realizar la transaccion." << std::endl;
+        return;
+    }
+    
+    double nuevoBalanceOrigen = balanceOrigen - montoTransferencia;
+    double nuevoBalanceDestino = balanceDestino + montoTransferencia;
+
+    actualizarBalance(db, idCliente, nuevoBalanceOrigen);
+    actualizarBalance(db, idDestino, nuevoBalanceDestino);
 }
 
 void Operacion::deposito(double montoDeposito) {
-    std::cout << "Depósito:\n";
-    std::cout << "En la cuenta: " << id_cuenta << "\n";
-    std::cout << "Monto: " << montoDeposito << "\n";
-    // Lógica para realizar el depósito
+    double balance = obtenerBalance(db, idCliente);
+    double nuevoBalance = balance + montoDeposito;
+    actualizarBalance(db, idCliente, nuevoBalance);
 }
 
