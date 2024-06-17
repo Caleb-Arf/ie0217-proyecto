@@ -169,11 +169,5 @@ int main() {
 
     std::cout << "Datos insertados correctamente en la base de datos 'clientes.db'" << std::endl;
 
-        // Eliminar la base de datos
-    if (remove(dbFile) != 0) {
-        std::cerr << "Error al eliminar la base de datos '" << dbFile << "'" << std::endl;
-    } else {
-        std::cout << "Base de datos '" << dbFile << "' eliminada correctamente" << std::endl;
-    }
     return 0;
 }
