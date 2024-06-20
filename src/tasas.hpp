@@ -2,6 +2,93 @@
 #include <sqlite3.h>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
+#include <vector>
+
+void imprimirTablaAmortizacion1(double monto, double tasaInteres, int plazoMeses);
+void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses);
+void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, double tasaInteres, int plazoMeses);
+void obtenerTasaYPlazoDesdeTabla2(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses);
+
+// Crea la base de datos de tipos de prestamos
+void crearInfoPrestamos(sqlite3* db) {
+    const char *sql_create_table = "CREATE TABLE Prestamos ("
+                                   "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                   "Tipo TEXT NOT NULL,"
+                                   "Descripcion TEXT NOT NULL);";
+    char *err_msg = nullptr;
+    int rc = sqlite3_exec(db, sql_create_table, 0, 0, &err_msg);
+    
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error creando la tabla: " << err_msg << std::endl;
+        sqlite3_free(err_msg);
+    } else {
+        std::cout << "Tabla creada exitosamente" << std::endl;
+    }
+}
+
+// Funcion auxiliar para insertar datos
+void insertarPrestamo(sqlite3* db, const char* tipo, const char* descripcion) {
+    const char *sql_insert = "INSERT INTO Prestamos (Tipo, Descripcion) VALUES (?, ?);";
+    sqlite3_stmt *stmt;
+    
+    int rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error al preparar la consulta de insercion: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+    
+    sqlite3_bind_text(stmt, 1, tipo, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 2, descripcion, -1, SQLITE_STATIC);
+    
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        std::cerr << "Error al insertar datos: " << sqlite3_errmsg(db) << std::endl;
+    } else {
+        std::cout << "Datos insertados correctamente" << std::endl;
+    }
+    
+    sqlite3_finalize(stmt);
+}
+
+// Inserta datos de prestamos en la tabla de la base de datos
+void insertarDatosPrestamos(sqlite3* db) {
+    insertarPrestamo(db, "Prestamos Hipotecarios", "Los prestamos hipotecarios estan destinados a la compra de bienes raices, como casas o terrenos. El bien inmueble adquirido se utiliza como garantia del prestamo.\nTasa de Interes: Varian entre el 7% y el 9% anual, dependiendo del banco y las condiciones especificas del prestamo.");
+    insertarPrestamo(db, "Prestamos Prendarios", "Los prestamos prendarios son aquellos que utilizan un bien mueble, como un vehiculo, joyas, o maquinaria, como garantia del prestamo. Son comunes para obtener liquidez rapida.\nTasa de Interes: Las tasas de interes para prestamos prendarios suelen ser mas altas que las de los hipotecarios, vaiando entre el 10% y el 15% anual.");
+    insertarPrestamo(db, "Prestamos Personales", "Los prestamos personales se otorgan para diversos fines, como consolidacion de deudas, gastos medicos, viajes, etc. No requieren una garantia especifica, aunque pueden depender de la solvencia del solicitante.\nTasa de Interes: Varian tipicamente entre el 12% y el 25% anual, dependiendo del perfil crediticio del solicitante y el banco.");
+    insertarPrestamo(db, "Prestamos para Vehiculo", "Estos prestamos estan disenados especificamente para la compra de vehiculos nuevos o usados. El vehiculo adquirido generalmente se utiliza como garantia del prestamo.\nTasa de Interes: Dicha tasa de interes suele estar en el rango del 7% al 12% anual, dependiendo del modelo del vehiculo y la institucion financiera.");
+    insertarPrestamo(db, "Prestamos para Vivienda", "Estos estan destinados a la adquisicion, construccion, o mejora de una vivienda. La vivienda puede ser la garantia del prestamo.\nTasa de Interes: Oscilar entre el 6% y el 9% anual, dependiendo de las condiciones del prestamo y la institucion financiera.");
+}
+
+// Imprime los datos de la tabla de tipos de prestamos
+void imprimirDatosPrestamos(sqlite3* db) {
+    const char* consultaSQL = "SELECT * FROM Prestamos;";
+    sqlite3_stmt* declaracion;
+
+    int rc = sqlite3_prepare_v2(db, consultaSQL, -1, &declaracion, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    std::cout << "Datos de la tabla Prestamos:" << std::endl;
+    while ((rc = sqlite3_step(declaracion)) == SQLITE_ROW) {
+        int id = sqlite3_column_int(declaracion, 0);
+        const unsigned char* tipo = sqlite3_column_text(declaracion, 1);
+        const unsigned char* descripcion = sqlite3_column_text(declaracion, 2);
+
+        std::cout << "\nTipo: " << tipo << std::endl;
+        std::cout << "Descripcion: " << descripcion << std::endl;
+        std::cout << "-------------------------" << std::endl;
+    }
+
+    if (rc != SQLITE_DONE) {
+        std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    sqlite3_finalize(declaracion);
+}
+
 
 // Callback para impresion de tabla de Tasas CDP
 static int callback(void *data, int argc, char **argv, char **azColName) {
@@ -12,6 +99,7 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
               << std::setw(12) << (argv[3] ? argv[3] : "NULL") << std::endl;
     return 0;
 }
+
 //Imprime encabezados
 void printTableHeaders() {
     std::cout << std::setw(40) << std::setfill(' ') << "Tasas de CDPs" << std::endl << std::endl;
@@ -165,10 +253,10 @@ void insertarData1(sqlite3 *db) {
         INSERT INTO TasasColones (Credito, Tasa_Efectiva, Plazo_Meses, Cuota_Millon) VALUES
         ('Credito Personal Hipotecario colones (012)', 19.36, 240, '12281.84'),
         ('Prendario colones(014)', 10.50, 96, '7580'),
-        ('Personal Back to Back Colones Personas Fisicas (093)', 11.51, 180, '11688.26'),
-        ('Vehiculo Nuevo colones (  041)', 16.03, 96, '17910.7'),
+        ('Personal Back to Back Colones (093)', 11.51, 180, '11688.26'),
+        ('Vehiculo Nuevo colones (041)', 16.03, 96, '17910.7'),
         ('Vivienda Consumo Cuota unica colones (024)', 13.85, 360, '8827.17'),
-        ('Fiduciaria a corto plazo (  070)', 18.85, 60, '25425.43'),
+        ('Fiduciaria a corto plazo (070)', 18.85, 60, '25425.43'),
         ('Cancelacion de Pasivos - atraccion de clientes (059)', 17.85, 168, '16210.44');
     )";
     
@@ -264,7 +352,7 @@ void insertarDolares(sqlite3 *db) {
         INSERT INTO TasasDolares (Credito, Tasa_Efectiva, Plazo_Meses, Cuota_USD) VALUES
         ('Credito Personal Hipotecario en Dolares (098)', 18.79, 180, 9.84),
         ('Prendario Dolares(018)', 12.91, 360, 6.65),
-        ('Personal Back to Back Dolares Personas Fisicas (093)', 14.80, 180, 7.80),
+        ('Personal Back to Back Dolares (094)', 14.80, 180, 7.80),
         ('Vehiculo Nuevo dolares (090)', 16.75, 96, 18.30),
         ('Vivienda Consumo Cuota unica Dolares (024)', 14.18, 360, 7.17);
     )";
@@ -318,6 +406,205 @@ bool tablaExiste(sqlite3 *db, const std::string &nombreTabla) {
     return false;
 }
 
+// Solicita al usuario el monto del prestamo
+double solicitarMonto1() {
+    double monto;
+    std::cout << "Ingrese el monto del prestamo: ";
+    std::cin >> monto;
+    return monto;
+}
+
+// Imprime el menu de seleccion de tipo de prestamo
+void imprimirMenuTipo1(sqlite3 *db) {
+    std::cout << "Seleccione el tipo de prestamo:" << std::endl;
+    std::cout << "1. Credito Personal Hipotecario" << std::endl;
+    std::cout << "2. Prestamo Prendario" << std::endl;
+    std::cout << "3. Personal Back to Back" << std::endl;
+    std::cout << "4. Prestamo Vehiculo Nuevo" << std::endl;
+    std::cout << "5. Vivienda Consumo Cuota unica" << std::endl;
+    std::cout << "6. Fiduciaria a Corto Plazo" << std::endl;
+    std::cout << "7. Cancelacion de Pasivos" << std::endl;
+
+    // Solicitar al usuario seleccionar el tipo de prestamo
+    int opcion;
+    std::cout << "\nIngrese el numero correspondiente al tipo de prestamo: ";
+    std::cin >> opcion;
+
+    // Mapear la opcion ingresada por el usuario al tipo de prestamo
+    std::string tipoPrestamo;
+    switch (opcion) {
+        case 1:
+            tipoPrestamo = "Credito Personal Hipotecario colones (012)";
+            break;
+        case 2:
+            tipoPrestamo = "Prendario colones(014)";
+            break;
+        case 3:
+            tipoPrestamo = "Personal Back to Back Colones (093)";
+            break;
+        case 4:
+            tipoPrestamo = "Vehiculo Nuevo colones (041)";
+            break;
+        case 5:
+            tipoPrestamo = "Vivienda Consumo Cuota unica colones (024)";
+            break;
+        case 6:
+            tipoPrestamo = "Fiduciaria a corto plazo (070)";
+            break;
+        case 7:
+            tipoPrestamo = "Cancelacion de Pasivos - atraccion de clientes (059)";
+            break;
+        default:
+            std::cerr << "Opcion no valida" << std::endl;
+            break;
+    }
+
+    // Solicitar al usuario el monto del prestamo
+    double monto = solicitarMonto1();
+
+    // Obtener la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+    double tasaInteres = 0.0;
+    int plazoMeses = 0;
+    obtenerTasaYPlazoDesdeTabla1(db, tipoPrestamo, tasaInteres, plazoMeses);
+
+    if (tasaInteres != 0.0 && plazoMeses != 0) {
+        // Imprimir un resumen de los detalles del prestamo seleccionado
+        imprimirResumenPrestamo1(tipoPrestamo, monto, tasaInteres, plazoMeses);
+        // Imprimir la tabla de amortizacion
+        imprimirTablaAmortizacion1(monto, tasaInteres, plazoMeses);
+    }
+}
+
+// Obtiene la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses) {
+    std::string consultaSQL = "SELECT Tasa_Efectiva, Plazo_Meses FROM TasasColones WHERE Credito = '" + tipoPrestamo + "'";
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, consultaSQL.c_str(), -1, &stmt, nullptr);
+    if (rc == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            tasaInteres = sqlite3_column_double(stmt, 0);
+            plazoMeses = sqlite3_column_int(stmt, 1);
+        } else {
+            std::cerr << "No se encontro informacion para el tipo de prestamo ingresado." << std::endl;
+        }
+    } else {
+        std::cerr << "Error al ejecutar la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+    sqlite3_finalize(stmt);
+}
+
+// Imprime un resumen de los detalles del prestamo seleccionado
+void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, double tasaInteres, int plazoMeses) {
+    std::cout << "\nResumen del prestamo:" << std::endl;
+    std::cout << "Tipo de prestamo: " << tipoPrestamo << std::endl;
+    std::cout << "Monto: " << monto << std::endl;
+    std::cout << "Tasa de interes: " << tasaInteres << "%" << std::endl;
+    std::cout << "Plazo (meses): " << plazoMeses << std::endl;
+}
+
+// Calcula el pago mensual basado en la formula de amortizacion
+double calcularPagoMensual1(double monto, double tasaInteres, int plazoMeses) {
+    double tasaMensual = tasaInteres / 1200; // Convertir la tasa anual a mensual
+    return (monto * tasaMensual) / (1 - pow(1 + tasaMensual, -plazoMeses));
+}
+
+// Imprime la tabla de amortizacion
+void imprimirTablaAmortizacion1(double monto, double tasaInteres, int plazoMeses) {
+    std::cout << "\nTabla de amortizacion" << std::endl;
+    std::cout << "\nMes\tPago\t\tInteres\t\tPrincipal\tSaldo" << std::endl;
+    double saldo = monto;
+    double pagoTotal = 0.0;
+    double interesTotal = 0.0;
+    double principalTotal = 0.0;
+    double pagoMensual = calcularPagoMensual1(monto, tasaInteres, plazoMeses);
+    for (int mes = 1; mes <= plazoMeses; ++mes) {
+        double interes = saldo * (tasaInteres / 1200);
+        double principal = pagoMensual - interes;
+        saldo -= principal;
+        interesTotal += interes;
+        principalTotal += principal;
+        std::cout << mes << "\t" << pagoMensual << "\t\t" << interes << "\t\t" << principal << "\t\t" <<std::fixed << std::setprecision(2) << std::abs(saldo) << std::endl;
+    }
+    std::cout << "Total:\t" << " " << "\t\t" << interesTotal << "\t" << principalTotal << "\t" << std::fixed << std::setprecision(2) << std::abs(saldo) << std::endl;
+}
+
+// Imprime el menu de seleccion de tipo de prestamo
+void imprimirMenuTipo2(sqlite3 *db) {
+    std::cout << "Seleccione el tipo de prestamo:" << std::endl;
+    std::cout << "1. Credito Personal Hipotecario" << std::endl;
+    std::cout << "2. Prestamo Prendario" << std::endl;
+    std::cout << "3. Personal Back to Back" << std::endl;
+    std::cout << "4. Prestamo Vehiculo Nuevo" << std::endl;
+    std::cout << "5. Vivienda Consumo Cuota unica" << std::endl;
+
+
+    // Solicitar al usuario seleccionar el tipo de prestamo
+    int opcion;
+    std::cout << "\nIngrese el numero correspondiente al tipo de prestamo: ";
+    std::cin >> opcion;
+
+    // Mapear la opcion ingresada por el usuario al tipo de prestamo
+    std::string tipoPrestamo;
+    switch (opcion) {
+        case 1:
+            tipoPrestamo = "Credito Personal Hipotecario en Dolares (098)";
+            break;
+        case 2:
+            tipoPrestamo = "Prendario Dolares(018)";
+            break;
+        case 3:
+            tipoPrestamo = "Personal Back to Back Dolares (094)";
+            break;
+        case 4:
+            tipoPrestamo = "Vehiculo Nuevo dolares (090)";
+            break;
+        case 5:
+            tipoPrestamo = "Vivienda Consumo Cuota unica Dolares (024)";
+            break;
+        default:
+            std::cerr << "Opcion no valida" << std::endl;
+            break;
+    }
+
+    // Solicitar al usuario el monto del prestamo
+    double monto = solicitarMonto1();
+
+    // Obtener la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+    double tasaInteres = 0.0;
+    int plazoMeses = 0;
+    obtenerTasaYPlazoDesdeTabla2(db, tipoPrestamo, tasaInteres, plazoMeses);
+
+    if (tasaInteres != 0.0 && plazoMeses != 0) {
+        // Imprimir un resumen de los detalles del prestamo seleccionado
+        imprimirResumenPrestamo1(tipoPrestamo, monto, tasaInteres, plazoMeses);
+        // Imprimir la tabla de amortizacion
+        imprimirTablaAmortizacion1(monto, tasaInteres, plazoMeses);
+    }
+}
+
+// Funcion para obtener la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+void obtenerTasaYPlazoDesdeTabla2(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses) {
+    std::string consultaSQL = "SELECT Tasa_Efectiva, Plazo_Meses FROM TasasDolares WHERE Credito = '" + tipoPrestamo + "'";
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, consultaSQL.c_str(), -1, &stmt, nullptr);
+    if (rc == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            tasaInteres = sqlite3_column_double(stmt, 0);
+            plazoMeses = sqlite3_column_int(stmt, 1);
+        } else {
+            std::cerr << "No se encontro informacion para el tipo de prestamo ingresado." << std::endl;
+        }
+    } else {
+        std::cerr << "Error al ejecutar la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+    sqlite3_finalize(stmt);
+}
+
+
+
+
+
+
 
 //int main() {
 //    sqlite3 *db;
@@ -340,7 +627,7 @@ bool tablaExiste(sqlite3 *db, const std::string &nombreTabla) {
 //    }
 //
 //    if (!tablaExiste(db, "TasasColones")) {
-//        // Crear tabla para préstamos en colones
+//        // Crear tabla para prestamos en colones
 //        crearTabla1(db);
 //        insertarData1(db);
 //        selectData1(db);
@@ -350,7 +637,7 @@ bool tablaExiste(sqlite3 *db, const std::string &nombreTabla) {
 //    }
 //    
 //    if (!tablaExiste(db, "TasasDolares")) {
-//        // Crear tabla para préstamos en dólares
+//        // Crear tabla para prestamos en dolares
 //        crearDolares(db);
 //        insertarDolares(db);
 //        mostrarDolares(db);
