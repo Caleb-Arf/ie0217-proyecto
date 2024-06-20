@@ -1,4 +1,48 @@
-#include "clientes.hpp"
+#include "clientes2.hpp"
+
+Cliente::Cliente(sqlite3* db, int idCliente) : db(db), idCliente(idCliente) {}
+
+std::string Cliente::getInfo(const std::string& tabla, const std::string& dato) {
+    std::string sql = "SELECT " + dato + " FROM " + tabla + " WHERE IdCliente = " + std::to_string(idCliente) + ";";
+    sqlite3_stmt *stmt;
+    std::string info = "-1";
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            const unsigned char* text = sqlite3_column_text(stmt, 0);
+            if (text) {
+                info = reinterpret_cast<const char*>(text);
+            }
+        } else {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error en la preparación de la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    return info;
+}
+
+
+void Cliente::setInfo(const std::string& tabla, const std::string& dato, const std::string& datoActualizado) {
+    std::string sql = "UPDATE " + tabla + " SET " + dato + " = '" + datoActualizado + "' WHERE IdCliente = " + std::to_string(idCliente) + ";";
+    char *errMsg = nullptr;
+
+    int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error al actualizar el dato: " << errMsg << std::endl;
+        sqlite3_free(errMsg);
+        return;
+    }
+}
+
+
+
+
+
+
+/*#include "clientes.hpp"
 #include <iostream>
 #include <sqlite3.h>
 #include <conio.h> // Para getch(), solo en sistemas Windows
@@ -157,3 +201,4 @@ int main() {
 
     return 0;
 }
+*/
