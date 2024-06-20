@@ -1,9 +1,12 @@
 #include <iostream>
 #include "prestamos.hpp"
 #include <sqlite3.h>
-#include "tablacdp.hpp"
-#include "prestamos_colones.hpp"
-#include "prestamos_dolares.hpp"
+#include <string> // Necesario para usar std::string
+
+#include "tasas.hpp"
+#include "clientes.hpp"
+
+
 
 // Enum para el menu principal.
 enum Opciones {
@@ -15,6 +18,7 @@ enum Opciones {
 // Enum para el menu de atencion al cliente.
 enum Atencion {
     ESTADO = 1,
+    TASACDP,
     CREARCDP,
     CONSULTARCDP,
     TRANSFERENCIA,
@@ -27,40 +31,25 @@ enum Atencion {
 
 enum INFO {
     TIPOPRESTAMOS = 1,
-    TABLAINTERES,
+    TABLAINTERES1,
+    TABLAINTERES2,
     TABLAPAGOS,
     REGRESAR2
 };
-int main() {
-    int idCliente;
-    sqlite3 *db;
-    char *errMsg = 0;
-    int rc;
 
-    // Abrir una conexión a la base de datos en memoria
-    rc = sqlite3_open(":memory:", &db);
+
+int main() {
+    //acceder a tablas de tasas
+    sqlite3 *db;
+    int rc = sqlite3_open("base_de_datos.db", &db);
     if (rc) {
-        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
-        return rc;
+        std::cerr << "Error al abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+        return 1;
+    } else {
+        std::cout << "Base de datos abierta exitosamente" << std::endl;
     }
 
-    // Crear e insertar la tabla de préstamos en colones
-    crearCdp(db);
-    insertarCdp(db);
-
-    // Crear e insertar la tabla CDP
-    crearTabla1(db);
-    insertarData1(db);
-
-    // Crear e insertar la tabla CDP
-    crearDolares(db);
-    insertarDolares(db);
-
-    std::cout << "Por favor ingrese su numero de cedula: " << std::endl;
-    std::cin >> idCliente;
-
-    Prestamo prestamo1(1, 10000, 5, 12, 1, "Mensual");
-    // Comprobar si el cliente esta en la base de datos de clientIDs.
+    
     
     int opcion;
     do {
@@ -76,34 +65,41 @@ int main() {
                 int operacion;
                 do {
                     std::cout << "\n1. Consultar el estado de cuenta." << std::endl;
-                    std::cout << "2. Crear un certificado de deposito a plazo." << std::endl;
-                    std::cout << "3. Consultar certificado de deposito a plazo." << std::endl;
-                    std::cout << "4. Realizar una transferencia." << std::endl;
-                    std::cout << "5. Realizar un deposito." << std::endl;
-                    std::cout << "6. Solicitar un prestamo." << std::endl;
-                    std::cout << "7. Realizar un abono a un prestamo (existente)." << std::endl;
-                    std::cout << "8. Realizar un abono extraordinario a un prestamo (existente)." << std::endl;
-                    std::cout << "9. Regresar al menu principal." << std::endl;
+                    std::cout << "2. Tasas de un certificado de deposito a plazo." << std::endl;
+                    std::cout << "3. Crear un certificado de deposito a plazo." << std::endl;
+                    std::cout << "4. Consultar certificado de deposito a plazo." << std::endl;
+                    std::cout << "5. Realizar una transferencia." << std::endl;
+                    std::cout << "6. Realizar un deposito." << std::endl;
+                    std::cout << "7. Solicitar un prestamo." << std::endl;
+                    std::cout << "8. Realizar un abono a un prestamo (existente)." << std::endl;
+                    std::cout << "9. Realizar un abono extraordinario a un prestamo (existente)." << std::endl;
+                    std::cout << "10. Regresar al menu principal." << std::endl;
                     std::cout << "Seleccione una operacion a realizar: ";
                     std::cin >> operacion;
                     std::cout << std::endl;
 
                     switch(operacion) {
                         case ESTADO:
-                            // Logica para consultar el estado de cuenta.
-                            prestamo1.estadoPrestamo();
+
+                            break;
+                        case TASACDP:
+                            if (!tablaExiste(db, "TasasCDP")) {
+                                // Crear tabla para tasas de CDPs
+                                crearCdp(db);
+                                insertarCdp(db);
+                                printTableHeaders();
+                                mostrarTablaTasas(db);
+                            } else {
+                                printTableHeaders();
+                                mostrarTablaTasas(db);
+                            }
+                           
                             break;
                         case CREARCDP:
                             
                             break;
                         case CONSULTARCDP:
-                                if (rc) {
-                                    std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
-                                    return rc;
-                                } else {
-                                    std::cout << "Conectado a la base de datos exitosamente" << std::endl;
-                                }
-                                mostrarTablaTasas(db);
+
                                 
                             break;
                         case TRANSFERENCIA:
@@ -113,17 +109,15 @@ int main() {
                             break;
                         case SOLICITARP:
                           
-                            prestamo1.solicitarPrestamo(10000, 5, 12, 1, "Mensual");
+ 
                             break;
                         case ABONARP:
                             
-                            prestamo1.abonoPrestamo(500);
-                            prestamo1.estadoPrestamo();
+
                             break;
                         case ABONAREXTRAP:
                             
-                            prestamo1.abonoExtraordinario(1000);
-                            prestamo1.estadoPrestamo();
+
                             break;
                         case REGRESAR:
                             // Regresar al menu principal.
@@ -140,20 +134,42 @@ int main() {
                 int operacion_info;
                 do {
                     std::cout << "\n1. Tipos de prestamos" << std::endl;
-                    std::cout << "2. Tasas de interes" << std::endl;
-                    std::cout << "3. Generar tabla de pagos esperada" << std::endl;
-                    std::cout << "4. Regresar al menu principal." << std::endl;
+                    std::cout << "2. Tasas de interes colones" << std::endl;
+                    std::cout << "3. Tasas de interes dolares" << std::endl;
+                    std::cout << "4. Generar tabla de pagos esperada" << std::endl;
+                    std::cout << "5. Regresar al menu principal." << std::endl;
                     std::cout << "Seleccione una opcion: ";
                     std::cin >> operacion_info;
                     std::cout << std::endl;
 
                     switch(operacion_info) {
                         case TIPOPRESTAMOS:
-                            prestamo1.tipoPrestamo();
+                            
                             break;
-                        case TABLAINTERES:
-                            selectData1(db);
-                            mostrarDolares(db);
+                        case TABLAINTERES1:
+                            if (!tablaExiste(db, "TasasColones")) {
+                                // Crear tabla para préstamos en colones
+                                crearTabla1(db);
+                                insertarData1(db);
+                                printHeader1();
+                                selectData1(db);
+                            } else {
+                                printHeader1();
+                                selectData1(db);
+                            }
+                            break;
+                        case TABLAINTERES2:
+                            if (!tablaExiste(db, "TasasDolares")) {
+                                // Crear tabla para préstamos en dólares
+                                crearDolares(db);
+                                insertarDolares(db);
+                                printHeader2();
+                                mostrarDolares(db);
+                            } else {
+                                printHeader2();
+                                mostrarDolares(db);
+                                
+                            }
                             break;
                         case TABLAPAGOS:
                             // Logica para generar tabla de pagos esperada.
@@ -168,19 +184,22 @@ int main() {
                             std::cout << "Opcion no valida. Intente de nuevo...\n";
                             break;
                     }
-                } while(operacion_info != REGRESAR);
+                } while(operacion_info != REGRESAR2);
                 break;
             }
             case SALIR:
                 std::cout << "Saliendo del programa...\n";
+                //QUITAR DESPUES
+                //eliminarTabla1(db);
+                //eliminarDolares(db);
+                //eliminarDatosTabla(db);
+                sqlite3_close(db);
                 break;
             default:
                 std::cout << "Opcion no valida. Intente de nuevo...\n";
                 break;
         }
     } while(opcion != SALIR);
-    eliminarDatosTabla(db);
-    elimnarTabla1(db);
-    eliminarDolares(db);
     return 0;
 }
+
