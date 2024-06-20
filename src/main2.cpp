@@ -161,7 +161,7 @@ int main() {
                             break;
                         case TABLAINTERES1:
                             if (!tablaExiste(db, "TasasColones")) {
-                                // Crear tabla para préstamos en colones
+                                // Crear tabla para prestamos en colones
                                 crearTabla1(db);
                                 insertarData1(db);
                                 printHeader1();
@@ -173,7 +173,7 @@ int main() {
                             break;
                         case TABLAINTERES2:
                             if (!tablaExiste(db, "TasasDolares")) {
-                                // Crear tabla para préstamos en dólares
+                                // Crear tabla para prestamos en dolares
                                 crearDolares(db);
                                 insertarDolares(db);
                                 printHeader2();
@@ -185,12 +185,12 @@ int main() {
                             break;
                         case TABLAPAGOS:
                             // Imprimir el menu de seleccion de moneda
-                            std::cout << "Seleccione la moneda del préstamo:" << std::endl;
+                            std::cout << "Seleccione la moneda del prestamo:" << std::endl;
                             std::cout << "1. Colones" << std::endl;
-                            std::cout << "2. Dólares" << std::endl;
-                            // Solicitar al usuario seleccionar la moneda del préstamo
+                            std::cout << "2. Dolares" << std::endl;
+                            // Solicitar al usuario seleccionar la moneda del prestamo
                             int opcionMoneda;
-                            std::cout << "\nIngrese el número correspondiente a la moneda del préstamo: ";
+                            std::cout << "\nIngrese el numero correspondiente a la moneda del prestamo: ";
                             std::cin >> opcionMoneda;
                             // Mapear la opcion ingresada por el usuario a la tabla correspondiente
                             if (opcionMoneda == 1) {
@@ -200,7 +200,7 @@ int main() {
                                 tabla = "TasasDolares";
                                 imprimirMenuTipo2(db);
                             } else {
-                                std::cerr << "Opción no válida" << std::endl;
+                                std::cerr << "Opcion no valida" << std::endl;
                                 break;
                             }
                             break;
