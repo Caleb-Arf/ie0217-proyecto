@@ -103,7 +103,7 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
 //Imprime encabezados
 void printTableHeaders() {
     std::cout << std::setw(40) << std::setfill(' ') << "Tasas de CDPs" << std::endl << std::endl;
-    std::cout << std::setw(10) << " " << " | "
+    std::cout << std::setw(10) << "Id" << " | "
               << std::setw(15) << "Plazo en meses" << " | "
               << std::setw(12) << "Tasa en bolsa" << " | "
               << std::setw(12) << "Tasa en banco" << std::endl;
@@ -117,7 +117,7 @@ void printTableHeaders() {
 void crearCdp(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS TasasCDP ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "id INTEGER PRIMARY KEY UNIQUE,"
         "plazo TEXT,"
         "fisico_negociable_en_bolsa REAL,"
         "negociable_en_banco REAL"
@@ -136,28 +136,28 @@ void crearCdp(sqlite3 *db) {
 // Inserta datos en la tabla Tasas CDP
 void insertarCdp(sqlite3 *db) {
     const char *sql_insert_data = 
-        "INSERT INTO TasasCDP (plazo, fisico_negociable_en_bolsa, negociable_en_banco) VALUES"
-        "('1-6', NULL, 0.0018),"
-        "('7-13', NULL, 0.0020),"
-        "('14-20', NULL, 0.0062),"
-        "('21-29', NULL, 0.0121),"
-        "('30-59', 0.0301, 0.0311),"
-        "('60-80', 0.0345, 0.0355),"
-        "('90-119', 0.0388, 0.0398),"
-        "('120-149', 0.0453, 0.0463),"
-        "('150-179', 0.0501, 0.0511),"
-        "('180*-209', 0.0519, 0.0529),"
-        "('210-239', 0.0519, 0.0529),"
-        "('240-269', 0.0544, 0.0554),"
-        "('270-299', 0.0545, 0.0555),"
-        "('300-329', 0.0549, 0.0559),"
-        "('330-359', 0.0554, 0.0564),"
-        "('360-539', 0.0559, 0.0569),"
-        "('540-719', 0.0569, 0.0579),"
-        "('720-1079', 0.0604, 0.0614),"
-        "('1080-1439', 0.0624, 0.0634),"
-        "('1440-1799', 0.0638, 0.0648),"
-        "('De 1800', 0.0652, 0.0662);";
+        "INSERT INTO TasasCDP (id, plazo, fisico_negociable_en_bolsa, negociable_en_banco) VALUES"
+        "(101, '1-6', NULL, 0.0018),"
+        "(102, '7-13', NULL, 0.0020),"
+        "(103, '14-20', NULL, 0.0062),"
+        "(104, '21-29', NULL, 0.0121),"
+        "(105, '30-59', 0.0301, 0.0311),"
+        "(106, '60-80', 0.0345, 0.0355),"
+        "(107, '90-119', 0.0388, 0.0398),"
+        "(108, '120-149', 0.0453, 0.0463),"
+        "(109, '150-179', 0.0501, 0.0511),"
+        "(110, '180*-209', 0.0519, 0.0529),"
+        "(111, '210-239', 0.0519, 0.0529),"
+        "(112, '240-269', 0.0544, 0.0554),"
+        "(113, '270-299', 0.0545, 0.0555),"
+        "(114, '300-329', 0.0549, 0.0559),"
+        "(115, '330-359', 0.0554, 0.0564),"
+        "(116, '360-539', 0.0559, 0.0569),"
+        "(117, '540-719', 0.0569, 0.0579),"
+        "(118, '720-1079', 0.0604, 0.0614),"
+        "(119, '1080-1439', 0.0624, 0.0634),"
+        "(120, '1440-1799', 0.0638, 0.0648),"
+        "(121, 'De 1800', 0.0652, 0.0662);";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
@@ -200,10 +200,10 @@ void eliminarDatosTabla(sqlite3 *db) {
 // Callback para impresion de tabla de Tasas en colones
 static int callback1(void *data, int argc, char **argv, char **azColName) {
  // Imprime los datos de la tabla.
-    std::cout << std::setw(55) << (argv[0] ? argv[0] : "NULL") << " | "
-              << std::setw(15) << (argv[1] ? argv[1] : "NULL") << " | "
-              << std::setw(12) << (argv[2] ? argv[2] : "NULL") << " | "
-              << std::setw(10) << (argv[3] ? argv[3] : "NULL") << std::endl;
+    std::cout << std::setw(55) << (argv[1] ? argv[1] : "NULL") << " | "
+              << std::setw(15) << (argv[2] ? argv[2] : "NULL") << " | "
+              << std::setw(12) << (argv[3] ? argv[3] : "NULL") << " | "
+              << std::setw(10) << (argv[4] ? argv[4] : "NULL") << std::endl;
     
     return 0;
 }
@@ -230,6 +230,7 @@ void printHeader1() {
 void crearTabla1(sqlite3 *db) {
     const char* createTableSQL = R"(
         CREATE TABLE IF NOT EXISTS TasasColones (
+            id INTEGER PRIMARY KEY UNIQUE,
             Credito TEXT,
             Tasa_Efectiva REAL,
             Plazo_Meses INTEGER,
@@ -250,15 +251,16 @@ void crearTabla1(sqlite3 *db) {
 // Inserta datos en la tabla Tasas en colones
 void insertarData1(sqlite3 *db) {
     const char* insertDataSQL = R"(
-        INSERT INTO TasasColones (Credito, Tasa_Efectiva, Plazo_Meses, Cuota_Millon) VALUES
-        ('Credito Personal Hipotecario colones (012)', 19.36, 240, '12281.84'),
-        ('Prendario colones(014)', 10.50, 96, '7580'),
-        ('Personal Back to Back Colones (093)', 11.51, 180, '11688.26'),
-        ('Vehiculo Nuevo colones (041)', 16.03, 96, '17910.7'),
-        ('Vivienda Consumo Cuota unica colones (024)', 13.85, 360, '8827.17'),
-        ('Fiduciaria a corto plazo (070)', 18.85, 60, '25425.43'),
-        ('Cancelacion de Pasivos - atraccion de clientes (059)', 17.85, 168, '16210.44');
+        INSERT INTO TasasColones (id, Credito, Tasa_Efectiva, Plazo_Meses, Cuota_Millon) VALUES
+        (012, 'Credito Personal Hipotecario colones (012)', 19.36, 240, 12281.84),
+        (014, 'Prendario colones(014)', 10.50, 96, 7580.00),
+        (093, 'Personal Back to Back Colones (093)', 11.51, 180, 11688.26),
+        (041, 'Vehiculo Nuevo colones (041)', 16.03, 96, 17910.70),
+        (024, 'Vivienda Consumo Cuota unica colones (024)', 13.85, 360, 8827.17),
+        (070, 'Fiduciaria a corto plazo (070)', 18.85, 60, 25425.43),
+        (059, 'Cancelacion de Pasivos - atraccion de clientes (059)', 17.85, 168, 16210.44);
     )";
+    
     
     char *errMsg = nullptr;
     int rc = sqlite3_exec(db, insertDataSQL, 0, 0, &errMsg);
@@ -299,10 +301,10 @@ void eliminarTabla1(sqlite3 *db) {
 // Callback para impresion de tabla de Tasas en dolares
 static int callback3(void *data, int argc, char **argv, char **azColName) {  
     // Imprime los datos de la tabla.
-    std::cout << std::setw(55) << (argv[0] ? argv[0] : "NULL") << " | "
-              << std::setw(15) << (argv[1] ? argv[1] : "NULL") << " | "
-              << std::setw(12) << (argv[2] ? argv[2] : "NULL") << " | "
-              << std::setw(10) << (argv[3] ? argv[3] : "NULL") << std::endl;
+    std::cout << std::setw(55) << (argv[1] ? argv[1] : "NULL") << " | "
+              << std::setw(15) << (argv[2] ? argv[2] : "NULL") << " | "
+              << std::setw(12) << (argv[3] ? argv[3] : "NULL") << " | "
+              << std::setw(10) << (argv[4] ? argv[4] : "NULL") << std::endl;
     
     return 0;
 }
@@ -329,6 +331,7 @@ void printHeader2() {
 void crearDolares(sqlite3 *db) {
     const char* createTableSQL = R"(
         CREATE TABLE IF NOT EXISTS TasasDolares (
+            id INTEGER PRIMARY KEY,
             Credito TEXT,
             Tasa_Efectiva REAL,
             Plazo_Meses INTEGER,
@@ -349,12 +352,12 @@ void crearDolares(sqlite3 *db) {
 // Inserta datos en la tabla Tasas en dolares
 void insertarDolares(sqlite3 *db) {
     const char* insertDataSQL = R"(
-        INSERT INTO TasasDolares (Credito, Tasa_Efectiva, Plazo_Meses, Cuota_USD) VALUES
-        ('Credito Personal Hipotecario en Dolares (098)', 18.79, 180, 9.84),
-        ('Prendario Dolares(018)', 12.91, 360, 6.65),
-        ('Personal Back to Back Dolares (094)', 14.80, 180, 7.80),
-        ('Vehiculo Nuevo dolares (090)', 16.75, 96, 18.30),
-        ('Vivienda Consumo Cuota unica Dolares (024)', 14.18, 360, 7.17);
+        INSERT INTO TasasDolares (id, Credito, Tasa_Efectiva, Plazo_Meses, Cuota_USD) VALUES
+        (098, 'Credito Personal Hipotecario en Dolares (098)', 18.79, 180, 9.84),
+        (018, 'Prendario Dolares(018)', 12.91, 360, 6.65),
+        (094, 'Personal Back to Back Dolares (094)', 14.80, 180, 7.80),
+        (090, 'Vehiculo Nuevo dolares (090)', 16.75, 96, 18.30),
+        (024, 'Vivienda Consumo Cuota unica Dolares (024)', 14.18, 360, 7.17);
     )";
     
     char *errMsg = nullptr;
