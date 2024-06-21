@@ -27,10 +27,7 @@ int crearTablaClientes(sqlite3 *db) {
     return SQLITE_OK;
 }
 
-// Función para generar un valor aleatorio de "Colones" o "Dolares"
-const char* generarCuenta() {
-    return (rand() % 2 == 0) ? "Colones" : "Dolares";
-}
+
 
 // Función para insertar datos en la tabla de clientes
 int insertarDatosClientes(sqlite3 *db) {
