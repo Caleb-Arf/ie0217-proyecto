@@ -1,8 +1,12 @@
 #include "clientes2.hpp"
 
-Cliente::Cliente(sqlite3* db, int idCliente) : db(db), idCliente(idCliente) {}
+Cliente::Cliente(sqlite3* db, const int idCliente) : db(db), idCliente(idCliente) {}
 
-std::string Cliente::getInfo(const std::string& tabla, const std::string& dato) {
+int Cliente::getIdCliente() const {
+    return idCliente;
+}
+
+std::string Cliente::getInfo(const std::string& tabla, const std::string& dato, int idCliente) {   
     std::string sql = "SELECT " + dato + " FROM " + tabla + " WHERE IdCliente = " + std::to_string(idCliente) + ";";
     sqlite3_stmt *stmt;
     std::string info = "-1";
@@ -25,7 +29,7 @@ std::string Cliente::getInfo(const std::string& tabla, const std::string& dato) 
 }
 
 
-void Cliente::setInfo(const std::string& tabla, const std::string& dato, const std::string& datoActualizado) {
+void Cliente::setInfo(const std::string& tabla, const std::string& dato, const std::string& datoActualizado, int idCliente) {
     std::string sql = "UPDATE " + tabla + " SET " + dato + " = '" + datoActualizado + "' WHERE IdCliente = " + std::to_string(idCliente) + ";";
     char *errMsg = nullptr;
 

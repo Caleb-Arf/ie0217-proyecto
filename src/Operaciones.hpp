@@ -1,18 +1,17 @@
 #ifndef OPERACIONES_HPP
 #define OPERACIONES_HPP
 
-#include <sqlite3.h>
-#include "funciones.hpp"
+#include "sqlite3.h"
+#include "clientes2.hpp" 
+
 class Operacion {
 private:
     sqlite3* db;
-    int idCliente;
+    Cliente* cliente;  
 
 public:
-    Operacion(sqlite3* db, int idCliente);
-
+    Operacion(sqlite3* db, Cliente* cliente);
     void transferencia(double montoTransferencia, int idDestino);
-    
     void deposito(double montoDeposito);
 };
 
