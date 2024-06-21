@@ -49,12 +49,26 @@ int main() {
         std::cout << "Base de datos abierta exitosamente" << std::endl;
     }
 
+    //se crean las tablas solo si no existen
+    if (!tablaExiste(db, "Clientes")) {
+    crearTablaClientes(db);
+    insertarDatosClientes(db);
+    }
+
+    if (!tablaExiste(db, "TasasCDP")) {
     crearTabla1(db);
     insertarData1(db);
+    }
+    
+    if (!tablaExiste(db, "TasasDolares")) {
     crearDolares(db);
     insertarDolares(db);
+    }
+    
+    if (!tablaExiste(db, "TasasColones")) {
     crearCdp(db);
     insertarCdp(db);
+    }
 
 
     std::string tabla;
