@@ -70,6 +70,11 @@ int main() {
     insertarCdp(db);
     }
 
+    if (!tablaExiste(db, "Clientes")) {
+    crearTablaClientes(db);
+    insertarDatosClientes(db) ;
+    }
+    buscarCedula(db);
 
     std::string tabla;
     int opcion;
