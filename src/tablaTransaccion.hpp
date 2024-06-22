@@ -76,16 +76,16 @@ void imprimirInfoTransaccion(sqlite3 *db, const std::string &cedula) {
         sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             std::string idCliente = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-            std::string cedula = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-            std::string fechaTransaccion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            std::string hora = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-            std::string idTransaccion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-            double saldoBalance = sqlite3_column_double(stmt, 4);
-            std::string detalle = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
-            std::string credito = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
-            std::string debito = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
-            std::string cuentaOrigen = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
-            std::string cuentaDestino = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
+            std::string cedula = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            std::string fechaTransaccion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            std::string hora = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+            std::string idTransaccion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+            double saldoBalance = sqlite3_column_double(stmt, 5);
+            std::string detalle = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
+            std::string credito = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
+            std::string debito = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
+            std::string cuentaOrigen = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
+            std::string cuentaDestino = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10));
             std::cout << "IdCliente: " << idCliente << "\nCedula: " << cedula << "\nFechaTransaccion: " << fechaTransaccion << "\nHora: " << hora << "\nIdTransaccion: " << idTransaccion << "\nSaldoBalance: " << saldoBalance << "\nDetalle: " << 
             detalle << "\n:" << credito << "\n:" << debito << "\n:" << cuentaOrigen << "\n:" << cuentaDestino << std::endl;
         }
