@@ -85,17 +85,17 @@ void imprimirInfoTransaccion(sqlite3 *db, const std::string &cedula) {
             std::string Cedula = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
             std::string FechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
             std::string Divisa = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
-            std::string FechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+            std::string FechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
             std::string TipoPrestamo = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
-            std::string MontoTotalPrestamo = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
-            std::string TasaInteresP = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
+            double MontoTotalPrestamo = sqlite3_column_double(stmt, 7);
+            double TasaInteresP = sqlite3_column_double(stmt, 8);
             std::string CuotasTotales = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
             std::string CuotasPagadas = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10));
             std::string CuotasFaltantes = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 11));
             std::string DiasVencidos = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 12));
             std::string DiasVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 13));
-            std::string SaldoPrestamo = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 14));
-            std::string MontoCuota = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 15));
+            double SaldoPrestamo = sqlite3_column_double(stmt, 14);
+            double MontoCuota = sqlite3_column_double(stmt, 15);
             std::cout << "idCliente: " << idCliente << "\nIdPrestamo: " << IdPrestamo << "\nCedula: " << Cedula << "\nFechaCreacion: " << FechaCreacion << "\nDivisa: " << Divisa << "\nFechaVencimiento: " << 
             FechaVencimiento << "\nTipoPrestamo:" << TipoPrestamo << "\nMontoTotalPrestamo:" << MontoTotalPrestamo << "\nTasaInteresP:" << TasaInteresP << "\nCuotasTotales:" << CuotasTotales <<
             "\nCuotasPagadas:" << CuotasPagadas << "\nCuotasFaltantes: " << CuotasFaltantes << "\nDiasVencidos: " << DiasVencidos << "\nDiasVencimiento: " << DiasVencimiento << 
