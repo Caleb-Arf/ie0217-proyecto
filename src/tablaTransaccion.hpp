@@ -87,7 +87,7 @@ void imprimirInfoTransaccion(sqlite3 *db, const std::string &cedula) {
             std::string cuentaOrigen = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
             std::string cuentaDestino = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10));
             std::cout << "IdCliente: " << idCliente << "\nCedula: " << cedula << "\nFechaTransaccion: " << fechaTransaccion << "\nHora: " << hora << "\nIdTransaccion: " << idTransaccion << "\nSaldoBalance: " << saldoBalance << "\nDetalle: " << 
-            detalle << "\n:" << credito << "\n:" << debito << "\n:" << cuentaOrigen << "\n:" << cuentaDestino << std::endl;
+            detalle << "\nCredito:" << credito << "\nDebito:" << debito << "\nCuenta Origen:" << cuentaOrigen << "\nCuenta Destino:" << cuentaDestino << std::endl;
         }
         sqlite3_finalize(stmt);
     } else {
