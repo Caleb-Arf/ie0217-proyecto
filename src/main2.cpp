@@ -1,3 +1,6 @@
+//COMANDO PARA COMPILAR (Actualizar con cada commit para facilitar el trabajo).
+//g++ -o prestamo main2.cpp prestamos.cpp clientes2.cpp Operaciones.cpp -lsqlite3
+
 #include <iostream>
 #include "prestamos.hpp"
 #include <sqlite3.h>
@@ -5,6 +8,8 @@
 
 #include "tasas.hpp"
 #include "clientes.hpp"
+#include "clientes2.hpp"
+#include "Operaciones.hpp"
 
 
 
@@ -88,6 +93,14 @@ int main() {
         
         switch(opcion) {
             case ATENCION: {
+
+                int identificador; 
+                std::cout << "Ingrese el numero de cedula o ID de cliente: ";
+                std::cin >> identificador;
+                //verificar el identificador para crear el cliente
+                //se crea el cliente con la info validada
+                Cliente cliente(db, identificador);
+                Operacion ejecutar(db, &cliente);
                 int operacion;
                 do {
                     std::cout << "\n1. Consultar el estado de cuenta." << std::endl;
@@ -129,9 +142,24 @@ int main() {
                                 
                             break;
                         case TRANSFERENCIA:
+                            int idDestino;
+                            std::cout << "Ingrese el ID de cuenta al cual desea realizar la transferencia: ";
+                            std::cin >> idDestino;
+
+                            double montoTransferencia;
+                            std::cout << "Ingrese el monto para realizar la transferencia: ";
+                            std::cin >> montoTransferencia;
+
+                            ejecutar.transferencia(montoTransferencia, idDestino);
                             
                             break;
                         case DEPOSITO:
+                            double montoDeposito;
+                            std::cout << "Ingrese el monto para realizar el deposito: ";
+                            std::cin >> montoDeposito;
+
+                            ejecutar.deposito(montoDeposito);
+
                             break;
                         case SOLICITARP:
                           
