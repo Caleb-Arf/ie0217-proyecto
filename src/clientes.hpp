@@ -1,3 +1,4 @@
+//g++ -o prestamo main2.cpp prestamos.cpp -lsqlite3
 #include <iostream>
 #include <string>
 #include <regex>
