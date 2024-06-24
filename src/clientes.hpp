@@ -293,7 +293,7 @@ void agregarNuevoCliente(sqlite3 *db) {
 void buscarCedula(sqlite3 *db) {
     std::string cedula;
     while (true) {
-        std::cout << "/n------Verificacion de cedula------/n";
+        std::cout << "\n------Verificacion de cedula------\n";
         std::cout << "Ingrese la cedula (9 numeros o 0 para salir): ";
         std::cin >> cedula;
         if (cedula == "0") {

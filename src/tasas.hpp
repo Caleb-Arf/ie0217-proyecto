@@ -12,7 +12,7 @@ void obtenerTasaYPlazoDesdeTabla2(sqlite3 *db, const std::string& tipoPrestamo, 
 
 // Crea la base de datos de tipos de prestamos
 void crearInfoPrestamos(sqlite3* db) {
-    const char *sql_create_table = "CREATE TABLE Prestamos ("
+    const char *sql_create_table = "CREATE TABLE DescripcionPrestamos ("
                                    "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                                    "Tipo TEXT NOT NULL,"
                                    "Descripcion TEXT NOT NULL);";
@@ -29,7 +29,7 @@ void crearInfoPrestamos(sqlite3* db) {
 
 // Funcion auxiliar para insertar datos
 void insertarPrestamo(sqlite3* db, const char* tipo, const char* descripcion) {
-    const char *sql_insert = "INSERT INTO Prestamos (Tipo, Descripcion) VALUES (?, ?);";
+    const char *sql_insert = "INSERT INTO DescripcionPrestamos (Tipo, Descripcion) VALUES (?, ?);";
     sqlite3_stmt *stmt;
     
     int rc = sqlite3_prepare_v2(db, sql_insert, -1, &stmt, nullptr);
@@ -62,7 +62,7 @@ void insertarDatosPrestamos(sqlite3* db) {
 
 // Imprime los datos de la tabla de tipos de prestamos
 void imprimirDatosPrestamos(sqlite3* db) {
-    const char* consultaSQL = "SELECT * FROM Prestamos;";
+    const char* consultaSQL = "SELECT * FROM DescripcionPrestamos;";
     sqlite3_stmt* declaracion;
 
     int rc = sqlite3_prepare_v2(db, consultaSQL, -1, &declaracion, nullptr);

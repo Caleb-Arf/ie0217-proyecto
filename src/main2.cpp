@@ -55,10 +55,6 @@ int main() {
     }
 
     //se crean las tablas solo si no existen
-    if (!tablaExiste(db, "Clientes")) {
-    crearTablaClientes(db);
-    insertarDatosClientes(db);
-    }
 
     if (!tablaExiste(db, "TasasCDP")) {
     crearTabla1(db);
@@ -93,7 +89,8 @@ int main() {
         
         switch(opcion) {
             case ATENCION: {
-
+                //ponerlo en un while para la validacion
+                //agregar cliente
                 int identificador; 
                 std::cout << "Ingrese el numero de cedula o ID de cliente: ";
                 std::cin >> identificador;
