@@ -10,6 +10,9 @@
 #include "clientes.hpp"
 #include "clientes2.hpp"
 #include "Operaciones.hpp"
+#include "tablacdpOtra.hpp"
+#include "tablaPrestamosOtra.hpp"
+#include "tablaTransaccionOtra.hpp"
 
 
 
@@ -76,6 +79,21 @@ int main() {
     insertarDatosClientes(db) ;
     }
     buscarCedula(db);
+
+    if (!tablaExiste(db, "tablaTransacciones")) {
+    crearTablaTransacciones(db);
+    insertarTransacciones(db) ;
+    }
+
+    if (!tablaExiste(db, "tablaPrestamos")) {
+    crearTablaPrestamos(db);
+    insertarPrestamos(db) ;
+    }
+
+    if (!tablaExiste(db, "tablaCDP")) {
+    crearTablaCDP(db);
+    insertarCDP(db) ;
+    }
 
     std::string tabla;
     int opcion;
@@ -276,4 +294,3 @@ int main() {
     } while(opcion != SALIR);
     return 0;
 }
-
