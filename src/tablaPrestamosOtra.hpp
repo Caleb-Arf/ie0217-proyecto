@@ -17,8 +17,8 @@ int ejecutarSQL(sqlite3* db, const std::string& consulta) {
 }
 
 
-// Callback para impresion de tabla de transacciones
-static int callbackT(void *data, int argc, char **argv, char **azColName) {
+// Callback para impresion de tabla de préstamos
+static int callbackP(void *data, int argc, char **argv, char **azColName) {
     // Imprime los datos de la tabla.
     std::cout << std::setw(10) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(10) << (argv[1] ? argv[1] : "NULL") << " | "
@@ -30,7 +30,12 @@ static int callbackT(void *data, int argc, char **argv, char **azColName) {
               << std::setw(12) << (argv[7] ? argv[7] : "NULL") << " | "
               << std::setw(15) << (argv[8] ? argv[8] : "NULL") << " | "
               << std::setw(12) << (argv[9] ? argv[9] : "NULL") << " | "
-              << std::setw(12) << (argv[10] ? argv[10] : "NULL") << std::endl;
+              << std::setw(12) << (argv[10] ? argv[10] : "NULL") << " | "
+              << std::setw(12) << (argv[11] ? argv[11] : "NULL") << " | "
+              << std::setw(12) << (argv[12] ? argv[12] : "NULL") << " | "
+              << std::setw(12) << (argv[13] ? argv[13] : "NULL") << " | "
+              << std::setw(12) << (argv[14] ? argv[14] : "NULL") << " | "
+              << std::setw(12) << (argv[15] ? argv[15] : "NULL") << std::endl;
     return 0;
 }
 
@@ -38,16 +43,21 @@ static int callbackT(void *data, int argc, char **argv, char **azColName) {
 void printTableHeadersTransaccion() {
     std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
     std::cout << std::setw(10) << "IdCliente" << " | "
-              << std::setw(15) << "Cedula" << " | "
-              << std::setw(12) << "FechaTransaccion" << " | "
-              << std::setw(12) << "Hora" << " | "
-              << std::setw(12) << "IdTransaccion" << " | "
-              << std::setw(15) << "SaldoBalance" << " | "
-              << std::setw(40) << "Detalle" << " | "
-              << std::setw(15) << "Credito" << " | "
-              << std::setw(15) << "Debito" << " | "
-              << std::setw(15) << "CuentaOrigen" << " | "
-              << std::setw(15) << "CuentaDestino" << std::endl;
+              << std::setw(15) << "IdPrestamo" << " | "
+              << std::setw(12) << "Cedula" << " | "
+              << std::setw(12) << "FechaCreacion" << " | "
+              << std::setw(12) << "Divisa" << " | "
+              << std::setw(15) << "FechaVencimiento" << " | "
+              << std::setw(40) << "TipoPrestamo" << " | "
+              << std::setw(15) << "MontoTotalPrestamo" << " | "
+              << std::setw(15) << "TasaInteresP" << " | "
+              << std::setw(15) << "CuotasTotales" << " | "
+              << std::setw(15) << "CuotasPagadas" << " | "
+              << std::setw(15) << "CuotasFaltantes" << " | "
+              << std::setw(15) << "DiasVencidos" << " | "
+              << std::setw(15) << "DiasVencimiento" << " | "
+              << std::setw(15) << "SaldoPrestamo" << " | "
+              << std::setw(15) << "MontoCuota" << std::endl;
     std::cout << std::string(10, '-') << " | "
               << std::string(10, '-') << " | "
               << std::string(15, '-') << " | "
@@ -58,24 +68,34 @@ void printTableHeadersTransaccion() {
               << std::string(10, '-') << " | "
               << std::string(15, '-') << " | "
               << std::string(12, '-') << " | "
+              << std::string(10, '-') << " | "
+              << std::string(15, '-') << " | "
+              << std::string(12, '-') << " | "
+              << std::string(10, '-') << " | "
+              << std::string(15, '-') << " | "
               << std::string(12, '-') << std::endl;
 }
 
-// Crea la tabla transacciones 
-void crearTablaTransacciones(sqlite3 *db) {
+// Crea la tabla prestamos 
+void crearTablaPrestamos(sqlite3 *db) {
     const char *sql_create_table = 
-        "CREATE TABLE IF NOT EXISTS tablaTransacciones ("
+        "CREATE TABLE IF NOT EXISTS tablaPrestamos ("
                            "IdCliente INTEGER,"
+                           "IdPrestamo INTEGER PRIMARY KEY,"
                            "Cedula TEXT,"
-                           "FechaTransaccion TEXT,"
-                           "Hora TEXT,"
-                           "IdTransaccion INTEGER PRIMARY KEY,"
-                           "SaldoBalance REAL,"
-                           "Detalle TEXT,"
-                           "Credito REAL,"
-                           "Debito REAL,"
-                           "CuentaOrigen TEXT,"
-                           "CuentaDestino TEXT"
+                           "FechaCreacion TEXT,"
+                           "Divisa TEXT,"
+                           "FechaVencimiento TEXT,"
+                           "TipoPrestamo TEXT,"
+                           "MontoTotalPrestamo REAL,"
+                           "TasaInteresP REAL,"
+                           "CuotasTotales INTEGER,"
+                           "CuotasPagadas INTEGER,"
+                           "CuotasFaltantes INTEGER,"
+                           "DiasVencidos INTEGER,"
+                           "DiasVencimiento INTEGER,"
+                           "SaldoPrestamo REAL,"
+                           "MontoCuota REAL"
                            ")";
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_create_table, 0, 0, &err_msg);
@@ -88,11 +108,11 @@ void crearTablaTransacciones(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla Tasas CDP
-void insertarTransacciones(sqlite3 *db) {
+// Inserta datos en la tabla prestamos
+void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = 
-        "INSERT INTO tablaTransacciones (IdCliente, Cedula, FechaTransaccion, Hora, IdTransaccion, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino) VALUES"
-        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),";
+        "INSERT INTO tablaTransacciones (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES"
+        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
@@ -105,11 +125,11 @@ void insertarTransacciones(sqlite3 *db) {
     }
 }
 
-// Selecciona y muestra datos de la tabla transacciones
-void mostrarTablaTransacciones(sqlite3 *db) {
-    const char *sql = "SELECT * FROM tablaTransacciones";
+// Selecciona y muestra datos de la tabla prestamos
+void mostrarTablaPrestamos(sqlite3 *db) {
+    const char *sql = "SELECT * FROM tablaPrestamos";
     char *err_msg = nullptr;
-    int rc = sqlite3_exec(db, sql, callbackT, nullptr, &err_msg);
+    int rc = sqlite3_exec(db, sql, callbackP, nullptr, &err_msg);
     if (rc != SQLITE_OK) {
         std::cerr << "Error ejecutando la consulta: " << err_msg << std::endl;
         sqlite3_free(err_msg);
@@ -118,9 +138,9 @@ void mostrarTablaTransacciones(sqlite3 *db) {
     }
 }
 
-// Elimina la tabla Tasas  CDP
-void eliminarDatosTransacciones(sqlite3 *db) {
-    const char *sql_delete_data = "DELETE FROM tablaTransacciones";
+// Elimina la tabla prestamos
+void eliminarDatosPrestamos(sqlite3 *db) {
+    const char *sql_delete_data = "DELETE FROM tablaPrestamos";
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_delete_data, 0, 0, &err_msg);
     if (rc != SQLITE_OK) {
@@ -130,7 +150,6 @@ void eliminarDatosTransacciones(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
-
 /*
 int main() {
     sqlite3* db;
@@ -141,7 +160,7 @@ int main() {
         return resultado;
     }
 
-    crearTablaTransacciones(db);
+    crearTablaPrestamos(db);
 
     sqlite3_close(db);
     return 0;
