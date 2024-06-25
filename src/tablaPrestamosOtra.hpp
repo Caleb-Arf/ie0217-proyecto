@@ -6,7 +6,7 @@
 #include <vector>
 
 // Función para ejecutar consultas SQL
-int ejecutarSQL(sqlite3* db, const std::string& consulta) {
+int ejecutarSqlPrestamos(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
     if (resultado != SQLITE_OK) {
@@ -40,7 +40,7 @@ static int callbackP(void *data, int argc, char **argv, char **azColName) {
 }
 
 //Imprime encabezados
-void printTableHeadersTransaccion() {
+void printTableHeadersPrestamos() {
     std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
     std::cout << std::setw(10) << "IdCliente" << " | "
               << std::setw(15) << "IdPrestamo" << " | "

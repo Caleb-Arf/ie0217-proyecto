@@ -6,7 +6,7 @@
 #include <vector>
 
 // Función para ejecutar consultas SQL
-int ejecutarSQL(sqlite3* db, const std::string& consulta) {
+int ejecutarSqlCdp(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
     if (resultado != SQLITE_OK) {
