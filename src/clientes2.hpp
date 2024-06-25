@@ -11,10 +11,12 @@ private:
     int idCliente;
 
 public:
-    Cliente(sqlite3* db, int idCliente);
-    std::string getInfo(const std::string& tabla, const std::string& dato, int idCliente);
-    void setInfo(const std::string& tabla, const std::string& dato, const std::string& datoActualizado, int idCliente);
     int getIdCliente() const;
+    Cliente(sqlite3* db, int idCliente);
+    std::string getInfoClientes(const std::string& tabla, const std::string& dato, int idCliente);
+    void setInfoClientes(const std::string& tabla, const std::string& dato, const std::string& datoActualizado, int idCliente);
+    std::string getInfoInteres(const std::string& tabla, const std::string& dato, int id);
+    
 };
 
 #endif // CLIENTES_HPP
