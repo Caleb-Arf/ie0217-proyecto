@@ -13,7 +13,7 @@ public:
     Operacion(sqlite3* db, Cliente* cliente);
     void transferencia(double montoTransferencia, int idDestino);
     void deposito(double montoDeposito);
-    void crearPrestamo(sqlite3 *db, Cliente* cliente);
+    void crearPrestamo();
 };
 
 #endif // OPERACIONES_HPP

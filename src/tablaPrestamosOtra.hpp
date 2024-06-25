@@ -111,8 +111,7 @@ void crearTablaPrestamos(sqlite3 *db) {
 // Inserta datos en la tabla prestamos
 void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = 
-        "INSERT INTO tablaTransacciones (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES"
-        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),";
+        "INSERT INTO tablaTransacciones (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);

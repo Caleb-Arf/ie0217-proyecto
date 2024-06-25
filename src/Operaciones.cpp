@@ -37,8 +37,8 @@ void Operacion::deposito(double montoDeposito) {
     cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalance), cliente->getIdCliente());
 }
 
-void crearPrestamo(sqlite3 *db, Cliente* cliente) {
-    std::string idPrestamo; // Falta realizar metodo para generar id de prestamos
+void Operacion::crearPrestamo() {
+    int idPrestamo = 111111; // Falta realizar metodo para generar id de prestamos
     std::string cedula = cliente->getInfoClientes("Clientes", "Cedula", cliente->getIdCliente());
     
     // Toma la fecha actual, tambien es posible encontrar la hora exacta de la misma forma
@@ -202,26 +202,37 @@ void crearPrestamo(sqlite3 *db, Cliente* cliente) {
     // cuotas faltantes
     int cuotasFaltantes = cuotasTotales - cuotasPagadas;
 
-    std::string sql = "INSERT INTO tablaPrestamos (IdCliente, IdPrestamo, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotal, TasaInteres, CuotasTotales, CuotasPagadas, CuotasFaltantes, Columna12, Columna13, Columna14, Columna15) VALUES (";
-    sql += std::to_string(cliente->getIdCliente()) + ", ";
-    sql += "'" + idPrestamo + "', ";
-    sql += "'" + fechaCreacion + "', ";
-    sql += "'" + divisa + "', ";
-    sql += "'" + fechaVencimiento + "', ";
-    sql += "'" + tipoPrestamo + "', ";
-    sql += std::to_string(montoTotal) + ", ";
-    sql += std::to_string(tasaInteres) + ", ";
-    sql += std::to_string(cuotasTotales) + ", ";
-    sql += std::to_string(cuotasPagadas) + ", ";
-    sql += std::to_string(cuotasFaltantes) + ", ";
-    sql += "0, 0, 0, 0);";
-
-    // Ejecutar la sentencia SQL
-    char *errMsg = nullptr;
-    int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg);
-    if (rc != SQLITE_OK) {
-        std::cerr << "Error al insertar el dato: " << errMsg << std::endl;
-        sqlite3_free(errMsg);
+    // Construcción de la sentencia SQL
+    std::string sql = "INSERT INTO tablaPrestamos (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
         return;
     }
+
+    sqlite3_bind_int(stmt, 1, cliente->getIdCliente());
+    sqlite3_bind_int(stmt, 2, idPrestamo);
+    sqlite3_bind_text(stmt, 3, cedula.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 4, fechaCreacion.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, divisa.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 6, fechaVencimiento.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 7, tipoPrestamo.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 8, montoTotal);
+    sqlite3_bind_double(stmt, 9, tasaInteres);
+    sqlite3_bind_int(stmt, 10, cuotasTotales);
+    sqlite3_bind_int(stmt, 11, cuotasPagadas);
+    sqlite3_bind_int(stmt, 12, cuotasFaltantes);
+    sqlite3_bind_int(stmt, 13, 0);
+    sqlite3_bind_int(stmt, 14, 0);
+    sqlite3_bind_double(stmt, 15, 0);
+    sqlite3_bind_double(stmt, 16, 0);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
+    } else {
+        std::cout << "Prestamo agregado exitosamente." << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
 }
+

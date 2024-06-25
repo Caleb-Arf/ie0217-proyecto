@@ -177,7 +177,7 @@ int main() {
 
                             break;
                         case SOLICITARP:
-                          
+                            ejecutar.crearPrestamo();  
  
                             break;
                         case ABONARP:
