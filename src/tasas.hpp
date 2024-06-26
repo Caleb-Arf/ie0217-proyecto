@@ -95,7 +95,7 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
     // Imprime los datos de la tabla.
     std::cout << std::setw(10) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(15) << (argv[1] ? argv[1] : "NULL") << " | "
-              << std::setw(12) << (argv[2] ? argv[2] : "NULL") << " | "
+              << std::setw(13) << (argv[2] ? argv[2] : "NULL") << " | "
               << std::setw(12) << (argv[3] ? argv[3] : "NULL") << std::endl;
     return 0;
 }
@@ -105,11 +105,11 @@ void printTableHeaders() {
     std::cout << std::setw(40) << std::setfill(' ') << "Tasas de CDPs" << std::endl << std::endl;
     std::cout << std::setw(10) << "Id" << " | "
               << std::setw(15) << "Plazo en meses" << " | "
-              << std::setw(12) << "Tasa en bolsa" << " | "
+              << std::setw(13) << "Tasa en bolsa" << " | "
               << std::setw(12) << "Tasa en banco" << std::endl;
     std::cout << std::string(10, '-') << " | "
               << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
+              << std::string(13, '-') << " | "
               << std::string(12, '-') << std::endl;
 }
 
