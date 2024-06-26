@@ -1,6 +1,8 @@
 #include "Operaciones.hpp"
 #include <iostream>
 #include <ctime>
+#include <cmath>
+#include <vector>
 
 Operacion::Operacion(sqlite3* db, Cliente* cliente) : db(db), cliente(cliente) {}
 
@@ -200,7 +202,17 @@ void Operacion::crearPrestamo() {
     int cuotasPagadas = 0;
 
     // cuotas faltantes
-    int cuotasFaltantes = cuotasTotales - cuotasPagadas;
+    int cuotasFaltantes = cuotasTotales;
+
+    // iniciar dias vencidos en 0 por que recien se crea el prestamo
+    int diasVencidos = 0;
+
+    //realizar el calculo para los dias de vencimiento
+    int diasVencimiento = round(plazo*30.4167);
+
+    //calculo del pago mensual
+    double tasaMensual = tasaInteres / 1200; // Convertir la tasa anual a mensual
+    double montoCuota = (montoTotal * tasaMensual) / (1 - pow(1 + tasaMensual, - plazo));
 
     // Construcción de la sentencia SQL
     std::string sql = "INSERT INTO tablaPrestamos (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -222,10 +234,10 @@ void Operacion::crearPrestamo() {
     sqlite3_bind_int(stmt, 10, cuotasTotales);
     sqlite3_bind_int(stmt, 11, cuotasPagadas);
     sqlite3_bind_int(stmt, 12, cuotasFaltantes);
-    sqlite3_bind_int(stmt, 13, 0);
-    sqlite3_bind_int(stmt, 14, 0);
-    sqlite3_bind_double(stmt, 15, 0);
-    sqlite3_bind_double(stmt, 16, 0);
+    sqlite3_bind_int(stmt, 13, diasVencidos);
+    sqlite3_bind_int(stmt, 14, diasVencimiento);
+    sqlite3_bind_double(stmt, 15, montoTotal);
+    sqlite3_bind_double(stmt, 16, montoCuota);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
@@ -236,3 +248,106 @@ void Operacion::crearPrestamo() {
     sqlite3_finalize(stmt);
 }
 
+void Operacion::abonoPrestamo(){
+    std::cout << "Prestamos Disponibles para el cliente" << cliente->getIdCliente() << "."<< std::endl;
+    std::string sql = "SELECT IdPrestamo, TipoPrestamo, MontoTotalPrestamo FROM tablaPrestamos WHERE IdCliente = " + std::to_string(cliente->getIdCliente()) + ";";
+    sqlite3_stmt* stmt;
+    int i = 1;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idPrestamo = sqlite3_column_int(stmt, 0);
+            const unsigned char* tipoPrestamoText = sqlite3_column_text(stmt, 1);
+            std::string tipoPrestamo = tipoPrestamoText ? reinterpret_cast<const char*>(tipoPrestamoText) : "";
+            double montoTotal = sqlite3_column_double(stmt, 2);
+
+            std::cout << "Prestamo # " << i << std::endl;
+            std::cout << "IdPrestamo: " << idPrestamo << std::endl;
+            std::cout << "Tipo de Prestamo: " << tipoPrestamo << std::endl;
+            std::cout << "Monto Total: " << montoTotal << std::endl << std::endl;
+            i += 1;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error en la preparación de la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    int idPrestamo;
+    std::cout << "Ingrese el id del prestamo al que desea realizar el abono: ";
+    std::cin >> idPrestamo;
+ 
+    int cuotasPagadas = std::stoi(cliente->getInfoPrestamos("CuotasPagadas", idPrestamo));
+    int cuotasFaltantes = std::stoi(cliente->getInfoPrestamos("CuotasFaltantes", idPrestamo));
+    double cuotaMensual = std::stod(cliente->getInfoPrestamos("MontoCuota", idPrestamo));
+    double intereses = std::stod(cliente->getInfoPrestamos("SaldoPrestamo", idPrestamo)) * (std::stod(cliente->getInfoPrestamos("TasaInteresP", idPrestamo)) / 1200);
+    double montoCuota = cuotaMensual + intereses;
+    double balanceCliente = std::stod(cliente->getInfoClientes("Clientes", "Balance", cliente->getIdCliente()));
+
+    if (balanceCliente < montoCuota){
+        std::cout << "No se pudo realizar la trasaccion, fondos insuficientes.";
+        return;
+    }
+
+    std::string nuevoCuotasP = std::to_string(cuotasPagadas + 1);
+    cliente->setInfoPrestamos("CuotasPagadas", nuevoCuotasP, idPrestamo);
+    std::string nuevoCuotasF = std::to_string(cuotasFaltantes - 1);
+    cliente->setInfoPrestamos("CuotasFaltantes", nuevoCuotasF, idPrestamo);
+    std::string nuevoBalanceC = std::to_string(balanceCliente - montoCuota);
+    cliente->setInfoClientes("Clientes", "Balance", nuevoBalanceC, cliente->getIdCliente());
+    std::string nuevoSaldoPrestamo = std::to_string(std::stod(cliente->getInfoPrestamos("SaldoPrestamo", idPrestamo)) - montoCuota);
+    cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoPrestamo, idPrestamo);
+}
+
+void Operacion::abonoPrestamoExtraordinario(){
+    
+    std::cout << "Prestamos Disponibles para el cliente" << cliente->getIdCliente() << "."<< std::endl;
+    std::string sql = "SELECT IdPrestamo, TipoPrestamo, MontoTotalPrestamo FROM tablaPrestamos WHERE IdCliente = " + std::to_string(cliente->getIdCliente()) + ";";
+    sqlite3_stmt* stmt;
+    int i = 1;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idPrestamo = sqlite3_column_int(stmt, 0);
+            const unsigned char* tipoPrestamoText = sqlite3_column_text(stmt, 1);
+            std::string tipoPrestamo = tipoPrestamoText ? reinterpret_cast<const char*>(tipoPrestamoText) : "";
+            double montoTotal = sqlite3_column_double(stmt, 2);
+
+            std::cout << "Prestamo # " << i << std::endl;
+            std::cout << "IdPrestamo: " << idPrestamo << std::endl;
+            std::cout << "Tipo de Prestamo: " << tipoPrestamo << std::endl;
+            std::cout << "Monto Total: " << montoTotal << std::endl << std::endl;
+            i += 1;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error en la preparación de la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    int idPrestamo;
+    std::cout << "Ingrese el id del prestamo al que desea realizar el abono: ";
+    std::cin >> idPrestamo;    
+
+    double abono;
+    std::cout << "Ingrese el monto que desea abonar de manera extraordinaria al prestamo seleccionado: ";
+    std::cin >> abono;
+    double balanceCliente = std::stod(cliente->getInfoClientes("Clientes", "Balance", cliente->getIdCliente()));
+    
+    if (abono > balanceCliente){
+        std::cout << "El cliente no cuenta con el balance suficiente para realizar el abono.";
+        return;
+    }
+    
+    double saldoPrestamo = std::stod(cliente->getInfoPrestamos("SaldoPrestamo", idPrestamo));
+
+    if (abono > saldoPrestamo){
+        std::cout << "Se requiere de un abono inferior para cancelar el prestamo." << std::endl;
+        std::cout << "Abono necesario: " << saldoPrestamo;
+        return;
+    }
+
+    std::string nuevoBalanceC = std::to_string(balanceCliente - abono);
+    cliente->setInfoClientes("Clientes", "Balance", nuevoBalanceC, cliente->getIdCliente());
+
+    std::string nuevoSaldoP = std::to_string(saldoPrestamo - abono);
+    cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoP, idPrestamo);
+}

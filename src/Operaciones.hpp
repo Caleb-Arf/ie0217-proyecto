@@ -14,6 +14,8 @@ public:
     void transferencia(double montoTransferencia, int idDestino);
     void deposito(double montoDeposito);
     void crearPrestamo();
+    void abonoPrestamo();
+    void abonoPrestamoExtraordinario();
 };
 
 #endif // OPERACIONES_HPP

@@ -1,6 +1,10 @@
 //COMANDO PARA COMPILAR (Actualizar con cada commit para facilitar el trabajo).
-//g++ -o prestamo main2.cpp prestamos.cpp clientes2.cpp Operaciones.cpp -lsqlite3
+//g++ main2.cpp prestamos.cpp clientes2.cpp Operaciones.cpp -o prueba.exe -lsqlite3
 
+/*
+Pendientes:
+ - hacer un generador de idPrestamos 
+*/
 #include <iostream>
 #include "prestamos.hpp"
 #include <sqlite3.h>
@@ -181,11 +185,11 @@ int main() {
  
                             break;
                         case ABONARP:
-                            
+                            ejecutar.abonoPrestamo();
 
                             break;
                         case ABONAREXTRAP:
-                            
+                            ejecutar.abonoPrestamoExtraordinario();
 
                             break;
                         case REGRESAR:
