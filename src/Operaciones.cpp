@@ -3,6 +3,8 @@
 #include <ctime>
 #include <cmath>
 #include <vector>
+#include <climits>
+#include <cstdio>
 
 Operacion::Operacion(sqlite3* db, Cliente* cliente) : db(db), cliente(cliente) {}
 
@@ -350,4 +352,239 @@ void Operacion::abonoPrestamoExtraordinario(){
 
     std::string nuevoSaldoP = std::to_string(saldoPrestamo - abono);
     cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoP, idPrestamo);
+}
+
+void Operacion::crearCDP() {
+    std::string cedula = cliente->getInfoClientes("Clientes", "Cedula", cliente->getIdCliente());
+    int idCDP = 000001; // Falta el metodo de generar id random 
+    
+    // Toma la fecha actual, tambien es posible encontrar la hora exacta de la misma forma
+    std::time_t tiempoActual = std::time(0);
+    std::tm* tiempoLocal = std::localtime(&tiempoActual);
+    std::string fechaCreacion = std::to_string(tiempoLocal->tm_mday) + "/" + std::to_string(tiempoLocal->tm_mon + 1) + "/" + std::to_string(tiempoLocal->tm_year + 1900);
+
+    double balanceCliente = std::stod(cliente->getInfoClientes("Clientes", "Balance", cliente->getIdCliente()));
+    
+    double montoCDP;
+    std::cout << "Ingrese el monto a ingresar en el CDP: ";
+    std::cin >> montoCDP;
+
+    if (montoCDP > balanceCliente){
+        std::cout << "El balance es insuficiente para la operacion.";
+        return;
+    }
+
+    int seleccionarDivisa;
+    std::string divisa;
+    std::string divisaTasa;
+    bool condicion = false;
+    while (!condicion) {
+        std::cout << "\nRealice la seleccion de la divisa del prestamo: \n1.Colones \n2.Dolares." << std::endl;
+        std::cout << "Elija 1 para Colones o 2 para Dolares: ";
+        std::cin >> seleccionarDivisa;
+
+        switch (seleccionarDivisa) {
+            case 1: {
+                divisa = "Colones";
+                divisaTasa = "negociable_en_banco";
+                condicion = true;
+                break;
+            }
+            case 2: {
+                divisa = "Dolares";
+                divisaTasa = "negociable_en_banco";
+                condicion = true;
+                break;
+            }
+            default:
+                std::cout << "Seleccione una opcion valida.";
+                condicion = false;
+                break;
+        }
+    }
+
+    double nuevoBalanceCliente = balanceCliente - montoCDP;
+
+    int tiempoCDP;
+    std::cout << "Ingrese el periodo del CDP en dias: ";
+    std::cin >> tiempoCDP;
+    
+    // realizar la fecha de vencimiento con el plazo
+    std::time_t tiempoSegundos = std::mktime(tiempoLocal);
+    tiempoSegundos += tiempoCDP * 60 * 60 * 24;
+    std::tm* tiempoVencimiento = std::localtime(&tiempoSegundos);
+    std::string fechaVencimiento = std::to_string(tiempoVencimiento->tm_mday) + "/" + std::to_string(tiempoVencimiento->tm_mon + 1) + "/" + std::to_string(tiempoVencimiento->tm_year + 1900);
+
+    int idTasaInteres;
+    //Seleccion de tasa de interes
+    switch (tiempoCDP) {
+        case 1 ... 6:
+            idTasaInteres = 101;
+            break;
+        case 7 ... 13:
+            idTasaInteres = 102;
+            break;
+        case 14 ... 20:
+            idTasaInteres = 103;
+            break;
+        case 21 ... 29:
+            idTasaInteres = 104;
+            break;
+        case 30 ... 59:
+            idTasaInteres = 105;
+            break;
+        case 60 ... 80:
+            idTasaInteres = 106;
+            break;
+        case 90 ... 119:
+            idTasaInteres = 107;
+            break;
+        case 120 ... 149:
+            idTasaInteres = 108;
+            break;
+        case 150 ... 179:
+            idTasaInteres = 109;
+            break;
+        case 180 ... 209:
+            idTasaInteres = 110;
+            break;
+        case 210 ... 239:
+            idTasaInteres = 111;
+            break;
+        case 240 ... 269:
+            idTasaInteres = 112;
+            break;
+        case 270 ... 299:
+            idTasaInteres = 113;
+            break;
+        case 300 ... 329:
+            idTasaInteres = 114;
+            break;
+        case 330 ... 359:
+            idTasaInteres = 115;
+            break;
+        case 360 ... 539:
+            idTasaInteres = 116;
+            break;
+        case 540 ... 719:
+            idTasaInteres = 117;
+            break;
+        case 720 ... 1079:
+            idTasaInteres = 118;
+            break;
+        case 1080 ... 1439:
+            idTasaInteres = 119;
+            break;
+        case 1440 ... 1799:
+            idTasaInteres = 120;
+            break;
+        case 1800 ... INT_MAX:
+            idTasaInteres = 121;
+            break;
+        default:
+            std::cout << "Fuera de rango\n";
+            break;
+    }
+
+
+    // Tasa de interes
+    double tasaInteres = std::stod(cliente->getInfoTasasCDP(divisaTasa,idTasaInteres));
+
+    //Intereses ganados
+    double interesBruto = (montoCDP * tasaInteres) * 30/360;
+    double impuesto = interesBruto * 0.15;
+    double interesNeto = interesBruto - impuesto; 
+    
+    //dias faltantes son el tiempo de CDP.
+    int diasFaltantes = tiempoCDP;
+    
+    //Actualizar el balance del cliente para realizar el CDP.
+    cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalanceCliente), cliente->getIdCliente());
+    
+    // Construcción de la sentencia SQL para insertar el CDP a la tabla.
+    std::string sql = "INSERT INTO tablaCDP (IdCliente, Cedula, IdCDP, FechaCreacion2, Divisa2, FechaVencimiento2, MontoCDP, InteresesGanados, TasaInteresCDP, DiasFaltantesCDP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    sqlite3_bind_int(stmt, 1, cliente->getIdCliente());
+    sqlite3_bind_text(stmt, 2, cedula.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 3, idCDP);
+    sqlite3_bind_text(stmt, 4, fechaCreacion.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, divisa.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 6, fechaVencimiento.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 7, montoCDP);
+    sqlite3_bind_double(stmt, 8, interesNeto);
+    sqlite3_bind_double(stmt, 9, tasaInteres);
+    sqlite3_bind_int(stmt, 10, diasFaltantes);
+    
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
+    } else {
+        std::cout << "CDP generado de manera exitosa." << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+}
+
+void Operacion::consultarCDP() {
+    std::cout << "Certificados de Deposito a Plazo disponibles para el cliente" << cliente->getIdCliente() << "." << std::endl;
+    std::string sql = "SELECT IdCDP, MontoCDP, FechaCreacion2, TasaInteresCDP FROM tablaCDP WHERE IdCliente = " + std::to_string(cliente->getIdCliente()) + ";";
+    sqlite3_stmt* stmt;
+    int i = 1;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idCDP = sqlite3_column_int(stmt, 0);
+            double montoCDP = sqlite3_column_double(stmt, 1);
+            const unsigned char* fechaCreacionText = sqlite3_column_text(stmt, 2);
+            std::string fechaCreacion = fechaCreacionText ? reinterpret_cast<const char*>(fechaCreacionText) : "";
+            double tasaInteresCDP = sqlite3_column_double(stmt, 3);
+
+            std::cout << "CDP # " << i << std::endl;
+            std::cout << "Monto del CDP: " << montoCDP << std::endl;
+            std::cout << "Fecha de creacion: " << fechaCreacion << std::endl;
+            std::cout << "Tasa de interes: " << tasaInteresCDP << std::endl << std::endl;
+            i += 1;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error en la preparación de la consulta SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    int idCDP;
+    std::cout << "Ingrese el id del CDP que desea consultar: ";
+    std::cin >> idCDP;
+
+    std::time_t tiempoActual = std::time(0);
+    std::tm* tiempoLocal = std::localtime(&tiempoActual);
+
+    std::string fechaVencimiento = cliente->getInfoCDPs("FechaVencimiento2", idCDP);
+    int diaVencimiento, mesVencimiento, vencimientoAnual;
+    
+    // Asignar fechaVencimiento a fechaV para utilizar en sscanf
+    const char* fechaV = fechaVencimiento.c_str();
+    
+    // Utilizar sscanf para extraer los valores
+    if (sscanf(fechaV, "%d/%d/%d", &diaVencimiento, &mesVencimiento, &vencimientoAnual) != 3) {
+        std::cerr << "Error al interpretar la fecha.\n";
+        return; // Salir de la función si hay un error
+    }
+
+    // Inicializar la estructura tm
+    std::tm vencimiento = {};
+    vencimiento.tm_mday = diaVencimiento;
+    vencimiento.tm_mon = mesVencimiento - 1;  
+    vencimiento.tm_year = vencimientoAnual - 1900;  
+    
+    std::time_t segundosActuales = std::mktime(tiempoLocal);
+    std::time_t segundosVencimiento = std::mktime(&vencimiento);
+
+    double segundosFaltantes = std::difftime(segundosVencimiento, segundosActuales); // Cambiar el orden para obtener el tiempo faltante correctamente
+    double diasFaltantes = segundosFaltantes / (3600 * 24);
+
+    cliente->setInfoCDPs("DiasFaltantesCDP", std::to_string(diasFaltantes), idCDP);
+    std::cout << "Faltan " << diasFaltantes << " días para recuperar el dinero." << std::endl;
 }

@@ -16,6 +16,8 @@ public:
     void crearPrestamo();
     void abonoPrestamo();
     void abonoPrestamoExtraordinario();
+    void crearCDP();
+    void consultarCDP();
 };
 
 #endif // OPERACIONES_HPP

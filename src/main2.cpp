@@ -154,10 +154,10 @@ int main() {
                            
                             break;
                         case CREARCDP:
-                            
+                            ejecutar.crearCDP();
                             break;
                         case CONSULTARCDP:
-
+                            ejecutar.consultarCDP();
                                 
                             break;
                         case TRANSFERENCIA:
