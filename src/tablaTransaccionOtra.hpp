@@ -6,7 +6,7 @@
 #include <vector>
 
 // Función para ejecutar consultas SQL
-int ejecutarSqlTransaccion(sqlite3* db, const std::string& consulta) {
+int ejecutarSQLTransacciones(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
     if (resultado != SQLITE_OK) {
@@ -37,39 +37,39 @@ static int callbackT(void *data, int argc, char **argv, char **azColName) {
 //Imprime encabezados
 void printTableHeadersTransaccion() {
     std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
-    std::cout << std::setw(10) << "IdCliente" << " | "
-              << std::setw(15) << "Cedula" << " | "
+    std::cout << std::setw(14) << "IdTransaccion" << " | "
+              << std::setw(10) << "IdCliente" << " | "
+              << std::setw(7) << "Cedula" << " | "
               << std::setw(12) << "FechaTransaccion" << " | "
-              << std::setw(12) << "Hora" << " | "
-              << std::setw(12) << "IdTransaccion" << " | "
-              << std::setw(15) << "SaldoBalance" << " | "
-              << std::setw(40) << "Detalle" << " | "
-              << std::setw(15) << "Credito" << " | "
-              << std::setw(15) << "Debito" << " | "
-              << std::setw(15) << "CuentaOrigen" << " | "
-              << std::setw(15) << "CuentaDestino" << std::endl;
-    std::cout << std::string(10, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(12, '-') << std::endl;
+              << std::setw(5) << "Hora" << " | "
+              << std::setw(13) << "SaldoBalance" << " | "
+              << std::setw(6) << "Detalle" << " | "
+              << std::setw(6) << "Credito" << " | "
+              << std::setw(7) << "Debito" << " | "
+              << std::setw(6) << "CuentaOrigen" << " | "
+              << std::setw(6) << "CuentaDestino" << std::endl;
+    std::cout << std::string(14, '-') << " | " //1
+              << std::string(10, '-') << " | " //2
+              << std::string(07, '-') << " | " //3
+              << std::string(16, '-') << " | " //4
+              << std::string(5, '-') << " | " //5
+              << std::string(13, '-') << " | " //6
+              << std::string(7, '-') << " | " //7
+              << std::string(7, '-') << " | " //8
+              << std::string(7, '-') << " | " //9
+              << std::string(12, '-') << " | " //10
+              << std::string(14, '-') << std::endl; //11
 }
 
 // Crea la tabla transacciones 
 void crearTablaTransacciones(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS tablaTransacciones ("
+                           "IdTransaccion INTEGER PRIMARY KEY,"
                            "IdCliente INTEGER,"
                            "Cedula TEXT,"
                            "FechaTransaccion TEXT,"
                            "Hora TEXT,"
-                           "IdTransaccion INTEGER PRIMARY KEY,"
                            "SaldoBalance REAL,"
                            "Detalle TEXT,"
                            "Credito REAL,"
@@ -91,8 +91,8 @@ void crearTablaTransacciones(sqlite3 *db) {
 // Inserta datos en la tabla Tasas CDP
 void insertarTransacciones(sqlite3 *db) {
     const char *sql_insert_data = 
-        "INSERT INTO tablaTransacciones (IdCliente, Cedula, FechaTransaccion, Hora, IdTransaccion, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino) VALUES"
-        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),";
+        "INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino) VALUES"
+        "(1, 2, 3, 4, 5, 6, '7', 8, 9, 10, 11);";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
@@ -134,14 +134,19 @@ void eliminarDatosTransacciones(sqlite3 *db) {
 /*
 int main() {
     sqlite3* db;
-    int resultado = sqlite3_open("base_datos.db", &db); // Nombre de la base de datos
+    int rc = sqlite3_open("test.db", &db);
 
-    if (resultado != SQLITE_OK) {
-        std::cerr << "Error abriendo la base de datos." << std::endl;
-        return resultado;
+    if (rc) {
+        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+        return rc;
+    } else {
+        std::cout << "Base de datos abierta exitosamente" << std::endl;
     }
 
     crearTablaTransacciones(db);
+    insertarTransacciones(db);
+    printTableHeadersTransaccion();
+    mostrarTablaTransacciones(db);
 
     sqlite3_close(db);
     return 0;

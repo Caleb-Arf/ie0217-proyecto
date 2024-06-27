@@ -6,7 +6,7 @@
 #include <vector>
 
 // Función para ejecutar consultas SQL
-int ejecutarSqlPrestamos(sqlite3* db, const std::string& consulta) {
+int ejecutarSQLPrestamos(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
     if (resultado != SQLITE_OK) {
@@ -22,14 +22,14 @@ static int callbackP(void *data, int argc, char **argv, char **azColName) {
     // Imprime los datos de la tabla.
     std::cout << std::setw(10) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(10) << (argv[1] ? argv[1] : "NULL") << " | "
-              << std::setw(15) << (argv[2] ? argv[2] : "NULL") << " | "
-              << std::setw(12) << (argv[3] ? argv[3] : "NULL") << " | "
+              << std::setw(07) << (argv[2] ? argv[2] : "NULL") << " | "
+              << std::setw(14) << (argv[3] ? argv[3] : "NULL") << " | "
               << std::setw(10) << (argv[4] ? argv[4] : "NULL") << " | "
-              << std::setw(10) << (argv[5] ? argv[5] : "NULL") << " | "
-              << std::setw(15) << (argv[6] ? argv[6] : "NULL") << " | "
-              << std::setw(12) << (argv[7] ? argv[7] : "NULL") << " | "
-              << std::setw(15) << (argv[8] ? argv[8] : "NULL") << " | "
-              << std::setw(12) << (argv[9] ? argv[9] : "NULL") << " | "
+              << std::setw(18) << (argv[5] ? argv[5] : "NULL") << " | "
+              << std::setw(10) << (argv[6] ? argv[6] : "NULL") << " | "
+              << std::setw(19) << (argv[7] ? argv[7] : "NULL") << " | "
+              << std::setw(14) << (argv[8] ? argv[8] : "NULL") << " | "
+              << std::setw(16) << (argv[9] ? argv[9] : "NULL") << " | "
               << std::setw(12) << (argv[10] ? argv[10] : "NULL") << " | "
               << std::setw(12) << (argv[11] ? argv[11] : "NULL") << " | "
               << std::setw(12) << (argv[12] ? argv[12] : "NULL") << " | "
@@ -41,38 +41,38 @@ static int callbackP(void *data, int argc, char **argv, char **azColName) {
 
 //Imprime encabezados
 void printTableHeadersPrestamos() {
-    std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
-    std::cout << std::setw(10) << "IdCliente" << " | "
-              << std::setw(15) << "IdPrestamo" << " | "
-              << std::setw(12) << "Cedula" << " | "
+    std::cout << std::setw(130) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
+    std::cout << std::setw(10) << "IdPrestamo" << " | "
+              << std::setw(10) << "IdCliente" << " | "
+              << std::setw(07) << "Cedula" << " | "
               << std::setw(12) << "FechaCreacion" << " | "
-              << std::setw(12) << "Divisa" << " | "
-              << std::setw(15) << "FechaVencimiento" << " | "
-              << std::setw(40) << "TipoPrestamo" << " | "
-              << std::setw(15) << "MontoTotalPrestamo" << " | "
-              << std::setw(15) << "TasaInteresP" << " | "
-              << std::setw(15) << "CuotasTotales" << " | "
-              << std::setw(15) << "CuotasPagadas" << " | "
+              << std::setw(8) << "Divisa" << " | "
+              << std::setw(17) << "FechaVencimiento" << " | "
+              << std::setw(10) << "TipoPrestamo" << " | "
+              << std::setw(19) << "MontoTotalPrestamo" << " | "
+              << std::setw(14) << "TasaInteresP" << " | "
+              << std::setw(14) << "CuotasTotales" << " | "
+              << std::setw(14) << "CuotasPagadas" << " | "
               << std::setw(15) << "CuotasFaltantes" << " | "
-              << std::setw(15) << "DiasVencidos" << " | "
-              << std::setw(15) << "DiasVencimiento" << " | "
+              << std::setw(9) << "DiasVencidos" << " | "
+              << std::setw(12) << "DiasVencimiento" << " | "
               << std::setw(15) << "SaldoPrestamo" << " | "
-              << std::setw(15) << "MontoCuota" << std::endl;
-    std::cout << std::string(10, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
-              << std::string(12, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(15, '-') << " | "
+              << std::setw(12) << "MontoCuota" << std::endl;
+    std::cout << std::string(10, '-') << " | " //1
+              << std::string(10, '-') << " | " //2
+              << std::string(07, '-') << " | " //3
+              << std::string(13, '-') << " | " //4 
+              << std::string(8, '-') << " | " //5
+              << std::string(17, '-') << " | " //6
+              << std::string(12, '-') << " | " //7
+              << std::string(19, '-') << " | " //8
+              << std::string(14, '-') << " | " //9
+              << std::string(14, '-') << " | " //10
+              << std::string(14, '-') << " | " //11
+              << std::string(15, '-') << " | " //12
+              << std::string(12, '-') << " | " //13
+              << std::string(15, '-') << " | " //14
+              << std::string(15, '-') << " | " //15
               << std::string(12, '-') << std::endl;
 }
 
@@ -80,8 +80,8 @@ void printTableHeadersPrestamos() {
 void crearTablaPrestamos(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS tablaPrestamos ("
-                           "IdCliente INTEGER,"
                            "IdPrestamo INTEGER PRIMARY KEY,"
+                           "IdCliente INTEGER,"
                            "Cedula TEXT,"
                            "FechaCreacion TEXT,"
                            "Divisa TEXT,"
@@ -111,7 +111,8 @@ void crearTablaPrestamos(sqlite3 *db) {
 // Inserta datos en la tabla prestamos
 void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = 
-        "INSERT INTO tablaTransacciones (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        "INSERT INTO tablaPrestamos (IdPrestamo, IdCliente, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES"
+        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),";
     
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
@@ -149,17 +150,23 @@ void eliminarDatosPrestamos(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
 /*
 int main() {
     sqlite3* db;
-    int resultado = sqlite3_open("base_datos.db", &db); // Nombre de la base de datos
+    int rc = sqlite3_open("test.db", &db);
 
-    if (resultado != SQLITE_OK) {
-        std::cerr << "Error abriendo la base de datos." << std::endl;
-        return resultado;
+    if (rc) {
+        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+        return rc;
+    } else {
+        std::cout << "Base de datos abierta exitosamente" << std::endl;
     }
 
     crearTablaPrestamos(db);
+    insertarPrestamos(db);
+    printTableHeadersPrestamos();
+    mostrarTablaPrestamos(db);
 
     sqlite3_close(db);
     return 0;
