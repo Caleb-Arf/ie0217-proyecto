@@ -147,7 +147,7 @@ void eliminarDatosTransacciones(sqlite3 *db) {
 
 int main() {
     sqlite3* db;
-    int rc = sqlite3_open("base_datos.db", &db);
+    int rc = sqlite3_open("base_de_datos.db", &db);
 
     if (rc) {
         std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
