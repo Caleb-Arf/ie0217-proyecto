@@ -290,36 +290,24 @@ void agregarNuevoCliente(sqlite3 *db) {
 
 
 // Verificacion de existencia de la cedula
-void buscarCedula(sqlite3 *db) {
-    std::string cedula;
-    while (true) {
-        std::cout << "\n------Verificacion de cedula------\n";
-        std::cout << "Ingrese la cedula (9 numeros o 0 para salir): ";
-        std::cin >> cedula;
-        if (cedula == "0") {
-            std::cout << "Saliendo del registro de cliente." << std::endl;
-            return;
-        }
-        // Validar si la cedula contiene solo numeros y tiene exactamente 9 digitos
-        if (!std::regex_match(cedula, std::regex("\\d{9}"))) {
-            std::cerr << "Error: La cedula debe contener 9 numeros." << std::endl;
-            continue; // Volver a solicitar la cedula si no cumple con el formato
-        }
+//void buscarCedula(sqlite3 *db) {
+//    std::string cedula;
+//    while (true) {
+//        std::cout << "\n------Verificacion de cedula------\n";
+//        std::cout << "Ingrese la cedula (9 numeros o 0 para salir): ";
+//        std::cin >> cedula;
+//        if (cedula == "0") {
+//            std::cout << "Saliendo del registro de cliente." << std::endl;
+//            return;
+//        }
+//        // Validar si la cedula contiene solo numeros y tiene exactamente 9 digitos
+//        if (!std::regex_match(cedula, std::regex("\\d{9}"))) {
+//            std::cerr << "Error: La cedula debe contener 9 numeros." << std::endl;
+//            continue; // Volver a solicitar la cedula si no cumple con el formato
+//        }
+//
+//        break; // Salir del bucle si la cedula es valida
+//    }
+//
+//}
 
-        break; // Salir del bucle si la cedula es valida
-    }
-
-    if (existeCedula(db, cedula)) {
-        imprimirInfoCliente(db, cedula);
-    } else {
-        int opcion;
-        std::cout << "Cedula no encontrada. Elija una opcion:\n1. Salir\n2. Crear nuevo cliente\nOpcion: ";
-        std::cin >> opcion;
-        if (opcion == 2) {
-            agregarNuevoCliente(db);
-        }
-        else if (opcion == 1) {
-            return;
-        }
-    }
-}

@@ -28,6 +28,7 @@ void Operacion::transferencia(double montoTransferencia, int idDestino) {
 
     cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalanceOrigen), cliente->getIdCliente());
     cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalanceDestino), idDestino);
+    std::cout << "Transferencia realizada con exito." << std::endl;
 }
 
 void Operacion::deposito(double montoDeposito) {
@@ -39,6 +40,7 @@ void Operacion::deposito(double montoDeposito) {
     double nuevoBalance = balance + montoDeposito;
 
     cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalance), cliente->getIdCliente());
+    std::cout << "Depósito realizado con exito." << std::endl;
 }
 
 void Operacion::crearPrestamo() {
@@ -122,6 +124,7 @@ void Operacion::crearPrestamo() {
                             stop1 = false;
                             break;
                     }
+                    std::cout << "Prestamo creado con exito." << std::endl;
                 }
                 condicion = true;
                 break;
@@ -172,6 +175,7 @@ void Operacion::crearPrestamo() {
                             stop = false;
                             break;
                     }
+                    std::cout << "Prestamo creado con con exito." << std::endl;
                 }
                 condicion = true;
                 break;
@@ -298,6 +302,7 @@ void Operacion::abonoPrestamo(){
     cliente->setInfoClientes("Clientes", "Balance", nuevoBalanceC, cliente->getIdCliente());
     std::string nuevoSaldoPrestamo = std::to_string(std::stod(cliente->getInfoPrestamos("SaldoPrestamo", idPrestamo)) - montoCuota);
     cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoPrestamo, idPrestamo);
+    std::cout << "Abono realizado exitosamente." << std::endl;
 }
 
 void Operacion::abonoPrestamoExtraordinario(){
@@ -352,6 +357,7 @@ void Operacion::abonoPrestamoExtraordinario(){
 
     std::string nuevoSaldoP = std::to_string(saldoPrestamo - abono);
     cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoP, idPrestamo);
+    std::cout << "Abono extraordinario realizado exitosamente." << std::endl;
 }
 
 void Operacion::crearCDP() {
