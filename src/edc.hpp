@@ -1,3 +1,6 @@
+#ifndef EDC_HPP
+#define EDC_HPP 
+
 #include <iostream>
 #include <vector>
 #include <sqlite3.h>

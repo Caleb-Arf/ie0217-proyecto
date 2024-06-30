@@ -1,4 +1,7 @@
 //g++ -o prestamo main2.cpp prestamos.cpp -lsqlite3
+#ifndef CLIENTES_HPP
+#define CLIENTES_HPP
+
 #include <iostream>
 #include <string>
 #include <regex>
