@@ -297,10 +297,51 @@ int main() {
                                 break;
                             }
                             case DEPOSITO: {
-                                double montoDeposito;
-                                std::cout << "Ingrese el monto para realizar el deposito: ";
-                                std::cin >> montoDeposito;
-                                ejecutar.deposito(montoDeposito);
+                                int idOrigen2, idDestino2;
+                                double monto2;
+                                while (true) {
+                                    std::cout << "Ingrese la cuenta de origen (0 para salir): ";
+                                    std::cin >> idOrigen2;
+                                    if (idOrigen2 == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, idOrigen2)) {
+                                        std::cerr << "La cuenta de origen no existe. Intente de nuevo." << std::endl;
+                                    } else {
+                                        break; // La cuenta existe, sale del bucle
+                                    }
+                                }
+                            
+                                if (idOrigen2 == 0) {
+                                    sqlite3_close(db);
+                                    return 0;
+                                }
+                                 while (true) {
+                                    std::cout << "Ingrese el monto2 a transferir (0 para salir): ";
+                                    std::cin >> monto2;
+                                    if (monto2 == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (monto2 <= 0) {
+                                        std::cerr << "El monto2 de la transferencia debe ser mayor a 0." << std::endl;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            
+                                if (monto2 == 0) {
+                                    sqlite3_close(db);
+                                    return 0;
+                                }
+                            
+                                try {
+                                    realizarDeposito(db, idOrigen2, idDestino2, monto2);
+                                } catch (const std::exception &e) {
+                                    std::cerr << "Error: " << e.what() << std::endl;
+                                }
+
                                 break;
                             }
                             case SOLICITARP:

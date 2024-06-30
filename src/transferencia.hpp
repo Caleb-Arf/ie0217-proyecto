@@ -186,3 +186,95 @@ int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto
     std::cout << "Transferencia realizada con éxito." << std::endl;
     return SQLITE_OK;
 }
+
+int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) {
+    const double tipoCambio = 530.0;
+    sqlite3_stmt *stmt = nullptr;
+    std::string tipoCuentaOrigen, tipoCuentaDestino;
+    double balanceOrigen, balanceDestino;
+
+    // Obtiene datos de la cuenta de origen
+    std::string sql = "SELECT Balance, TipoCuenta FROM Clientes WHERE IdCliente = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idOrigen2);
+    
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        balanceOrigen = sqlite3_column_double(stmt, 0);
+        tipoCuentaOrigen = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+    } else {
+        std::cerr << "Cuenta de origen no encontrada." << std::endl;
+        sqlite3_finalize(stmt);
+        return SQLITE_ERROR;
+    }
+    sqlite3_finalize(stmt);
+
+    // Verifica si el balance de origen es suficiente
+    if (balanceOrigen < monto2) {
+        std::cerr << "El balance de la cuenta de origen es insuficiente." << std::endl;
+        return SQLITE_ERROR;
+    }
+
+    // Actualiza balances
+    balanceOrigen += monto2;
+
+    // Genera id aleatorio
+    int id;
+    sql = "SELECT COUNT(*) FROM tablaTransacciones WHERE IdTransaccion = ?";
+    do {
+        id = 4000000 + rand() % 1000000;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+            std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            return -1;
+        }
+        sqlite3_bind_int(stmt, 1, id);
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        if (count == 0) {
+            break;
+        }
+
+    } while (true);
+
+    // Actualizar cuenta de origen
+    sql = "UPDATE Clientes SET Balance = ? WHERE IdCliente = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_double(stmt, 1, balanceOrigen);
+    sqlite3_bind_int(stmt, 2, idOrigen2);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    // Insertar transacción en tablaTransacciones
+    sql = R"(
+        INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?);
+    )";
+
+    std::string fechaHoraActual = obtenerFechaHoraActual();
+    std::string fecha = fechaHoraActual.substr(0, 10);
+    std::string hora = fechaHoraActual.substr(11, 8);
+
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_bind_int(stmt, 2, idOrigen2);
+    sqlite3_bind_text(stmt, 3, "N/A", -1, SQLITE_STATIC); // Debería buscar la cédula correspondiente
+    sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 6, balanceOrigen); // Balance después de la transacción
+    sqlite3_bind_text(stmt, 7, "Transferencia realizada", -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 8, monto2); // Débito
+    sqlite3_bind_text(stmt, 9, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 10, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+
+    std::cout << "Transferencia realizada con éxito." << std::endl;
+    return SQLITE_OK;
+}
