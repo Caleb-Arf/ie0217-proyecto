@@ -111,33 +111,20 @@ void crearTablaPrestamos(sqlite3 *db) {
 // Inserta datos en la tabla Prestamos
 void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = R"(
-        INSERT INTO tablaPrestamos (IdPrestamo, IdCliente, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES
-        (5019283, 2701006, '702890948', '2019-12-14', 'Dolares', '2027-12-02', '090', '40000','12.91','96','50','46','1807','35814.67','554.37'),
-
+        INSERT INTO tablaPrestamos (IdPrestamo, IdCliente, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota)
+        VALUES (5019283, 2701006, '702890948', '2019-12-14', 'Dolares', '2027-12-02', '090', 40000, 12.91, 96, 50, 46, 0, 1807, 35814.67, 554.37)
     )";
-    
+
     char *err_msg = nullptr;
-    int rc;
-
-    // Eliminar datos existentes
-    const char *sql_delete_data = "DELETE FROM tablaPrestamos";
-    rc = sqlite3_exec(db, sql_delete_data, 0, 0, &err_msg);
+    int rc = sqlite3_exec(db, sql_insert_data, nullptr, nullptr, &err_msg);
     if (rc != SQLITE_OK) {
-        std::cerr << "Error eliminando datos: " << err_msg << std::endl;
+        std::cerr << "Error al insertar datos en tablaPrestamos: " << err_msg << std::endl;
         sqlite3_free(err_msg);
     } else {
-        std::cout << "Datos eliminados exitosamente" << std::endl;
-    }
-
-    // Insertar nuevos datos
-    rc = sqlite3_exec(db, sql_insert_data, 0, 0, &err_msg);
-    if (rc != SQLITE_OK) {
-        std::cerr << "Error insertando datos: " << err_msg << std::endl;
-        sqlite3_free(err_msg);
-    } else {
-        std::cout << "Datos insertados exitosamente" << std::endl;
+        std::cout << "Datos insertados correctamente en tablaPrestamos" << std::endl;
     }
 }
+
 
 // Selecciona y muestra datos de la tabla Prestamos
 void mostrarTablaPrestamos(sqlite3 *db) {
