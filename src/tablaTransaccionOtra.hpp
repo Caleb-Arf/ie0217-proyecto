@@ -36,7 +36,7 @@ static int callbackT(void *data, int argc, char **argv, char **azColName) {
 
 //Imprime encabezados
 void printTableHeadersTransacciones() {
-    std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
+    std::cout << std::setw(105) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
     std::cout << std::setw(14) << "IdTransaccion" << " | " //1
               << std::setw(10) << "IdCliente" << " | " //2
               << std::setw(11) << "Cedula" << " | " //3
