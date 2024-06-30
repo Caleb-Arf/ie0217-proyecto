@@ -36,6 +36,7 @@ int insertarDatosClientes(sqlite3 *db) {
     const char* insertDataSQL = R"(
         INSERT INTO Clientes (IdCliente, Cedula, Nombre, Telefono, Direccion, Correo, Balance, TipoCuenta) VALUES
         (2701006, '702890948', 'YAKIR HERMAN BUSTOS', '65431234', 'San Jose, Barrio Escalante', 'yakir.herman@hotmail.com', 87654.22, 'Dolares'),
+        (1701006, '702890948', 'YAKIR HERMAN BUSTOS', '65431234', 'San Jose, Barrio Escalante', 'yakir.herman@hotmail.com', 250000, 'Colones'),
         (2701027, '702890950', 'MARLENNY MAROTO GUADAMUZ', '87456789', 'Heredia, San Francisco', 'marleny.maroto@yahoo.com', 20985.98, 'Dolares'),
         (2701019, '702890951', 'ANNIA CORTES SOLANO', '90321567', 'Alajuela, San Rafael', 'annia.cortes@gmail.com', 98745.22, 'Dolares'),
         (1701014, '702890952', 'LILLIAM VILLAVICENCIO HIDALGO', '78349087', 'Cartago, Paraiso', 'lilliam.villavicencio@hotmail.com', 1450987.45, 'Colones'),
