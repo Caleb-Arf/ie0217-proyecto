@@ -281,6 +281,24 @@ int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) 
 
     std::cout << "Depósito realizado con éxito." << std::endl;
     return SQLITE_OK;
+
+    // Print tablaTransacciones
+    sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idTransaccion);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        std::cout << "\nTransacción finalizada:" << std::endl;
+        std::cout << "Numero de Transaccion: " << id << std::endl;
+        std::cout << "IdCliente: " << idOrigen2 << std::endl;
+        std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
+        std::cout << "Hora: " << hora.c_str() << std::endl;
+        std::cout << "SaldoBalance: " << balanceOrigen << std::endl;
+        std::cout << "Detalle: " << "Depósito realizado" << std::endl;
+        std::cout << "Credito: " << monto2 << std::endl;
+
+
+    }
+    sqlite3_finalize(stmt);
 }
 
 // Verifica si existe el préstamo
