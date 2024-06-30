@@ -685,7 +685,7 @@ int calculateMonthsDifference(const std::string &startDate, const std::string &e
 // Function to update DiasFaltantesCDP
 void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
-        SELECT IdCDP, FechaCreacion2, FechaVencimiento2, Plazo
+        SELECT IdCDP, FechaCreacionCDP, FechaVencimientoCDP, Plazo
         FROM tablaCDP
         WHERE Cedula = ?
     )";
@@ -704,7 +704,7 @@ void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
             // Update DiasFaltantesCDP
             const char *sql_update_dias = R"(
                 UPDATE tablaCDP
-                SET DiasFaltantesCDP = ?
+                SET MesesFaltantesCDP = ?
                 WHERE IdCDP = ?
             )";
             sqlite3_stmt *stmt_update;
@@ -746,7 +746,7 @@ bool cedulaExists(sqlite3 *db, const std::string &cedula) {
 // Function to display existing CDPs for the given cedula
 void displayExistingCDPs(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
-        SELECT IdCDP, FechaCreacion2, FechaVencimiento2, Plazo, DiasFaltantesCDP, MontoCDP
+        SELECT IdCDP, FechaCreacionCDP, FechaVencimientoCDP, Plazo, MesesFaltantesCDP, MontoCDP
         FROM tablaCDP
         WHERE Cedula = ?
     )";
@@ -855,7 +855,7 @@ void redimirCDP(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
         SELECT IdCDP, MontoCDP, IdCliente, TasaInteresCDP
         FROM tablaCDP
-        WHERE Cedula = ? AND DiasFaltantesCDP <= 0
+        WHERE Cedula = ? AND MesesFaltantesCDP <= 0
     )";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql_select_cdp, -1, &stmt, nullptr) == SQLITE_OK) {
