@@ -25,40 +25,40 @@ static int callbackT(void *data, int argc, char **argv, char **azColName) {
               << std::setw(11) << (argv[2] ? argv[2] : "NULL") << " | "
               << std::setw(16) << (argv[3] ? argv[3] : "NULL") << " | "
               << std::setw(12) << (argv[4] ? argv[4] : "NULL") << " | "
-              << std::setw(17) << (argv[5] ? argv[5] : "NULL") << " | "
-              << std::setw(25) << (argv[6] ? argv[6] : "NULL") << " | "
-              << std::setw(19) << (argv[7] ? argv[7] : "NULL") << " | "
+              << std::setw(13) << (argv[5] ? argv[5] : "NULL") << " | "
+              << std::setw(15) << (argv[6] ? argv[6] : "NULL") << " | "
+              << std::setw(12) << (argv[7] ? argv[7] : "NULL") << " | "
               << std::setw(12) << (argv[8] ? argv[8] : "NULL") << " | "
               << std::setw(12) << (argv[9] ? argv[9] : "NULL") << " | "
-              << std::setw(14) << (argv[10] ? argv[10] : "NULL") << " | " <<std::endl;
+              << std::setw(12) << (argv[10] ? argv[10] : "NULL") << std::endl;
     return 0;
 }
 
 //Imprime encabezados
 void printTableHeadersTransacciones() {
-    std::cout << std::setw(105) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
+    std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
     std::cout << std::setw(14) << "IdTransaccion" << " | " //1
               << std::setw(10) << "IdCliente" << " | " //2
               << std::setw(11) << "Cedula" << " | " //3
               << std::setw(12) << "FechaTransaccion" << " | " //4 
               << std::setw(12) << "Hora" << " | " //5
-              << std::setw(17) << "SaldoBalance" << " | " //6
-              << std::setw(25) << "Detalle" << " | " //7
-              << std::setw(19) << "Credito" << " | " //8
+              << std::setw(13) << "SaldoBalance" << " | " //6
+              << std::setw(20) << "Detalle" << " | " //7
+              << std::setw(12) << "Credito" << " | " //8
               << std::setw(12) << "Debito" << " | " //9
               << std::setw(6) << "CuentaOrigen" << " | " //10
-              << std::setw(14) << "CuentaDestino" << " | " << std::endl;
+              << std::setw(6) << "CuentaDestino" << std::endl;
     std::cout << std::string(14, '-') << " | " //1
               << std::string(10, '-') << " | " //2
               << std::string(11, '-') << " | " //3
               << std::string(16, '-') << " | " //4
               << std::string(12, '-') << " | " //5
-              << std::string(17, '-') << " | " //6
-              << std::string(25, '-') << " | " //7
-              << std::string(19, '-') << " | " //8
+              << std::string(13, '-') << " | " //6
+              << std::string(20, '-') << " | " //7
+              << std::string(12, '-') << " | " //8
               << std::string(12, '-') << " | " //9
               << std::string(12, '-') << " | " //10
-              << std::string(14, '-') << " | " << std::endl; //11
+              << std::string(14, '-') << std::endl; //11
 }
 
 // Crea la tabla transacciones 
