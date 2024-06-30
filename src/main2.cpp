@@ -1,10 +1,7 @@
 //COMANDO PARA COMPILAR (Actualizar con cada commit para facilitar el trabajo).
 //g++ main2.cpp clientes2.cpp Operaciones.cpp -o prueba.exe -lsqlite3
 
-/*
-Pendientes:
- - hacer un generador de idPrestamos 
-*/
+
 #include <iostream>
 #include <sqlite3.h>
 #include <string>
@@ -20,14 +17,18 @@ Pendientes:
 #include "tablaTransaccionOtra.hpp"
 #include "RegresaCDP.hpp"
 
-// Enum para el menu principal.
+/**
+ * @brief Enumerations for main menu options.
+ */
 enum Opciones {
     ATENCION = 1,
     INFO,
     SALIR
 };
 
-// Enum para el menu de atencion al cliente.
+/**
+ * @brief Enumerations for customer service menu options.
+ */
 enum Atencion {
     ESTADO = 1,
     TASACDP,
@@ -43,7 +44,9 @@ enum Atencion {
     REGRESAR
 };
 
-// Enum para el menu de informacion.
+/**
+ * @brief Enumerations for information menu options.
+ */
 enum INFO {
     TIPOPRESTAMOS = 1,
     TABLAINTERES1,
@@ -51,7 +54,11 @@ enum INFO {
     TABLAPAGOS,
     REGRESAR2
 };
-
+/**
+ * @brief Displays the information menu and handles user input.
+ * 
+ * @param db A pointer to the SQLite database.
+ */
 void mostrarMenuInfo(sqlite3 *db) {
     int operacion_info;
     do {
@@ -123,6 +130,11 @@ void mostrarMenuInfo(sqlite3 *db) {
         }
     } while (operacion_info != REGRESAR2);
 }
+
+/**
+ * @brief Función principal del programa. Contiene los menus del programa.
+ * @return Código de retorno.
+ */
 
 int main() {
     sqlite3 *db;
