@@ -1,5 +1,10 @@
+/**
+ * @file edc.hpp
+ * @brief Archivo que contiene la función para recuperar datos de transacciones de una base de datos SQLite.
+ */
+
 #ifndef EDC_HPP
-#define EDC_HPP 
+#define EDC_HPP
 
 #include <iostream>
 #include <vector>
@@ -8,7 +13,14 @@
 #include <sstream>
 #include <cmath>
 
-// Función para recibir datos de la transacción
+/**
+ * @brief Función para recibir datos de la transacción de un cliente específico en un rango de fechas.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ * @param IdCliente ID del cliente cuya transacción se desea recuperar.
+ * @param fechaInicio Fecha de inicio del rango en formato "YYYY-MM-DD".
+ * @param fechaFin Fecha de fin del rango en formato "YYYY-MM-DD".
+ */
 void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fechaInicio, const std::string& fechaFin) {
     const char* sql = "SELECT FechaTransaccion, Detalle, Credito, Debito, SaldoBalance FROM tablaTransacciones WHERE IdCliente = ? AND FechaTransaccion BETWEEN ? AND ?";
     sqlite3_stmt* stmt;
@@ -58,3 +70,4 @@ void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fec
     // Finaliza la declaración
     sqlite3_finalize(stmt);
 }
+#endif // EDC_HPP

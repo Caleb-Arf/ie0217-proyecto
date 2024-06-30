@@ -1,3 +1,11 @@
+/**
+ * @file RegresaCDP.hpp
+ * @brief Archivo que contiene la función para recuperar datos de CDP de una base de datos SQLite.
+ */
+
+#ifndef REGRESACDP_HPP
+#define REGRESACDP_HPP
+
 #include <iostream>
 #include <vector>
 #include <sqlite3.h>
@@ -5,7 +13,12 @@
 #include <sstream>
 #include <cmath>
 
-// Función para recibir datos del cdp
+/**
+ * @brief Función para recibir datos del CDP de un cliente específico basado en la cédula.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ * @param cedula Cédula del cliente cuya información de CDP se desea recuperar.
+ */
 void regresarDatosCDP(sqlite3* db, int cedula) {
     const char* sql = "SELECT IdCDP, IdCliente, FechaCreacionCDP, DivisaCDP, FechaVencimientoCDP, MontoCDP FROM tablaCDP WHERE Cedula = ?";
     sqlite3_stmt* stmt;
@@ -56,3 +69,4 @@ void regresarDatosCDP(sqlite3* db, int cedula) {
     // Finaliza la declaración
     sqlite3_finalize(stmt);
 }
+#endif // REGRESACDP_HPP
