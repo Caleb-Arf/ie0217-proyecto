@@ -285,6 +285,10 @@ int main() {
                             }
                                 break;
                             case TASACDP:
+                                if (!tablaExiste(db, "TasasCDP")) {
+                                    crearTabla1(db);
+                                    insertarData1(db);
+                                }
                                 printTableHeaders();
                                 mostrarTablaTasas(db);
                                 break;
