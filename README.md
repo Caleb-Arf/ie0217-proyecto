@@ -101,7 +101,7 @@ Luego se utiliza ```make build``` para compilar todos los archivos fuente del pr
 
 El siguiente comando es ```make run``` que se usa para corree el programa compilado.
 
-Finalmente se usa el comando ```make``` para crear el programa ejecutable a partir del código fuente.
+Finalmente se usa el comando ```make``` compila y ejecuta los archivos fuente.
 
 ## Términos importantes a considerar
 
