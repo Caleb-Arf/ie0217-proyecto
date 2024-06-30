@@ -295,7 +295,14 @@ int main() {
                                 ejecutar.consultarCDP();
                                 break;
                             case REDIMIRCDP:
-                                
+                                std::string cedula = getUserInput("Ingrese la cedula del cliente: ");
+                                if (cedulaExists(db, cedula)) {
+                                    displayExistingCDPs(db, cedula);
+                                    actualizarDiasFaltantes(db, cedula);
+                                    redimirCDP(db, cedula);
+                                } else {
+                                    std::cout << "No hay CDPs para la cedula ingresada.\n";
+                                }
                                 break;
                             case TRANSFERENCIA: {
                                 int idOrigen, idDestino;

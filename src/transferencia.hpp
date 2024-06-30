@@ -659,3 +659,265 @@ int realizarAbonoExtraordinario(sqlite3 *db, int idCuenta3, int idPrestamo2, dou
     sqlite3_finalize(stmt);
     return SQLITE_OK;
 }
+
+// Function to get input from the user
+std::string getUserInput(const std::string &prompt) {
+    std::cout << prompt;
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
+
+// Function to calculate the difference in months between two dates
+int calculateMonthsDifference(const std::string &startDate, const std::string &endDate) {
+    std::tm tm_start = {};
+    std::tm tm_end = {};
+    std::istringstream ss_start(startDate);
+    std::istringstream ss_end(endDate);
+    ss_start >> std::get_time(&tm_start, "%Y-%m-%d");
+    ss_end >> std::get_time(&tm_end, "%Y-%m-%d");
+
+    int months = (tm_end.tm_year - tm_start.tm_year) * 12 + (tm_end.tm_mon - tm_start.tm_mon);
+    return months;
+}
+
+// Function to update DiasFaltantesCDP
+void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
+    const char *sql_select_cdp = R"(
+        SELECT IdCDP, FechaCreacion2, FechaVencimiento2, Plazo
+        FROM tablaCDP
+        WHERE Cedula = ?
+    )";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql_select_cdp, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idCDP = sqlite3_column_int(stmt, 0);
+            std::string fechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            std::string fechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            int plazo = sqlite3_column_int(stmt, 3);
+
+            int totalMonths = calculateMonthsDifference(fechaCreacion, fechaVencimiento);
+            int remainingMonths = totalMonths - plazo;
+
+            // Update DiasFaltantesCDP
+            const char *sql_update_dias = R"(
+                UPDATE tablaCDP
+                SET DiasFaltantesCDP = ?
+                WHERE IdCDP = ?
+            )";
+            sqlite3_stmt *stmt_update;
+            if (sqlite3_prepare_v2(db, sql_update_dias, -1, &stmt_update, nullptr) == SQLITE_OK) {
+                sqlite3_bind_int(stmt_update, 1, remainingMonths);
+                sqlite3_bind_int(stmt_update, 2, idCDP);
+                sqlite3_step(stmt_update);
+                sqlite3_finalize(stmt_update);
+            }
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+}
+
+// Function to check if the cedula exists in tablaCDP
+bool cedulaExists(sqlite3 *db, const std::string &cedula) {
+    const char *sql_check_cedula = R"(
+        SELECT COUNT(*)
+        FROM tablaCDP
+        WHERE Cedula = ?
+    )";
+    sqlite3_stmt *stmt;
+    bool exists = false;
+    if (sqlite3_prepare_v2(db, sql_check_cedula, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            int count = sqlite3_column_int(stmt, 0);
+            exists = (count > 0);
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+    return exists;
+}
+
+// Function to display existing CDPs for the given cedula
+void displayExistingCDPs(sqlite3 *db, const std::string &cedula) {
+    const char *sql_select_cdp = R"(
+        SELECT IdCDP, FechaCreacion2, FechaVencimiento2, Plazo, DiasFaltantesCDP, MontoCDP
+        FROM tablaCDP
+        WHERE Cedula = ?
+    )";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql_select_cdp, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idCDP = sqlite3_column_int(stmt, 0);
+            std::string fechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            std::string fechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            int plazo = sqlite3_column_int(stmt, 3);
+            int diasFaltantes = sqlite3_column_int(stmt, 4);
+            double montoCDP = sqlite3_column_double(stmt, 5);
+            
+
+            std::cout << "\nCDP ID: " << idCDP << "\n"
+                      << "Fecha de Creacion: " << fechaCreacion << "\n"
+                      << "Fecha de Vencimiento: " << fechaVencimiento << "\n"
+                      << "Plazo: " << plazo << "\n"
+                      << "Dias Faltantes: " << diasFaltantes << "\n"
+                      << "Monto: " << montoCDP << "\n\n";
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+}
+
+// Definición de las funciones
+void actualizarSaldoCliente(sqlite3 *db, int idCliente, double nuevoSaldo) {
+    const char *sql_update_balance = R"(
+        UPDATE Clientes
+        SET Balance = ?
+        WHERE IdCliente = ?
+    )";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql_update_balance, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_double(stmt, 1, nuevoSaldo);
+        sqlite3_bind_int(stmt, 2, idCliente);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+}
+
+void insertarTransaccion(sqlite3 *db, int idTransaccion, int idCliente, const std::string &cedula, const std::string &fecha, const std::string &hora, double saldoBalance, const std::string &detalle, double credito, double debito, const std::string &cuentaOrigen, const std::string &cuentaDestino) {
+    const char *sql_insert_transaccion = R"(
+        INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    )";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql_insert_transaccion, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, idTransaccion);
+        sqlite3_bind_int(stmt, 2, idCliente);
+        sqlite3_bind_text(stmt, 3, cedula.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_double(stmt, 6, saldoBalance);
+        sqlite3_bind_text(stmt, 7, detalle.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_double(stmt, 8, credito);
+        sqlite3_bind_double(stmt, 9, debito);
+        sqlite3_bind_text(stmt, 10, cuentaOrigen.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 11, cuentaDestino.c_str(), -1, SQLITE_STATIC);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+}
+
+int generarIdTransaccion(sqlite3 *db) {
+    int idTransaccion;
+    sqlite3_stmt *stmt = nullptr;
+    const char *sql = "SELECT COUNT(*) FROM tablaTransacciones WHERE IdTransaccion = ?";
+    do {
+        idTransaccion = 8000000 + rand() % 1000000;
+
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            return -1;
+        }
+
+        sqlite3_bind_int(stmt, 1, idTransaccion);
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+
+        if (count == 0) {
+            break;
+        }
+
+    } while (true);
+
+    return idTransaccion;
+}
+
+
+void redimirCDP(sqlite3 *db, const std::string &cedula) {
+    const char *sql_select_cdp = R"(
+        SELECT IdCDP, MontoCDP, IdCliente, TasaInteresCDP
+        FROM tablaCDP
+        WHERE Cedula = ? AND DiasFaltantesCDP <= 0
+    )";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql_select_cdp, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int idCDP = sqlite3_column_int(stmt, 0);
+            double montoCDP = sqlite3_column_double(stmt, 1);
+            int idCliente = sqlite3_column_int(stmt, 2);
+            int interes = sqlite3_column_int(stmt, 3);
+
+            // Obtener el balance actual del cliente
+            double balanceActual = 0.0;
+            const char *sql_select_balance = R"(
+                SELECT Balance
+                FROM Clientes
+                WHERE IdCliente = ?
+            )";
+            sqlite3_stmt *stmt_balance;
+            if (sqlite3_prepare_v2(db, sql_select_balance, -1, &stmt_balance, nullptr) == SQLITE_OK) {
+                sqlite3_bind_int(stmt_balance, 1, idCliente);
+                if (sqlite3_step(stmt_balance) == SQLITE_ROW) {
+                    balanceActual = sqlite3_column_double(stmt_balance, 0);
+                }
+                sqlite3_finalize(stmt_balance);
+            }
+
+            // Calcular el nuevo saldo incluyendo intereses
+            double intereses = montoCDP * interes / 100; // Asumiendo que tienes una variable "interes" definida
+            double nuevoSaldo = balanceActual + montoCDP + intereses;
+
+            // Actualizar el saldo del cliente
+            actualizarSaldoCliente(db, idCliente, nuevoSaldo);
+
+            // Generar un id único para la transacción
+            int idTransaccion = generarIdTransaccion(db);
+
+            // Insertar la transacción de redención del CDP
+            std::string fechaHoraActual = obtenerFechaHoraActual();
+            std::string fecha = fechaHoraActual.substr(0, 10);
+            std::string hora = fechaHoraActual.substr(11, 8);
+
+            insertarTransaccion(db, idTransaccion, idCliente, cedula, fecha, hora, nuevoSaldo, "CDP redimido", montoCDP, 0.0, "CDP", "Cuenta");
+
+            // Insertar la transacción de los intereses ganados
+            insertarTransaccion(db, idTransaccion + 1, idCliente, cedula, fecha, hora, nuevoSaldo, "Intereses ganados CDP", intereses, 0.0, "Intereses", "Cuenta");
+
+            // Eliminar el CDP redimido de la tabla
+            const char *sql_delete_cdp = R"(
+                DELETE FROM tablaCDP
+                WHERE IdCDP = ?
+            )";
+            sqlite3_stmt *stmt_delete;
+            if (sqlite3_prepare_v2(db, sql_delete_cdp, -1, &stmt_delete, nullptr) == SQLITE_OK) {
+                sqlite3_bind_int(stmt_delete, 1, idCDP);
+                sqlite3_step(stmt_delete);
+                sqlite3_finalize(stmt_delete);
+            }
+
+            std::cout << "CDP ID " << idCDP << " redimido exitosamente.\n";
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+}
+
