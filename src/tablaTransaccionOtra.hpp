@@ -92,8 +92,14 @@ void crearTablaTransacciones(sqlite3 *db) {
 void insertarTransacciones(sqlite3 *db) {
     const char *sql_insert_data = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino) VALUES
-        (601, 2701006, '702890948', '4444444444', '4444444444', 44444444, 'AAAAAAAAAAAAAAAAAAAA', 8888888, 9999999, '10000', '11000'),
-        (602, 1203004, '901460040', '4444444444', '4444444444', 44444444, 'AAAAAAAAAAAAAAAAAAAA', 8888888, 9999999, '10000', '11000');
+        (3000041, 2701006, '702890948', '2017-01-11', '21:31:19', 87354.22, 'Transferencia realizada', 0, 300, 'Dolares', 'Dolares'),
+        (3000042, 2701027, '702890950', '2017-02-12', '21:31:19', 21285.98, 'Transferencia recibida', 300, 0, 'Dolares', 'Dolares'),
+        (3006334, 1203004, '901460040', '2018-03-13', '23:42:08', 4371687.12, 'Transferencia realizada', 0, 50300, 'Colones', 'Dolares'),
+        (3006335, 2701006, '702890948', '2018-04-14', '23:42:08', 87449.12566037737, 'Transferencia recibida', 94.90566037735849, 0, 'Colones', 'Dolares'),
+        (3018467, 1701014, '702890952', '2019-05-15', '23:41:05', 1410987.45, 'Transferencia realizada', 0, 40000, 'Colones', 'Colones'),
+        (3018468, 1504004, '504380806', '2019-06-16', '23:41:05', 694987.33, 'Transferencia recibida', 40000, 0, 'Colones', 'Colones'),
+        (3026500, 2701027, '702890950', '2020-07-17', '23:42:29', 20885.98, 'Transferencia realizada', 0, 400, 'Dolares', 'Colones'),
+        (3026501, 1504004, '504380806', '2020-18-18', '23:42:29', 906987.33, 'Transferencia recibida', 212000, 0, 'Dolares', 'Colones');
     )";
    
     char *err_msg = nullptr;
