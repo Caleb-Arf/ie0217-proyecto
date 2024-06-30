@@ -411,67 +411,7 @@ int main() {
                                 }
                                 break;
                             case ABONAREXTRAP:
-                                int idCuenta;
-                                int idPrestamo;
-                                double monto;
-                                std::string cedula;
                                 
-                                while (true) {
-                                    std::cout << "Ingrese la cuenta de origen (0 para salir): ";
-                                    std::cin >> idCuenta;
-                                    if (idCuenta == 0) {
-                                        std::cout << "Saliendo" << std::endl;
-                                        break;
-                                    }
-                                    if (!cuentaExiste1(db, idCuenta)) {
-                                        std::cerr << "La cuenta de origen no existe. Intente de nuevo." << std::endl;
-                                    } else {
-                                        break; // La cuenta existe, sale del bucle
-                                    }
-                                }
-                            
-                                if (idCuenta == 0) {
-                                    sqlite3_close(db);
-                                    return 0;
-                                }
-                            
-                                while (true) {
-                                    std::cout << "Ingrese el ID del préstamo (0 para salir): ";
-                                    std::cin >> idPrestamo;
-                                    if (idPrestamo == 0) {
-                                        std::cout << "Saliendo" << std::endl;
-                                        break;
-                                    }
-                                    if (!prestamoExiste(db, idPrestamo)) {
-                                        std::cerr << "El préstamo no existe." << std::endl;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            
-                                if (idPrestamo == 0) {
-                                    sqlite3_close(db);
-                                    return 0;
-                                }
-                            
-                                while (true) {
-                                    std::cout << "Ingrese el monto a abonar: ";
-                                    std::cin >> monto;
-                                    if (monto == 0) {
-                                        std::cout << "Saliendo" << std::endl;
-                                        break;
-                                    }
-                                    if (monto <= 0) {
-                                        std::cerr << "El monto de la transferencia debe ser mayor a 0." << std::endl;
-                                    } else {
-                                        int resultado = realizarAbonoExtraordinario(db, idCuenta, idPrestamo, monto);
-                                        if (resultado == SQLITE_OK) {
-                                            break;
-                                        } else {
-                                            std::cerr << "Error al realizar el abono. Intente de nuevo." << std::endl;
-                                        }
-                                    }
-                                }
 
                                 break;
                             case OBTENER:
