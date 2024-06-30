@@ -10,6 +10,7 @@ Pendientes:
 #include <string>
 #include <regex>
 #include "tasas.hpp"
+#include "edc.hpp"
 #include "clientes.hpp"
 #include "transferencia.hpp"
 #include "clientes2.hpp"
@@ -211,8 +212,23 @@ int main() {
                         std::cout << std::endl;
 
                         switch (operacion) {
-                            case ESTADO:
-                                // Consultar el estado de cuenta
+                            case ESTADO: {
+                                // Ingresa el IdCliente para encontrar la info
+                                int IdCliente;
+                                std::string fechaInicio;
+                                std::string fechaFin;
+
+                                std::cout << "Ingrese IdCliente: ";
+                                std::cin >> IdCliente;
+
+                                // Ingresa el rango de fechas
+                                std::cout << "Ingrese la fecha de inicio (YYYY-MM-DD): ";
+                                std::cin >> fechaInicio;
+                                std::cout << "Ingrese la fecha de fin (YYYY-MM-DD): ";
+                                std::cin >> fechaFin;
+                            
+                                regresarDatosTransaccion(db, IdCliente, fechaInicio, fechaFin);
+                            }
                                 break;
                             case TASACDP:
                                 if (!tablaExiste(db, "TasasCDP")) {

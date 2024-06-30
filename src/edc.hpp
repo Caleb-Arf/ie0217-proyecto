@@ -5,14 +5,14 @@
 #include <sstream>
 #include <cmath>
 
-// Función para recibir datos de la transacción
+// Funcion para recibir datos de la transaccion
 void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fechaInicio, const std::string& fechaFin) {
     const char* sql = "SELECT FechaTransaccion, Detalle, Credito, Debito, SaldoBalance FROM tablaTransacciones WHERE IdCliente = ? AND FechaTransaccion BETWEEN ? AND ?";
     sqlite3_stmt* stmt;
 
     int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
-        std::cerr << "Error preparando declaración SQL: " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "Error preparando declaracion SQL: " << sqlite3_errmsg(db) << std::endl;
         return;
     }
 
@@ -21,7 +21,7 @@ void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fec
     sqlite3_bind_text(stmt, 2, fechaInicio.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 3, fechaFin.c_str(), -1, SQLITE_STATIC);
 
-    // Imprime la información en tabla
+    // Imprime la informacion en tabla
     std::cout << std::setw(20) << std::setfill(' ') << "Fecha Transaccion" << " | "
               << std::setw(30) << "Detalle" << " | "
               << std::setw(14) << "Credito" << " | "
@@ -42,10 +42,10 @@ void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fec
     }
 
     if (rc != SQLITE_DONE) {
-        std::cerr << "Error ejecutando la declaración SQL: " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "Error ejecutando la declaracion SQL: " << sqlite3_errmsg(db) << std::endl;
     }
 
-    // Finaliza la declaración
+    // Finaliza la declaracion
     sqlite3_finalize(stmt);
 }
 
