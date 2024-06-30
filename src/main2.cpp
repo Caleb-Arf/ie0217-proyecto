@@ -59,11 +59,16 @@ void mostrarMenuInfo(sqlite3 *db) {
         std::cout << "4. Generar tabla de pagos esperada" << std::endl;
         std::cout << "5. Regresar al menu principal." << std::endl;
         std::cout << "Seleccione una opcion: ";
-        std::cin >> operacion_info;
+
+        while (!(std::cin >> operacion_info)) {
+            std::cerr << "Opcion no valida. Elija un numero del 1 al 5.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
         std::cout << std::endl;
 
         switch (operacion_info) {
-            case TIPOPRESTAMOS:
+            case TIPOPRESTAMOS: {
                 if (!tablaExiste(db, "Prestamos")) {
                     crearInfoPrestamos(db);
                     insertarDatosPrestamos(db);
@@ -92,7 +97,12 @@ void mostrarMenuInfo(sqlite3 *db) {
                 std::cout << "2. Dolares" << std::endl;
                 int opcionMoneda;
                 std::cout << "\nIngrese el numero correspondiente a la moneda del prestamo: ";
-                std::cin >> opcionMoneda;
+                while (!(std::cin >> opcionMoneda)) {
+                    std::cerr << "Opcion no valida. Elija 1 o 2.\n";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
                 if (opcionMoneda == 1) {
                     imprimirMenuTipo1(db);
                 } else if (opcionMoneda == 2) {
@@ -107,6 +117,7 @@ void mostrarMenuInfo(sqlite3 *db) {
             default:
                 std::cout << "Opcion no valida. Intente de nuevo...\n";
                 break;
+            }
         }
     } while (operacion_info != REGRESAR2);
 }
@@ -158,7 +169,11 @@ int main() {
         std::cout << "2. Obtener informacion sobre prestamos bancarios." << std::endl;
         std::cout << "3. Salir." << std::endl;
         std::cout << "Seleccione una opcion: ";
-        std::cin >> opcion;
+        while (!(std::cin >> opcion)) {
+            std::cerr << "Opcion no valida. Elija un numero del 1 al 3.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
         std::cout << std::endl;
 
         switch (opcion) {
@@ -191,7 +206,7 @@ int main() {
                             agregarNuevoCliente(db);
                         }
                     }
-
+                    imprimirIdClientesPorCedula(db, cedula);
                     Cliente cliente(db, identificador);
                     Operacion ejecutar(db, &cliente);
                     int operacion;
@@ -208,8 +223,14 @@ int main() {
                         std::cout << "10. Obtener informacion de prestamos." << std::endl;
                         std::cout << "11. Regresar al menu principal." << std::endl;
                         std::cout << "Seleccione una operacion a realizar: ";
-                        std::cin >> operacion;
+
+                        while (!(std::cin >> operacion)) {
+                            std::cerr << "Opcion no valida. Elija un numero del 1 al 11.\n";
+                            std::cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        }
                         std::cout << std::endl;
+
 
                         switch (operacion) {
                             case ESTADO: {
@@ -231,10 +252,6 @@ int main() {
                             }
                                 break;
                             case TASACDP:
-                                if (!tablaExiste(db, "TasasCDP")) {
-                                    crearCdp(db);
-                                    insertarCdp(db);
-                                }
                                 printTableHeaders();
                                 mostrarTablaTasas(db);
                                 break;
@@ -247,7 +264,6 @@ int main() {
                             case TRANSFERENCIA: {
                                 int idOrigen, idDestino;
                                 double monto;
-
                                 while (true) {
                                     std::cout << "Ingrese la cuenta de origen (0 para salir): ";
                                     std::cin >> idOrigen;
@@ -261,12 +277,10 @@ int main() {
                                         break; // La cuenta existe, sale del bucle
                                     }
                                 }
-
                                 if (idOrigen == 0) {
                                     sqlite3_close(db);
                                     break;
                                 }
-
                                 while (true) {
                                     std::cout << "Ingrese la cuenta de destino (0 para salir): ";
                                     std::cin >> idDestino;
@@ -280,12 +294,10 @@ int main() {
                                         break;
                                     }
                                 }
-
                                 if (idDestino == 0) {
                                     sqlite3_close(db);
                                     break;
                                 }
-
                                 while (true) {
                                     std::cout << "Ingrese el monto a transferir (0 para salir): ";
                                     std::cin >> monto;
@@ -299,12 +311,10 @@ int main() {
                                         break;
                                     }
                                 }
-
                                 if (monto == 0) {
                                     sqlite3_close(db);
                                     break;
                                 }
-
                                 try {
                                     realizarTransferencia(db, idOrigen, idDestino, monto);
                                 } catch (const std::exception &e) {
@@ -346,18 +356,15 @@ int main() {
                                         break;
                                     }
                                 }
-
                                 if (monto2 == 0) {
                                     sqlite3_close(db);
                                     break;
                                 }
-
                                 try {
                                     realizarDeposito(db, idOrigen2, idDestino2, monto2);
                                 } catch (const std::exception &e) {
                                     std::cerr << "Error: " << e.what() << std::endl;
                                 }
-
                                 break;
                             }
                             case SOLICITARP:
@@ -367,8 +374,6 @@ int main() {
                                 int idCuenta;
                                 int idPrestamo;
                                 double monto;
-
-
                                 while (true) {
                                     std::cout << "Ingrese la cuenta a debitar (0 para salir): ";
                                     std::cin >> idCuenta;
@@ -463,13 +468,11 @@ int main() {
                                     } else {
                                         break;
                                     }
-                                }
-                            
+                                }                            
                                 if (idPrestamo2 == 0) {
                                     sqlite3_close(db);
                                     return 0;
-                                }
-                            
+                                }                    
                                 while (true) {
                                     std::cout << "Ingrese el monto a abonar: ";
                                     std::cin >> monto3;
@@ -489,7 +492,6 @@ int main() {
                                     }
                                 }
                             }
-
                                 break;
                             case OBTENER:
                                 mostrarMenuInfo(db);
@@ -511,13 +513,12 @@ int main() {
                 break;
             case SALIR:
                 std::cout << "Saliendo del programa...\n";
-                sqlite3_close(db);
                 break;
             default:
                 std::cout << "Opcion no valida. Intente de nuevo...\n";
                 break;
         }
     } while (opcion != SALIR);
-
+    sqlite3_close(db);
     return 0;
 }

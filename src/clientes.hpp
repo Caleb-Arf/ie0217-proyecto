@@ -280,25 +280,33 @@ void agregarNuevoCliente(sqlite3 *db) {
     sqlite3_finalize(stmt);
    
 }
-// Verificacion de existencia de la cedula
-//void buscarCedula(sqlite3 *db) {
-//    std::string cedula;
-//    while (true) {
-//        std::cout << "\n------Verificacion de cedula------\n";
-//        std::cout << "Ingrese la cedula (9 numeros o 0 para salir): ";
-//        std::cin >> cedula;
-//        if (cedula == "0") {
-//            std::cout << "Saliendo del registro de cliente." << std::endl;
-//            return;
-//        }
-//        // Validar si la cedula contiene solo numeros y tiene exactamente 9 digitos
-//        if (!std::regex_match(cedula, std::regex("\\d{9}"))) {
-//            std::cerr << "Error: La cedula debe contener 9 numeros." << std::endl;
-//            continue; // Volver a solicitar la cedula si no cumple con el formato
-//        }
-//
-//        break; // Salir del bucle si la cedula es valida
-//    }
-//
-//}
+
+void imprimirIdClientesPorCedula(sqlite3* db, const std::string& cedula) {
+    const char* sql = "SELECT IdCliente, TipoCuenta FROM Clientes WHERE Cedula = ?";
+    sqlite3_stmt* stmt;
+
+    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "Error preparando la declaración SQL: " << sqlite3_errmsg(db) << std::endl;
+        return;
+    }
+
+    // Conectar la cédula al parámetro
+    sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
+
+    // Imprimir resultados
+    std::cout << "\nIdCuenta | Tipo de Cuenta" << std::endl;
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        int idCliente = sqlite3_column_int(stmt, 0);
+        const unsigned char* tipoCuenta = sqlite3_column_text(stmt, 1);
+        std::cout << idCliente << "  | " << tipoCuenta << std::endl;
+    }
+
+    if (rc != SQLITE_DONE) {
+        std::cerr << "Error ejecutando la declaración SQL: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // Finalizar la declaración
+    sqlite3_finalize(stmt);
+}
 
