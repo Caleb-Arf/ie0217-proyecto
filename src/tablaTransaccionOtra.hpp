@@ -1,3 +1,8 @@
+/**
+ * @file tablaTransaccionOtra.hpp
+ * @brief Archivo que contiene las funciones para gestionar la tabla de transacciones en una base de datos SQLite.
+ */
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>
@@ -5,7 +10,13 @@
 #include <cmath>
 #include <vector>
 
-// Función para ejecutar consultas SQL
+/**
+ * @brief Función para ejecutar consultas SQL en la base de datos de transacciones.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ * @param consulta Consulta SQL a ejecutar.
+ * @return int Código de resultado de la ejecución de la consulta SQL.
+ */
 int ejecutarSQLTransacciones(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
@@ -16,52 +27,64 @@ int ejecutarSQLTransacciones(sqlite3* db, const std::string& consulta) {
     return resultado;
 }
 
-
-// Callback para impresion de tabla de transacciones
+/**
+ * @brief Callback para la impresión de la tabla de transacciones.
+ * 
+ * @param data Puntero a los datos pasados al callback (no se usa en esta función).
+ * @param argc Número de columnas en la fila.
+ * @param argv Matriz de cadenas que contiene los valores de cada columna.
+ * @param azColName Matriz de cadenas que contiene los nombres de las columnas.
+ * @return int Código de resultado de la ejecución del callback.
+ */
 static int callbackT(void *data, int argc, char **argv, char **azColName) {
-    // Imprime los datos de la tabla.
     std::cout << std::setw(14) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(10) << (argv[1] ? argv[1] : "NULL") << " | "
               << std::setw(11) << (argv[2] ? argv[2] : "NULL") << " | "
               << std::setw(16) << (argv[3] ? argv[3] : "NULL") << " | "
               << std::setw(12) << (argv[4] ? argv[4] : "NULL") << " | "
-              << std::setw(13) << (argv[5] ? argv[5] : "NULL") << " | "
-              << std::setw(15) << (argv[6] ? argv[6] : "NULL") << " | "
-              << std::setw(12) << (argv[7] ? argv[7] : "NULL") << " | "
+              << std::setw(17) << (argv[5] ? argv[5] : "NULL") << " | "
+              << std::setw(25) << (argv[6] ? argv[6] : "NULL") << " | "
+              << std::setw(19) << (argv[7] ? argv[7] : "NULL") << " | "
               << std::setw(12) << (argv[8] ? argv[8] : "NULL") << " | "
               << std::setw(12) << (argv[9] ? argv[9] : "NULL") << " | "
-              << std::setw(12) << (argv[10] ? argv[10] : "NULL") << std::endl;
+              << std::setw(14) << (argv[10] ? argv[10] : "NULL") << " | " << std::endl;
     return 0;
 }
 
-//Imprime encabezados
+/**
+ * @brief Imprime los encabezados de la tabla de transacciones.
+ */
 void printTableHeadersTransacciones() {
-    std::cout << std::setw(40) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
-    std::cout << std::setw(14) << "IdTransaccion" << " | " //1
-              << std::setw(10) << "IdCliente" << " | " //2
-              << std::setw(11) << "Cedula" << " | " //3
-              << std::setw(12) << "FechaTransaccion" << " | " //4 
-              << std::setw(12) << "Hora" << " | " //5
-              << std::setw(13) << "SaldoBalance" << " | " //6
-              << std::setw(20) << "Detalle" << " | " //7
-              << std::setw(12) << "Credito" << " | " //8
-              << std::setw(12) << "Debito" << " | " //9
-              << std::setw(6) << "CuentaOrigen" << " | " //10
-              << std::setw(6) << "CuentaDestino" << std::endl;
-    std::cout << std::string(14, '-') << " | " //1
-              << std::string(10, '-') << " | " //2
-              << std::string(11, '-') << " | " //3
-              << std::string(16, '-') << " | " //4
-              << std::string(12, '-') << " | " //5
-              << std::string(13, '-') << " | " //6
-              << std::string(20, '-') << " | " //7
-              << std::string(12, '-') << " | " //8
-              << std::string(12, '-') << " | " //9
-              << std::string(12, '-') << " | " //10
-              << std::string(14, '-') << std::endl; //11
+    std::cout << std::setw(105) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
+    std::cout << std::setw(14) << "IdTransaccion" << " | "               // 1
+              << std::setw(10) << "IdCliente" << " | "                   // 2
+              << std::setw(11) << "Cedula" << " | "                      // 3
+              << std::setw(16) << "FechaTransaccion" << " | "            // 4 
+              << std::setw(12) << "Hora" << " | "                        // 5
+              << std::setw(17) << "SaldoBalance" << " | "                // 6
+              << std::setw(25) << "Detalle" << " | "                     // 7
+              << std::setw(19) << "Credito" << " | "                     // 8
+              << std::setw(12) << "Debito" << " | "                      // 9
+              << std::setw(12) << "CuentaOrigen" << " | "                // 10
+              << std::setw(14) << "CuentaDestino" << " | " << std::endl; // 11
+    std::cout << std::string(14, '-') << " | "               // 1
+              << std::string(10, '-') << " | "               // 2
+              << std::string(11, '-') << " | "               // 3
+              << std::string(16, '-') << " | "               // 4
+              << std::string(12, '-') << " | "               // 5
+              << std::string(17, '-') << " | "               // 6
+              << std::string(25, '-') << " | "               // 7
+              << std::string(19, '-') << " | "               // 8
+              << std::string(12, '-') << " | "               // 9
+              << std::string(12, '-') << " | "               // 10
+              << std::string(14, '-') << " | " << std::endl; // 11
 }
 
-// Crea la tabla transacciones 
+/**
+ * @brief Crea la tabla de transacciones en la base de datos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearTablaTransacciones(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS tablaTransacciones ("
@@ -88,7 +111,11 @@ void crearTablaTransacciones(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla transacciones
+/**
+ * @brief Inserta datos en la tabla de transacciones.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void insertarTransacciones(sqlite3 *db) {
     const char *sql_insert_data = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino) VALUES
@@ -125,7 +152,11 @@ void insertarTransacciones(sqlite3 *db) {
     }
 }
 
-// Selecciona y muestra datos de la tabla transacciones
+/**
+ * @brief Selecciona y muestra datos de la tabla de transacciones.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void mostrarTablaTransacciones(sqlite3 *db) {
     const char *sql = "SELECT * FROM tablaTransacciones";
     char *err_msg = nullptr;
@@ -138,7 +169,11 @@ void mostrarTablaTransacciones(sqlite3 *db) {
     }
 }
 
-// Elimina la tabla Transacciones
+/**
+ * @brief Elimina los datos de la tabla de transacciones.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void eliminarDatosTransacciones(sqlite3 *db) {
     const char *sql_delete_data = "DELETE FROM tablaTransacciones";
     char *err_msg = nullptr;
