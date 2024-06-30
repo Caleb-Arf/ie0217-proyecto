@@ -1,4 +1,4 @@
-# Propuesta de Proyecto Final G10
+# Proyecto Final G10
 
 Universidad de Costa Rica
 
@@ -17,7 +17,7 @@ Evelyn Feng Wu - B82870
 I Semestre 2024
 
 
-# Propuesta de investigación y diseño para un sistema de gestión bancaria
+# Investigación, diseño e implementación de un sistema de gestión bancaria
 
 ## Objetivo principal
 
@@ -93,9 +93,15 @@ Se le pide al cliente depositar al menos 5000 colones o 10 dólares para activar
 
 **Opción 3**. Salir
 
+## Instrucciones de ejecución
+### Estos comando son para realizar en la carpeta ie0217-proyecto
+Primero se utiliza el comando ```make clean``` para deshacerse de su objeto y archivos ejecutables.
 
+Luego se utiliza ```make build``` para compilar todos los archivos fuente del proyecto.
 
+El siguiente comando es ```make run``` que se usa para corree el programa compilado.
 
+Finalmente se usa el comando ```make``` para crear el programa ejecutable a partir del código fuente.
 
 ## Términos importantes a considerar
 
