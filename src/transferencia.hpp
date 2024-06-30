@@ -4,7 +4,11 @@
 #include <ctime>
 #include <cstdlib>
 
-
+/**
+ * @brief Función para obtener la fecha y hora actual en formato YYYY-MM-DD HH:MM:SS.
+ * 
+ * @return std::string Fecha y hora actual formateada como string.
+ */
 
 std::string obtenerFechaHoraActual() {
     time_t now = time(0);
@@ -22,7 +26,14 @@ std::string obtenerFechaHoraActual() {
     return std::string(fechaHora);
 }
 
-// Verifica si existe cuenta
+/**
+ * @brief Verifica si existe una cuenta en la base de datos.
+ * 
+ * @param db Base de datos SQLite.
+ * @param idCuenta ID de la cuenta a verificar.
+ * @return true Si la cuenta existe.
+ * @return false Si la cuenta no existe.
+ */
 bool cuentaExiste1(sqlite3 *db, int idCuenta) {
     sqlite3_stmt *stmt = nullptr;
     std::string sql = "SELECT COUNT(*) FROM Clientes WHERE IdCliente = ?";
@@ -37,7 +48,15 @@ bool cuentaExiste1(sqlite3 *db, int idCuenta) {
 
     return existe;
 }
-
+/**
+ * @brief Realiza una transferencia entre cuentas.
+ * 
+ * @param db Base de datos SQLite.
+ * @param idOrigen ID de la cuenta de origen.
+ * @param idDestino ID de la cuenta de destino.
+ * @param monto Monto a transferir.
+ * @return int Código de error SQLite.
+ */
 int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto) {
     const double tipoCambio = 530.0;
     sqlite3_stmt *stmt = nullptr;
@@ -190,7 +209,15 @@ int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto
     std::cout << "Transferencia realizada con exito." << std::endl;
     return SQLITE_OK;
 }
-
+/**
+ * @brief Realiza un depósito en una cuenta.
+ * 
+ * @param db Base de datos SQLite.
+ * @param idOrigen2 ID de la cuenta a la que se realiza el depósito.
+ * @param idDestino2 ID de la cuenta destino (mismo que idOrigen2).
+ * @param monto2 Monto a depositar.
+ * @return int Código de error SQLite.
+ */
 int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) {
     const double tipoCambio = 530.0;
     sqlite3_stmt *stmt = nullptr;
@@ -282,23 +309,16 @@ int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) 
     std::cout << "Deposito realizado con exito." << std::endl;
     return SQLITE_OK;
 
-    // Print tablaTransacciones
- // sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
- // sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-// if (sqlite3_step(stmt) == SQLITE_ROW) {
- //     std::cout << "\nTransaccion finalizada:" << std::endl;
- //     std::cout << "Numero de Transaccion: " << id << std::endl;
- //     std::cout << "IdCliente: " << idOrigen2 << std::endl;
- //     std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
- //     std::cout << "Hora: " << hora.c_str() << std::endl;
- //     std::cout << "SaldoBalance: " << balanceOrigen << std::endl;
- //     std::cout << "Detalle: " << "Deposito realizado" << std::endl;
- //     std::cout << "Credito: " << monto2 << std::endl;
-// }
- // sqlite3_finalize(stmt);
 }
 
-// Verifica si existe el prestamo
+/**
+ * @brief Verifica si existe un préstamo en la base de datos.
+ * 
+ * @param db Base de datos SQLite.
+ * @param idPrestamo ID del préstamo a verificar.
+ * @return true Si el préstamo existe.
+ * @return false Si el préstamo no existe.
+ */
 bool prestamoExiste(sqlite3 *db, int idPrestamo) {
     sqlite3_stmt *stmt = nullptr;
     std::string sql = "SELECT COUNT(*) FROM tablaPrestamos WHERE IdPrestamo = ?";
@@ -491,7 +511,15 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     return SQLITE_OK;
 }
 
-
+/**
+ * @brief Realiza un abono a un préstamo existente.
+ * 
+ * @param db Base de datos SQLite.
+ * @param idCuenta ID de la cuenta que realiza el abono.
+ * @param idPrestamo ID del préstamo al que se realiza el abono.
+ * @param montoAbono Monto a abonar al préstamo.
+ * @return int Código de error SQLite.
+ */
 int realizarAbonoExtraordinario(sqlite3 *db, int idCuenta3, int idPrestamo2, double montoAbono) {
     const double tipoCambio = 530.0;
     sqlite3_stmt *stmt = nullptr;
@@ -669,7 +697,11 @@ std::string getUserInput(const std::string &prompt) {
 }
 
 
-// calcula entre dos meses
+/**
+ * @brief Calcula los datos entre dos meses.
+ *
+ * @param db Base de datos SQLite3.
+ */
 int calculateMonthsDifference(const std::string &startDate, const std::string &endDate) {
     std::tm tm_start = {};
     std::tm tm_end = {};
@@ -682,7 +714,12 @@ int calculateMonthsDifference(const std::string &startDate, const std::string &e
     return months;
 }
 
-// Function to update DiasFaltantesCDP
+/**
+ * @brief Actualiza los meses faltantes de CDP para la cedula especificada.
+ *
+ * @param db Base de datos SQLite3.
+ * @param cedula Cedula del cliente.
+ */
 void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
         SELECT IdCDP, FechaCreacionCDP, FechaVencimientoCDP, Plazo
@@ -721,7 +758,13 @@ void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
     }
 }
 
-// Function to check if the cedula exists in tablaCDP
+/**
+ * @brief Verifica si la cedula existe en la tabla de CDP.
+ *
+ * @param db Base de datos SQLite3.
+ * @param cedula Cedula del cliente.
+ * @return true si la cedula existe, false si no.
+ */
 bool cedulaExists(sqlite3 *db, const std::string &cedula) {
     const char *sql_check_cedula = R"(
         SELECT COUNT(*)
@@ -743,7 +786,12 @@ bool cedulaExists(sqlite3 *db, const std::string &cedula) {
     return exists;
 }
 
-// Function to display existing CDPs for the given cedula
+/**
+ * @brief Muestra los CDP existentes para la cedula especificada.
+ *
+ * @param db Base de datos SQLite3.
+ * @param cedula Cedula del cliente.
+ */
 void displayExistingCDPs(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
         SELECT IdCDP, FechaCreacionCDP, FechaVencimientoCDP, Plazo, MesesFaltantesCDP, MontoCDP
@@ -775,7 +823,13 @@ void displayExistingCDPs(sqlite3 *db, const std::string &cedula) {
     }
 }
 
-// Definición de las funciones
+/**
+ * @brief Actualiza el saldo del cliente en la tabla de Clientes.
+ *
+ * @param db Base de datos SQLite3.
+ * @param idCliente ID del cliente.
+ * @param nuevoSaldo Nuevo saldo del cliente.
+ */
 void actualizarSaldoCliente(sqlite3 *db, int idCliente, double nuevoSaldo) {
     const char *sql_update_balance = R"(
         UPDATE Clientes
@@ -793,6 +847,22 @@ void actualizarSaldoCliente(sqlite3 *db, int idCliente, double nuevoSaldo) {
     }
 }
 
+/**
+ * @brief Inserta una nueva transaccion en la tabla de Transacciones.
+ *
+ * @param db Base de datos SQLite3.
+ * @param idTransaccion ID de la transaccion.
+ * @param idCliente ID del cliente.
+ * @param cedula Cedula del cliente.
+ * @param fecha Fecha de la transaccion.
+ * @param hora Hora de la transaccion.
+ * @param saldoBalance Saldo del cliente tras la transaccion.
+ * @param detalle Detalle de la transaccion.
+ * @param credito Monto acreditado en la transaccion.
+ * @param debito Monto debitado en la transaccion.
+ * @param cuentaOrigen Cuenta de origen en la transaccion.
+ * @param cuentaDestino Cuenta de destino en la transaccion.
+ */
 void insertarTransaccion(sqlite3 *db, int idTransaccion, int idCliente, const std::string &cedula, const std::string &fecha, const std::string &hora, double saldoBalance, const std::string &detalle, double credito, double debito, const std::string &cuentaOrigen, const std::string &cuentaDestino) {
     const char *sql_insert_transaccion = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
@@ -817,7 +887,12 @@ void insertarTransaccion(sqlite3 *db, int idTransaccion, int idCliente, const st
         std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
     }
 }
-
+/**
+ * @brief Genera un ID único para una nueva transaccion.
+ *
+ * @param db Base de datos SQLite3.
+ * @return ID único generado para la transaccion.
+ */
 int generarIdTransaccion(sqlite3 *db) {
     int idTransaccion;
     sqlite3_stmt *stmt = nullptr;
@@ -850,7 +925,12 @@ int generarIdTransaccion(sqlite3 *db) {
     return idTransaccion;
 }
 
-
+/**
+ * @brief Redime los CDPs vencidos para la cedula especificada.
+ *
+ * @param db Base de datos SQLite3.
+ * @param cedula Cedula del cliente.
+ */
 void redimirCDP(sqlite3 *db, const std::string &cedula) {
     const char *sql_select_cdp = R"(
         SELECT IdCDP, MontoCDP, IdCliente, TasaInteresCDP
