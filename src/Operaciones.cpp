@@ -590,7 +590,7 @@ void Operacion::crearCDP(int idCliente) {
     sqlite3_finalize(stmt);
 
     // Inserción del CDP en la tabla
-    sql = "INSERT INTO tablaCDP (IdCliente, Cedula, IdCDP, FechaCreacion2, Divisa2, FechaVencimiento2, MontoCDP, InteresesGanados, TasaInteresCDP, DiasFaltantesCDP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    sql = "INSERT INTO tablaCDP (IdCDP, Cedula, IdCliente, FechaCreacionCDP, DivisaCDP, FechaVencimientoCDP, MontoCDP, InteresesGanados, TasaInteresCDP, MesesFaltantesCDP, Plazo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
         return;
