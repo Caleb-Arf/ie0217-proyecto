@@ -710,7 +710,10 @@ void Operacion::crearCDP(int idCliente) {
     }
     sqlite3_finalize(stmt);
 }
-
+    /**
+     * @brief Consulta los datos mas relevantes del CDP.
+     * @param idCliente ID del cliente que solicita el CDP.
+     */
 void Operacion::consultarCDP() {
     std::cout << "Certificados de Deposito a Plazo disponibles para el cliente" << cliente->getIdCliente() << "." << std::endl;
     std::string sql = "SELECT IdCDP, MontoCDP, FechaCreacion2, TasaInteresCDP FROM tablaCDP WHERE IdCliente = " + std::to_string(cliente->getIdCliente()) + ";";
