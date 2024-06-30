@@ -112,8 +112,8 @@ void crearTablaPrestamos(sqlite3 *db) {
 void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = R"(
         INSERT INTO tablaPrestamos (IdPrestamo, IdCliente, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES
-        (501, 2701006, '702890948', '2019-12-14', 'Dolares', '2024-12-02', 'H01', 1, 1, 1, 1, 1, 1, 1, 1, 1),
-        (506, 1203004, '901460040', '2024-02-01', 'Colones', '2024-12-01', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        (5019283, 2701006, '702890948', '2019-12-14', 'Dolares', '2027-12-02', '090', '40000','12.91','96','50','46','1807','35814.67','554.37'),
+
     )";
     
     char *err_msg = nullptr;
