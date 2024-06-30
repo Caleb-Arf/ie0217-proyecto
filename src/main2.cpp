@@ -134,7 +134,7 @@ int main() {
     }
 
     // Crear tablas si no existen
-    if (!tablaExiste(db, "TasasCDP")) {
+    if (!tablaExiste(db, "TasasColones")) {
         crearTabla1(db);
         insertarData1(db);
     }
@@ -142,7 +142,7 @@ int main() {
         crearDolares(db);
         insertarDolares(db);
     }
-    if (!tablaExiste(db, "TasasColones")) {
+    if (!tablaExiste(db, "TasasCDP")) {
         crearCdp(db);
         insertarCdp(db);
     }
@@ -285,10 +285,7 @@ int main() {
                             }
                                 break;
                             case TASACDP:
-                                if (!tablaExiste(db, "TasasCDP")) {
-                                    crearTabla1(db);
-                                    insertarData1(db);
-                                }
+
                                 printTableHeaders();
                                 mostrarTablaTasas(db);
                                 break;
