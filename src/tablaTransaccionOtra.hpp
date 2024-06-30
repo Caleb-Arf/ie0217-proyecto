@@ -3,6 +3,9 @@
  * @brief Archivo que contiene las funciones para gestionar la tabla de transacciones en una base de datos SQLite.
  */
 
+#ifndef TABLATRANSACCIONOTRA_HPP
+#define TABLATRANSACCIONOTRA_HPP
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>

@@ -1,10 +1,18 @@
+
+#ifndef TASAS_HPP
+#define TASAS_HPP
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>
 #include <iomanip>
 #include <cmath>
 #include <vector>
-
+/**
+ * @brief Define funciones publicas.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void imprimirTablaAmortizacion1(double monto, double tasaInteres, int plazoMeses);
 void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses);
 void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, double tasaInteres, int plazoMeses);

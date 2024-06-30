@@ -4,6 +4,9 @@
 #include <ctime>
 #include <cstdlib>
 
+#ifndef TRASFERENCIA_HPP
+#define TRASFERENCIA_HPP
+
 /**
  * @brief Función para obtener la fecha y hora actual en formato YYYY-MM-DD HH:MM:SS.
  * 
