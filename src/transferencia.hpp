@@ -143,7 +143,7 @@ int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    // Insertar transacción en tablaTransacciones
+    // Insertar transaccion en tablaTransacciones
     sql = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
         VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?);
@@ -159,15 +159,15 @@ int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto
     sqlite3_bind_text(stmt, 3, cedulaOrigen.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 6, balanceOrigen); // Balance después de la transacción
+    sqlite3_bind_double(stmt, 6, balanceOrigen); // Balance despues de la transaccion
     sqlite3_bind_text(stmt, 7, "Transferencia realizada", -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 8, monto); // Débito
+    sqlite3_bind_double(stmt, 8, monto); // Debito
     sqlite3_bind_text(stmt, 9, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 10, tipoCuentaDestino.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    // Insertar transacción de crédito en la cuenta de destino
+    // Insertar transaccion de credito en la cuenta de destino
     sql = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?);
@@ -179,15 +179,15 @@ int realizarTransferencia(sqlite3 *db, int idOrigen, int idDestino, double monto
     sqlite3_bind_text(stmt, 3, cedulaDestino.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 6, balanceDestino); // Balance después de la transacción
+    sqlite3_bind_double(stmt, 6, balanceDestino); // Balance despues de la transaccion
     sqlite3_bind_text(stmt, 7, "Transferencia recibida", -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 8, montoDestino); // Crédito
+    sqlite3_bind_double(stmt, 8, montoDestino); // Credito
     sqlite3_bind_text(stmt, 9, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 10, tipoCuentaDestino.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    std::cout << "Transferencia realizada con éxito." << std::endl;
+    std::cout << "Transferencia realizada con exito." << std::endl;
     return SQLITE_OK;
 }
 
@@ -255,7 +255,7 @@ int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) 
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    // Insertar transacción en tablaTransacciones
+    // Insertar transaccion en tablaTransacciones
     sql = R"(
         INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
         VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?);
@@ -271,37 +271,34 @@ int realizarDeposito(sqlite3 *db, int idOrigen2, int idDestino2, double monto2) 
     sqlite3_bind_text(stmt, 3, cedulaOrigen.c_str(), -1, SQLITE_STATIC); // Cedula de origen
     sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 6, balanceOrigen); // Balance después de la transacción
-    sqlite3_bind_text(stmt, 7, "Depósito realizado", -1, SQLITE_STATIC);
-    sqlite3_bind_double(stmt, 8, monto2); // Crédito
+    sqlite3_bind_double(stmt, 6, balanceOrigen); // Balance despues de la transaccion
+    sqlite3_bind_text(stmt, 7, "Deposito realizado", -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 8, monto2); // Credito
     sqlite3_bind_text(stmt, 9, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 10, tipoCuentaOrigen.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    std::cout << "Depósito realizado con éxito." << std::endl;
+    std::cout << "Deposito realizado con exito." << std::endl;
     return SQLITE_OK;
 
     // Print tablaTransacciones
-    sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
-    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    sqlite3_bind_int(stmt, 1, idTransaccion);
-    if (sqlite3_step(stmt) == SQLITE_ROW) {
-        std::cout << "\nTransacción finalizada:" << std::endl;
-        std::cout << "Numero de Transaccion: " << id << std::endl;
-        std::cout << "IdCliente: " << idOrigen2 << std::endl;
-        std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
-        std::cout << "Hora: " << hora.c_str() << std::endl;
-        std::cout << "SaldoBalance: " << balanceOrigen << std::endl;
-        std::cout << "Detalle: " << "Depósito realizado" << std::endl;
-        std::cout << "Credito: " << monto2 << std::endl;
-
-
-    }
-    sqlite3_finalize(stmt);
+ // sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
+ // sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+// if (sqlite3_step(stmt) == SQLITE_ROW) {
+ //     std::cout << "\nTransaccion finalizada:" << std::endl;
+ //     std::cout << "Numero de Transaccion: " << id << std::endl;
+ //     std::cout << "IdCliente: " << idOrigen2 << std::endl;
+ //     std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
+ //     std::cout << "Hora: " << hora.c_str() << std::endl;
+ //     std::cout << "SaldoBalance: " << balanceOrigen << std::endl;
+ //     std::cout << "Detalle: " << "Deposito realizado" << std::endl;
+ //     std::cout << "Credito: " << monto2 << std::endl;
+// }
+ // sqlite3_finalize(stmt);
 }
 
-// Verifica si existe el préstamo
+// Verifica si existe el prestamo
 bool prestamoExiste(sqlite3 *db, int idPrestamo) {
     sqlite3_stmt *stmt = nullptr;
     std::string sql = "SELECT COUNT(*) FROM tablaPrestamos WHERE IdPrestamo = ?";
@@ -341,7 +338,7 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     }
     sqlite3_finalize(stmt);
 
-    // Obtener datos del préstamo
+    // Obtener datos del prestamo
     sql = "SELECT SaldoPrestamo, MontoCuota, Divisa, CuotasPagadas, CuotasFaltantes, FechaVencimiento, FechaCreacion, DiasVencidos FROM tablaPrestamos WHERE IdPrestamo = ?";
     sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     sqlite3_bind_int(stmt, 1, idPrestamo);
@@ -356,7 +353,7 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
         fechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
         diasVencidos = sqlite3_column_int(stmt, 7);
     } else {
-        std::cerr << "Préstamo no encontrado." << std::endl;
+        std::cerr << "Prestamo no encontrado." << std::endl;
         sqlite3_finalize(stmt);
         return SQLITE_ERROR;
     }
@@ -382,7 +379,7 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     }
 
 
-    // Actualiza saldo del préstamo
+    // Actualiza saldo del prestamo
     saldoPrestamo -= montoConvertido;
 
    // Actualiza balance de la cuenta
@@ -392,7 +389,7 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     cuotasPagadas += 1;
     cuotasFaltantes -= 1;
 
-    // Verifica si la fecha de vencimiento es mayor a la fecha de creación
+    // Verifica si la fecha de vencimiento es mayor a la fecha de creacion
     if (fechaVencimiento > obtenerFechaHoraActual().substr(0, 10)) {
         diasVencidos += 1;
     }
@@ -415,7 +412,7 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    // Insertar transacción en tablaTransacciones
+    // Insertar transaccion en tablaTransacciones
     int idTransaccion;
     sql = "SELECT COUNT(*) FROM tablaTransacciones WHERE IdTransaccion = ?";
     do {
@@ -453,26 +450,26 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_double(stmt, 6, balanceCuenta);
-    sqlite3_bind_text(stmt, 7, "Abono a préstamo", -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 7, "Abono a prestamo", -1, SQLITE_STATIC);
     sqlite3_bind_double(stmt, 8, montoAbono);
     sqlite3_bind_text(stmt, 9, tipoCuenta.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
 
-    std::cout << "Abono realizado con éxito."<< std::endl;
+    std::cout << "Abono realizado con exito."<< std::endl;
 
     // Print tablaTransacciones
     sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
     sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     sqlite3_bind_int(stmt, 1, idTransaccion);
     if (sqlite3_step(stmt) == SQLITE_ROW) {
-        std::cout << "\nTransacción finalizada:" << std::endl;
+        std::cout << "\nTransaccion finalizada:" << std::endl;
         std::cout << "Numero de Transaccion: " << sqlite3_column_int(stmt, 0) << std::endl;
         std::cout << "IdCliente: " << sqlite3_column_int(stmt, 1) << std::endl;
         std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
         std::cout << "Hora: " << hora.c_str() << std::endl;
         std::cout << "SaldoBalance: " << balanceCuenta << std::endl;
-        std::cout << "Detalle: " << "Abono a préstamo" << std::endl;
+        std::cout << "Detalle: " << "Abono a prestamo" << std::endl;
         std::cout << "Debito: " << montoAbono << std::endl;
 
 
@@ -484,11 +481,180 @@ int realizarAbonoPrestamo(sqlite3 *db, int idCuenta, int idPrestamo, double mont
     sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     sqlite3_bind_int(stmt, 1, idPrestamo);
     if (sqlite3_step(stmt) == SQLITE_ROW) {
-        std::cout << "\nPréstamo actualizado:" << std::endl;
+        std::cout << "\nPrestamo actualizado:" << std::endl;
         std::cout << "IdPrestamo: " << sqlite3_column_int(stmt, 0) << std::endl;
         std::cout << "Saldo pendiente: " << saldoPrestamo << std::endl;
         std::cout << "CuotasPagadas: " << cuotasPagadas << std::endl;
         std::cout << "CuotasFaltantes: " << cuotasFaltantes << std::endl;
+    }
+    sqlite3_finalize(stmt);
+    return SQLITE_OK;
+}
+
+
+int realizarAbonoExtraordinario(sqlite3 *db, int idCuenta, int idPrestamo, double montoAbono) {
+    const double tipoCambio = 530.0;
+    sqlite3_stmt *stmt = nullptr;
+    std::string tipoCuenta, tipoPrestamo, cedula;
+    double balanceCuenta, saldoPrestamo, cuotaMensual;
+    int cuotasPagadas, cuotasFaltantes, diasVencidos;
+    std::string fechaVencimiento, fechaCreacion;
+
+    // Obtener datos de la cuenta
+    std::string sql = "SELECT Balance, TipoCuenta, Cedula FROM Clientes WHERE IdCliente = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idCuenta);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        balanceCuenta = sqlite3_column_double(stmt, 0);
+        tipoCuenta = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        cedula = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+    } else {
+        std::cerr << "Cuenta no encontrada." << std::endl;
+        sqlite3_finalize(stmt);
+        return SQLITE_ERROR;
+    }
+    sqlite3_finalize(stmt);
+
+    // Obtener datos del prestamo
+    sql = "SELECT SaldoPrestamo, MontoCuota, Divisa, CuotasPagadas, CuotasFaltantes, FechaVencimiento, FechaCreacion, DiasVencidos FROM tablaPrestamos WHERE IdPrestamo = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idPrestamo);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        saldoPrestamo = sqlite3_column_double(stmt, 0);
+        cuotaMensual = sqlite3_column_double(stmt, 1);
+        tipoPrestamo = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        cuotasPagadas = sqlite3_column_int(stmt, 3);
+        cuotasFaltantes = sqlite3_column_int(stmt, 4);
+        fechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
+        fechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
+        diasVencidos = sqlite3_column_int(stmt, 7);
+    } else {
+        std::cerr << "Prestamo no encontrado." << std::endl;
+        sqlite3_finalize(stmt);
+        return SQLITE_ERROR;
+    }
+    sqlite3_finalize(stmt);
+
+
+   double montoConvertido = montoAbono;
+    if (tipoCuenta != tipoPrestamo) {
+        if (tipoCuenta == "Colones" && tipoPrestamo == "Dolares") {
+            montoConvertido = montoAbono / tipoCambio;
+        } else if (tipoCuenta == "Dolares" && tipoPrestamo == "Colones") {
+            montoConvertido = montoAbono * tipoCambio;
+        } else {
+            std::cerr << "Error al aplicar el tipo de cambio." << std::endl;
+            return SQLITE_ERROR;
+        }
+    }
+
+    // Verifica si el abono es mayor que la cuota
+    if (montoConvertido > saldoPrestamo) {
+        std::cerr << "El abono no puede exceder al saldo total del prestamo. Saldo: " << saldoPrestamo << std::endl;
+        return SQLITE_ERROR;
+    }
+
+
+    // Actualiza saldo del prestamo
+    saldoPrestamo -= montoConvertido;
+
+   // Actualiza balance de la cuenta
+    balanceCuenta -= montoAbono;
+
+
+
+    // Actualizar en la base de datos
+    sql = "UPDATE Clientes SET Balance = ? WHERE IdCliente = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_double(stmt, 1, balanceCuenta);
+    sqlite3_bind_int(stmt, 2, idCuenta);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    sql = "UPDATE tablaPrestamos SET SaldoPrestamo = ?, CuotasPagadas = ?, CuotasFaltantes = ?, DiasVencidos = ? WHERE IdPrestamo = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_double(stmt, 1, saldoPrestamo);
+    sqlite3_bind_int(stmt, 2, cuotasPagadas);
+    sqlite3_bind_int(stmt, 3, cuotasFaltantes);
+    sqlite3_bind_int(stmt, 4, diasVencidos);
+    sqlite3_bind_int(stmt, 5, idPrestamo);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    // Insertar transaccion en tablaTransacciones
+    int idTransaccion;
+    sql = "SELECT COUNT(*) FROM tablaTransacciones WHERE IdTransaccion = ?";
+    do {
+        idTransaccion = 5000000 + rand() % 1000000;
+        sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+        sqlite3_bind_int(stmt, 1, idTransaccion);
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+        if (count == 0) {
+            break;
+        }
+
+    } while (true);
+
+    sql = R"(
+        INSERT INTO tablaTransacciones (IdTransaccion, IdCliente, Cedula, FechaTransaccion, Hora, SaldoBalance, Detalle, Credito, Debito, CuentaOrigen, CuentaDestino)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 'Pago Prestamo');
+    )";
+
+    std::string fechaHoraActual = obtenerFechaHoraActual();
+    std::string fecha = fechaHoraActual.substr(0, 10);
+    std::string hora = fechaHoraActual.substr(11, 8);
+
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idTransaccion);
+    sqlite3_bind_int(stmt, 2, idCuenta);
+    sqlite3_bind_text(stmt, 3, cedula.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 4, fecha.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, hora.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 6, balanceCuenta);
+    sqlite3_bind_text(stmt, 7, "Abono a prestamo", -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 8, montoAbono);
+    sqlite3_bind_text(stmt, 9, tipoCuenta.c_str(), -1, SQLITE_STATIC);
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    std::cout << "Abono realizado con exito."<< std::endl;
+
+    // Print tablaTransacciones
+    sql = "SELECT * FROM tablaTransacciones WHERE IdTransaccion = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idTransaccion);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        std::cout << "\nTransaccion finalizada:" << std::endl;
+        std::cout << "Numero de Transaccion: " << sqlite3_column_int(stmt, 0) << std::endl;
+        std::cout << "IdCliente: " << sqlite3_column_int(stmt, 1) << std::endl;
+        std::cout << "FechaTransaccion: " << fecha.c_str() << std::endl;
+        std::cout << "Hora: " << hora.c_str() << std::endl;
+        std::cout << "SaldoBalance: " << balanceCuenta << std::endl;
+        std::cout << "Detalle: " << "Abono a prestamo" << std::endl;
+        std::cout << "Debito: " << montoAbono << std::endl;
+
+
+    }
+    sqlite3_finalize(stmt);
+
+    // Print tablaPrestamos
+    sql = "SELECT * FROM tablaPrestamos WHERE IdPrestamo = ?";
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_bind_int(stmt, 1, idPrestamo);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        std::cout << "\nPrestamo actualizado:" << std::endl;
+        std::cout << "IdPrestamo: " << sqlite3_column_int(stmt, 0) << std::endl;
+        std::cout << "Saldo pendiente: " << saldoPrestamo << std::endl;
     }
     sqlite3_finalize(stmt);
     return SQLITE_OK;
