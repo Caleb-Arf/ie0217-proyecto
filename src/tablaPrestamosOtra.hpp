@@ -1,3 +1,8 @@
+/**
+ * @file tablaPrestamosOtra.hpp
+ * @brief Archivo que contiene las funciones para gestionar la tabla de préstamos en una base de datos SQLite.
+ */
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>
@@ -5,7 +10,13 @@
 #include <cmath>
 #include <vector>
 
-// Función para ejecutar consultas SQL
+/**
+ * @brief Función para ejecutar consultas SQL en la base de datos de préstamos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ * @param consulta Consulta SQL a ejecutar.
+ * @return int Código de resultado de la ejecución de la consulta SQL.
+ */
 int ejecutarSQLPrestamos(sqlite3* db, const std::string& consulta) {
     char* mensajeError = nullptr;
     int resultado = sqlite3_exec(db, consulta.c_str(), nullptr, nullptr, &mensajeError);
@@ -16,13 +27,19 @@ int ejecutarSQLPrestamos(sqlite3* db, const std::string& consulta) {
     return resultado;
 }
 
-
-// Callback para impresion de tabla de préstamos
+/**
+ * @brief Callback para la impresión de la tabla de préstamos.
+ * 
+ * @param data Puntero a los datos pasados al callback (no se usa en esta función).
+ * @param argc Número de columnas en la fila.
+ * @param argv Matriz de cadenas que contiene los valores de cada columna.
+ * @param azColName Matriz de cadenas que contiene los nombres de las columnas.
+ * @return int Código de resultado de la ejecución del callback.
+ */
 static int callbackP(void *data, int argc, char **argv, char **azColName) {
-    // Imprime los datos de la tabla.
     std::cout << std::setw(10) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(10) << (argv[1] ? argv[1] : "NULL") << " | "
-              << std::setw(07) << (argv[2] ? argv[2] : "NULL") << " | "
+              << std::setw(7) << (argv[2] ? argv[2] : "NULL") << " | "
               << std::setw(13) << (argv[3] ? argv[3] : "NULL") << " | "
               << std::setw(8) << (argv[4] ? argv[4] : "NULL") << " | "
               << std::setw(17) << (argv[5] ? argv[5] : "NULL") << " | "
@@ -32,51 +49,57 @@ static int callbackP(void *data, int argc, char **argv, char **azColName) {
               << std::setw(14) << (argv[9] ? argv[9] : "NULL") << " | "
               << std::setw(14) << (argv[10] ? argv[10] : "NULL") << " | "
               << std::setw(15) << (argv[11] ? argv[11] : "NULL") << " | "
-              << std::setw(12) << (argv[12] ? argv[12] : "NULL") << " | " //diasvencidos
+              << std::setw(12) << (argv[12] ? argv[12] : "NULL") << " | " 
               << std::setw(15) << (argv[13] ? argv[13] : "NULL") << " | "
               << std::setw(15) << (argv[14] ? argv[14] : "NULL") << " | "
               << std::setw(12) << (argv[15] ? argv[15] : "NULL") << std::endl;
     return 0;
 }
 
-//Imprime encabezados
+/**
+ * @brief Imprime los encabezados de la tabla de préstamos.
+ */
 void printTableHeadersPrestamos() {
-    std::cout << std::setw(130) << std::setfill(' ') << "tablaTransacciones" << std::endl << std::endl;
-    std::cout << std::setw(10) << "IdPrestamo" << " | " //1
-              << std::setw(10) << "IdCliente" << " | " //2
-              << std::setw(9) << "Cedula" << " | " //3
-              << std::setw(13) << "FechaCreacion" << " | " //4
-              << std::setw(8) << "Divisa" << " | " //5
-              << std::setw(17) << "FechaVencimiento" << " | " //5
-              << std::setw(12) << "TipoPrestamo" << " | " //6
-              << std::setw(19) << "MontoTotalPrestamo" << " | " //7
-              << std::setw(14) << "TasaInteresP" << " | " //8
-              << std::setw(14) << "CuotasTotales" << " | " //9
-              << std::setw(14) << "CuotasPagadas" << " | " //10
-              << std::setw(15) << "CuotasFaltantes" << " | " //11
-              << std::setw(9) << "DiasVencidos" << " | " //12
-              << std::setw(12) << "DiasVencimiento" << " | " //13
-              << std::setw(15) << "SaldoPrestamo" << " | " //14
-              << std::setw(12) << "MontoCuota" << std::endl; //15
-    std::cout << std::string(10, '-') << " | " //1
-              << std::string(10, '-') << " | " //2
-              << std::string(9, '-') << " | " //3
-              << std::string(13, '-') << " | " //4 
-              << std::string(8, '-') << " | " //5
-              << std::string(17, '-') << " | " //6
-              << std::string(12, '-') << " | " //7
-              << std::string(19, '-') << " | " //8
-              << std::string(14, '-') << " | " //9
-              << std::string(14, '-') << " | " //10
-              << std::string(14, '-') << " | " //11
-              << std::string(15, '-') << " | " //12
-              << std::string(12, '-') << " | " //13
-              << std::string(15, '-') << " | " //14
-              << std::string(15, '-') << " | " //15
-              << std::string(12, '-') << std::endl;
+    std::cout << std::setw(130) << std::setfill(' ') << "tablaPrestamos" << std::endl << std::endl;
+    std::cout << std::setw(10) << "IdPrestamo" << " | "         // 1
+              << std::setw(10) << "IdCliente" << " | "          // 2
+              << std::setw(9) << "Cedula" << " | "              // 3
+              << std::setw(13) << "FechaCreacion" << " | "      // 4
+              << std::setw(8) << "Divisa" << " | "              // 5
+              << std::setw(17) << "FechaVencimiento" << " | "   // 6
+              << std::setw(12) << "TipoPrestamo" << " | "       // 7
+              << std::setw(19) << "MontoTotalPrestamo" << " | " // 8
+              << std::setw(14) << "TasaInteresP" << " | "       // 9
+              << std::setw(14) << "CuotasTotales" << " | "      // 10
+              << std::setw(14) << "CuotasPagadas" << " | "      // 11
+              << std::setw(15) << "CuotasFaltantes" << " | "    // 12
+              << std::setw(12) << "DiasVencidos" << " | "       // 13
+              << std::setw(15) << "DiasVencimiento" << " | "    // 14
+              << std::setw(15) << "SaldoPrestamo" << " | "      // 15
+              << std::setw(12) << "MontoCuota" << std::endl;    // 16
+    std::cout << std::string(10, '-') << " | "      // 1
+              << std::string(10, '-') << " | "      // 2
+              << std::string(9, '-') << " | "       // 3
+              << std::string(13, '-') << " | "      // 4 
+              << std::string(8, '-') << " | "       // 5
+              << std::string(17, '-') << " | "      // 6
+              << std::string(12, '-') << " | "      // 7
+              << std::string(19, '-') << " | "      // 8
+              << std::string(14, '-') << " | "      // 9
+              << std::string(14, '-') << " | "      // 10
+              << std::string(14, '-') << " | "      // 11
+              << std::string(15, '-') << " | "      // 12
+              << std::string(12, '-') << " | "      // 13
+              << std::string(15, '-') << " | "      // 14
+              << std::string(15, '-') << " | "      // 15
+              << std::string(12, '-') << std::endl; // 16
 }
 
-// Crea la tabla prestamos 
+/**
+ * @brief Crea la tabla de préstamos en la base de datos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearTablaPrestamos(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS tablaPrestamos ("
@@ -108,7 +131,11 @@ void crearTablaPrestamos(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla Prestamos
+/**
+ * @brief Inserta datos en la tabla de préstamos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void insertarPrestamos(sqlite3 *db) {
     const char *sql_insert_data = R"(
         INSERT INTO tablaPrestamos (IdPrestamo, IdCliente, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota)
@@ -125,8 +152,11 @@ void insertarPrestamos(sqlite3 *db) {
     }
 }
 
-
-// Selecciona y muestra datos de la tabla Prestamos
+/**
+ * @brief Selecciona y muestra datos de la tabla de préstamos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void mostrarTablaPrestamos(sqlite3 *db) {
     const char *sql = "SELECT * FROM tablaPrestamos";
     char *err_msg = nullptr;
@@ -139,7 +169,11 @@ void mostrarTablaPrestamos(sqlite3 *db) {
     }
 }
 
-// Elimina la tabla Prestamos
+/**
+ * @brief Elimina los datos de la tabla de préstamos.
+ * 
+ * @param db Puntero a la base de datos SQLite.
+ */
 void eliminarDatosPrestamos(sqlite3 *db) {
     const char *sql_delete_data = "DELETE FROM tablaPrestamos";
     char *err_msg = nullptr;
@@ -151,7 +185,3 @@ void eliminarDatosPrestamos(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
-
-
-
-
