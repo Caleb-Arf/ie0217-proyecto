@@ -312,30 +312,30 @@ int main() {
                                         break; // La cuenta existe, sale del bucle
                                     }
                                 }
-                            
+
                                 if (idOrigen2 == 0) {
                                     sqlite3_close(db);
                                     return 0;
                                 }
                                  while (true) {
-                                    std::cout << "Ingrese el monto2 a transferir (0 para salir): ";
+                                    std::cout << "Ingrese el monto a transferir (0 para salir): ";
                                     std::cin >> monto2;
                                     if (monto2 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
                                     }
                                     if (monto2 <= 0) {
-                                        std::cerr << "El monto2 de la transferencia debe ser mayor a 0." << std::endl;
+                                        std::cerr << "El monto de la transferencia debe ser mayor a 0." << std::endl;
                                     } else {
                                         break;
                                     }
                                 }
-                            
+
                                 if (monto2 == 0) {
                                     sqlite3_close(db);
                                     return 0;
                                 }
-                            
+
                                 try {
                                     realizarDeposito(db, idOrigen2, idDestino2, monto2);
                                 } catch (const std::exception &e) {

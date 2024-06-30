@@ -119,45 +119,6 @@ void validarTipoCuenta(const std::string& tipoCuenta) {
     }
 }
 
-// Genera un ID aleatorio de 12 degitos
-std::string generarID(sqlite3 *db, const std::string& tipoCuenta) {
-    // Semilla para la generacion de numeros aleatorios
-    srand(time(nullptr));
-
-    // Rango de numeros para el primer degito
-    int primerDigitoMin = (tipoCuenta == "Dolares") ? 2 : 1;
-    int primerDigitoMax = primerDigitoMin;
-
-    // Genera el primer degito aleatorio
-    int primerDigito = primerDigitoMin + rand() % (primerDigitoMax - primerDigitoMin + 1);
-
-    // Genera los 11 degitos restantes
-    std::string digitosRestantes;
-    for (int i = 0; i < 11; ++i) {
-        digitosRestantes += std::to_string(rand() % 10); // Genera degitos aleatorios de 0 a 9
-    }
-
-    // Concatena el primer degito con los degitos restantes
-    std::string id = std::to_string(primerDigito) + digitosRestantes;
-
-    // Verifica si el ID generado ya existe en la tabla Clientes
-    std::string sql = "SELECT COUNT(*) FROM Clientes WHERE IdCliente = ?";
-    sqlite3_stmt *stmt;
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
-        return "";
-    }
-    sqlite3_bind_text(stmt, 1, id.c_str(), -1, SQLITE_STATIC);
-    if (sqlite3_step(stmt) == SQLITE_ROW) {
-        int count = sqlite3_column_int(stmt, 0);
-        if (count > 0) {
-            // Si el ID ya existe, genera uno nuevo recursivamente
-            return generarID(db, tipoCuenta);
-        }
-    }
-    sqlite3_finalize(stmt);
-    return id;
-}
 
 // Pide datos
 // Agrega un nuevo cliente a la base de datos
@@ -260,35 +221,64 @@ void agregarNuevoCliente(sqlite3 *db) {
         }
     }
 
-    std::string id = generarID(db, tipoCuenta);
-    std::cout << "ID generado para la cuenta de tipo " << tipoCuenta << ": " << id << std::endl;
+    int id;
+    int primerDigito = (tipoCuenta == "Dolares") ? 2 : 1;
+    std::string sql = "SELECT COUNT(*) FROM Clientes WHERE TipoCuenta = ?";
+    sqlite3_stmt *stmt;
+
+    do {
+        id = primerDigito * 1000000 + rand() % 1000000;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+            std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            break;
+        }
+
+        sqlite3_bind_int(stmt, 1, id);
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            break;
+        }
+
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+
+        if (count == 0) {
+            break;
+        }
+    } while (true);
+
+
+    std::cout << "El ID de la cuenta en " << tipoCuenta << "es: " << id << std::endl;
 
 //Agrega nuevo cliente a la base de datos
-        std::string sql = "INSERT INTO Clientes (Cedula, Nombre, Telefono, Direccion, Correo, Balance, TipoCuenta) VALUES (?, ?, ?, ?, ?, ?, ?);";
-            sqlite3_stmt *stmt;
-            if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-                std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
-                return;
-            }
+    sql = R"(
+        INSERT INTO Clientes (IdCliente, Cedula, Nombre, Telefono, Direccion, Correo, Balance, TipoCuenta) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+    )";
 
-            sqlite3_bind_text(stmt, 1, cedula.c_str(), -1, SQLITE_STATIC);
-            sqlite3_bind_text(stmt, 2, nombre.c_str(), -1, SQLITE_STATIC);
-            sqlite3_bind_text(stmt, 3, telefono.c_str(), -1, SQLITE_STATIC);
-            sqlite3_bind_text(stmt, 4, direccion.c_str(), -1, SQLITE_STATIC);
-            sqlite3_bind_text(stmt, 5, correo.c_str(), -1, SQLITE_STATIC);
-            sqlite3_bind_double(stmt, 6, balance);
-            sqlite3_bind_text(stmt, 7, tipoCuenta.c_str(), -1, SQLITE_STATIC);
 
-            if (sqlite3_step(stmt) != SQLITE_DONE) {
-                std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
-            } else {
-                std::cout << "Cliente agregado exitosamente" << std::endl;
-            }
+    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_bind_text(stmt, 2, cedula.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 3, nombre.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 4, telefono.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, direccion.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 6, correo.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 7, balance); // Asegúrate de que balance sea del tipo correcto según la estructura de tu tabla
+    sqlite3_bind_text(stmt, 8, tipoCuenta.c_str(), -1, SQLITE_STATIC);
 
-            sqlite3_finalize(stmt);
+    if (sqlite3_step(stmt) != SQLITE_DONE) {
+        std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
+    } else {
+        std::cout << "Cliente agregado exitosamente" << std::endl;
+        
+    }
+
+    sqlite3_finalize(stmt);
+   
 }
-
-
 // Verificacion de existencia de la cedula
 //void buscarCedula(sqlite3 *db) {
 //    std::string cedula;
