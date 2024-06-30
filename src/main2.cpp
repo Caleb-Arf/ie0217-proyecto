@@ -289,7 +289,22 @@ int main() {
                                 mostrarTablaTasas(db);
                                 break;
                             case CREARCDP:
-                                ejecutar.crearCDP();
+                                int idClienteCDP;
+
+                                while (true) {
+                                    std::cout << "Ingrese la cuenta con la que desea solicitar el prestamo (0 para salir): ";
+                                    std::cin >> idClienteCDP;
+                                    if (idClienteCDP == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, idClienteCDP)) {
+                                        std::cerr << "La cuenta no existe. Intente de nuevo." << std::endl;
+                                    } else {
+                                        break; // La cuenta existe, sale del bucle
+                                    }
+                                }
+                                ejecutar.crearCDP(idClienteCDP);
                                 break;
                             case CONSULTARCDP:
                                 ejecutar.consultarCDP();
@@ -456,7 +471,7 @@ int main() {
                                 }
 
 
-                                ejecutar.crearPrestamo(idClientePrestamo, db);
+                                ejecutar.crearPrestamo(idClientePrestamo);
                                 break;
                             case ABONARP:
                                 int idCuenta;

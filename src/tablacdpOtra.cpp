@@ -2,7 +2,7 @@
 #include <sqlite3.h>
 #include <sstream>
 #include <iomanip>
-#include <cmath>
+#include <cmath> 
 #include <vector>
 
 // Función para ejecutar consultas SQL
@@ -21,39 +21,42 @@ static int callbackC(void *data, int argc, char **argv, char **azColName) {
     std::cout << std::setw(7) << (argv[0] ? argv[0] : "NULL") << " | "
               << std::setw(10) << (argv[1] ? argv[1] : "NULL") << " | "
               << std::setw(10) << (argv[2] ? argv[2] : "NULL") << " | "
-              << std::setw(14) << (argv[3] ? argv[3] : "NULL") << " | "
+              << std::setw(16) << (argv[3] ? argv[3] : "NULL") << " | "
               << std::setw(10) << (argv[4] ? argv[4] : "NULL") << " | "
-              << std::setw(17) << (argv[5] ? argv[5] : "NULL") << " | "
+              << std::setw(19) << (argv[5] ? argv[5] : "NULL") << " | "
               << std::setw(10) << (argv[6] ? argv[6] : "NULL") << " | "
               << std::setw(16) << (argv[7] ? argv[7] : "NULL") << " | "
               << std::setw(14) << (argv[8] ? argv[8] : "NULL") << " | "
-              << std::setw(16) << (argv[9] ? argv[9] : "NULL") << std::endl;
+              << std::setw(17) << (argv[9] ? argv[9] : "NULL") << " | "
+              << std::setw(8) << (argv[10] ? argv[10] : "NULL") << " | " << std::endl;
     return 0;
 }
 
 // Imprime encabezados
 void printTableHeadersCDP() {
-    std::cout << std::setw(70) << std::setfill(' ') << "tablaCDP" << std::endl << std::endl;
-    std::cout << std::setw(7) << "IdCDP" << " | "
-              << std::setw(10) << "Cedula" << " | "
-              << std::setw(10) << "IdCliente" << " | "
-              << std::setw(14) << "FechaCreacion2" << " | "
-              << std::setw(10) << "Divisa2" << " | "
-              << std::setw(17) << "FechaVencimiento2" << " | "
-              << std::setw(10) << "MontoCDP" << " | "
-              << std::setw(16) << "InteresesGanados" << " | "
-              << std::setw(14) << "TasaInteresCDP" << " | "
-              << std::setw(16) << "DiasFaltantesCDP" << std::endl;
-    std::cout << std::string(7, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(14, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(17, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(16, '-') << " | "
-              << std::string(14, '-') << " | "
-              << std::string(16, '-') << std::endl;
+    std::cout << std::setw(85) << std::setfill(' ') << "tablaCDP" << std::endl << std::endl;
+    std::cout << std::setw(7) << "IdCDP" << " | " //1
+              << std::setw(10) << "Cedula" << " | " //2
+              << std::setw(10) << "IdCliente" << " | " //3
+              << std::setw(14) << "FechaCreacionCDP" << " | " //4
+              << std::setw(10) << "DivisaCDP" << " | " //5
+              << std::setw(17) << "FechaVencimientoCDP" << " | " //6
+              << std::setw(10) << "MontoCDP" << " | " //7
+              << std::setw(16) << "InteresesGanados" << " | " //8
+              << std::setw(14) << "TasaInteresCDP" << " | " //9
+              << std::setw(17) << "MesesFaltantesCDP" << " | " //10
+              << std::setw(8) << "Plazo" << " | " << std::endl; //11
+    std::cout << std::string(7, '-') << " | " //1
+              << std::string(10, '-') << " | " //2
+              << std::string(10, '-') << " | " //3
+              << std::string(16, '-') << " | " //4
+              << std::string(10, '-') << " | " //5
+              << std::string(19, '-') << " | " //6
+              << std::string(10, '-') << " | " //7
+              << std::string(16, '-') << " | " //8
+              << std::string(14, '-') << " | " //9
+              << std::string(17, '-') << " | " //10
+              << std::string(8, '-') << " | " << std::endl; //11
 }
 
 // Crea la tabla CDP 
@@ -63,13 +66,14 @@ void crearTablaCDP(sqlite3 *db) {
                            "IdCDP INTEGER PRIMARY KEY UNIQUE,"
                            "Cedula TEXT,"
                            "IdCliente INTEGER,"
-                           "FechaCreacion2 TEXT,"
-                           "Divisa2 TEXT,"
-                           "FechaVencimiento2 TEXT,"
+                           "FechaCreacionCDP TEXT,"
+                           "DivisaCDP TEXT,"
+                           "FechaVencimientoCDP TEXT,"
                            "MontoCDP REAL,"
                            "InteresesGanados REAL,"
                            "TasaInteresCDP REAL,"
-                           "DiasFaltantesCDP INTEGER"
+                           "MesesFaltantesCDP INTEGER,"
+                           "Plazo TEXT"
                            ")";
     char *err_msg = nullptr;
     int rc = sqlite3_exec(db, sql_create_table, 0, 0, &err_msg);
@@ -85,13 +89,13 @@ void crearTablaCDP(sqlite3 *db) {
 // Inserta datos en la tabla CDP
 void insertarCDP(sqlite3 *db) {
     const char *sql_insert_data = R"(
-        INSERT INTO tablaCDP (IdCDP, Cedula, IdCliente, FechaCreacion2, Divisa2, FechaVencimiento2, MontoCDP, InteresesGanados, TasaInteresCDP, DiasFaltantesCDP) VALUES
-        (401, '702890948', 2701006, '2019-12-14', 'Dolares', '2024-12-01', 1234.0, 50.0, 5.0, 160),
-        (402, '702890950', 2701027, '2020-08-02', 'Dolares', '2024-12-01', 567.0, 50.0, 5.0, 80),
-        (403, '702890951', 2701019, '2021-11-08', 'Dolares', '2024-12-01', 8920.0, 50.0, 5.0, 100),
-        (404, '702890952', 1701014, '2022-10-20', 'Colones', '2024-12-01', 100.0, 50.0, 5.0, 1),
-        (405, '504380806', 1504004, '2023-01-26', 'Colones', '2024-12-01', 1000.0, 50.0, 5.0, 120),
-        (406, '901460040', 1203004, '2024-02-01', 'Colones', '2024-12-01', 5355.0, 50.0, 5.0, 10);
+        INSERT INTO tablaCDP (IdCDP, Cedula, IdCliente, FechaCreacionCDP, DivisaCDP, FechaVencimientoCDP, MontoCDP, InteresesGanados, TasaInteresCDP, MesesFaltantesCDP, Plazo) VALUES
+        (7000001, '702890948', 2701006, '2023-11-30', 'Dolares', '2024-05-30', 15000.0, 1500.0, 0.1, 0, '1-6'),
+        (7000002, '702890950', 2701027, '2023-08-02', 'Dolares', '2024-09-02', 10000.0, 1800.0, 0.18, 0, '7-13'),
+        (7000003, '702890951', 2701019, '2023-11-08', 'Dolares', '2025-07-08', 13000.0, 7800.0, 0.6, 0, '14-20'),
+        (7000004, '702890952', 1701014, '2022-10-20', 'Colones', '2025-03-20', 350000.0, 423500.0, 1.21, 0, '21-29'),
+        (7000005, '504380806', 1504004, '2021-01-26', 'Colones', '2025-12-26', 300000.0, 933000.0, 3.11, 0, '30-59'),
+        (7000006, '901460040', 1203004, '2020-02-01', 'Colones', '2026-10-01', 320000.0, 1136000.0, 3.55, 0, '60-80');
     )";
     
     char *err_msg = nullptr;
@@ -142,6 +146,7 @@ void eliminarDatosCDP(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
 
 int main() {
     sqlite3* db;

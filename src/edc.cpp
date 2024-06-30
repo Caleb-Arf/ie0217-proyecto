@@ -34,12 +34,19 @@ void regresarDatosTransaccion(sqlite3* db, int IdCliente, const std::string& fec
               << std::string(14, '-') << " | "
               << std::string(15, '-') << std::endl;
 
+    bool foundData = false;
+
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        foundData = true;
         std::cout << std::setw(20) << sqlite3_column_text(stmt, 0) << " | "
                   << std::setw(30) << sqlite3_column_text(stmt, 1) << " | "
                   << std::setw(14) << sqlite3_column_double(stmt, 2) << " | "
                   << std::setw(14) << sqlite3_column_double(stmt, 3) << " | "
                   << std::setw(15) << sqlite3_column_double(stmt, 4) << std::endl;
+    }
+
+    if (!foundData) {
+        std::cout << "No se encontraron datos para el IdCliente especificado." << std::endl;
     }
 
     if (rc != SQLITE_DONE) {
