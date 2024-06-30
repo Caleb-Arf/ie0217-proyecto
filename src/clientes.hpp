@@ -382,3 +382,4 @@ void imprimirIdClientesPorCedula(sqlite3* db, const std::string& cedula) {
     sqlite3_finalize(stmt);
 }
 
+#endif //CLIENTES_HPP
