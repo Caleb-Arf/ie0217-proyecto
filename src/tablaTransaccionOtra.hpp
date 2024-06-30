@@ -188,3 +188,5 @@ void eliminarDatosTransacciones(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
+#endif

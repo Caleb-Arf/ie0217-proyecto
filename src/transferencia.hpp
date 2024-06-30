@@ -1005,3 +1005,5 @@ void redimirCDP(sqlite3 *db, const std::string &cedula) {
     }
 }
 
+
+#endif
