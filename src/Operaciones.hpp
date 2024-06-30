@@ -13,11 +13,14 @@ public:
     Operacion(sqlite3* db, Cliente* cliente);
     void transferencia(double montoTransferencia, int idDestino);
     void deposito(double montoDeposito);
-    void crearPrestamo();
+    int crearPrestamo(int idCliente, sqlite3* db);
     void abonoPrestamo();
     void abonoPrestamoExtraordinario();
     void crearCDP();
     void consultarCDP();
 };
+
+std::string obtenerFechaActual();
+
 
 #endif // OPERACIONES_HPP

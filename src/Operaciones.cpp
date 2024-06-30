@@ -6,6 +6,16 @@
 #include <climits>
 #include <cstdio>
 
+std::string obtenerFechaActual() {
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+
+    std::string fechaActual = std::to_string(ltm->tm_year + 1900) + '-' +
+                                   std::to_string(ltm->tm_mon + 1) + '-' +
+                                   std::to_string(ltm->tm_mday);
+    return fechaActual;
+}
+
 Operacion::Operacion(sqlite3* db, Cliente* cliente) : db(db), cliente(cliente) {}
 
 void Operacion::transferencia(double montoTransferencia, int idDestino) {
@@ -43,26 +53,67 @@ void Operacion::deposito(double montoDeposito) {
     std::cout << "Depósito realizado con exito." << std::endl;
 }
 
-void Operacion::crearPrestamo() {
-    int idPrestamo = 111111; // Falta realizar metodo para generar id de prestamos
-    std::string cedula = cliente->getInfoClientes("Clientes", "Cedula", cliente->getIdCliente());
+int Operacion::crearPrestamo(int idCliente, sqlite3* db) {
+    int idPrestamo;
+    sqlite3_stmt *stmt = nullptr;
+    std::string sql = "SELECT COUNT(*) FROM tablaPrestamos WHERE IdPrestamo = ?";
     
-    // Toma la fecha actual, tambien es posible encontrar la hora exacta de la misma forma
-    std::time_t tiempoActual = std::time(0);
-    std::tm* tiempoLocal = std::localtime(&tiempoActual);
-    std::string fechaCreacion = std::to_string(tiempoLocal->tm_mday) + "/" + std::to_string(tiempoLocal->tm_mon + 1) + "/" + std::to_string(tiempoLocal->tm_year + 1900);
+    // Bucle para generar un ID de préstamo único
+    do {
+        idPrestamo = 5000000 + rand() % 1000000;
 
-    // Divisa
-    int seleccionarDivisa;
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+            std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            return -1;
+        }
+
+        sqlite3_bind_int(stmt, 1, idPrestamo);
+
+        if (sqlite3_step(stmt) != SQLITE_ROW) {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+
+        int count = sqlite3_column_int(stmt, 0);
+        sqlite3_finalize(stmt);
+
+        if (count == 0) {
+            break;
+        }
+
+    } while (true);
+
+    std::string cedula;
     std::string divisa;
+
+    // Consulta para obtener la cédula y la divisa del cliente
+    sql = "SELECT Cedula, TipoCuenta FROM Clientes WHERE idCliente = ?";
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, idCliente);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            cedula = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            divisa = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        } else {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+        return -1;
+    }
+
+    // Selección de divisa y tipo de préstamo
+    int seleccionarDivisa;
     std::string tipoPrestamo;
     int idInteres;
     std::string tabla;
 
     bool condicion = false;
     while (!condicion) {
-        std::cout << "\nRealice la seleccion de la divisa del prestamo: \n1.Colones \n2.Dolares." << std::endl;
-        std::cout << "Elija 1 para Colones o 2 para Dolares: ";
+        std::cout << "\nSeleccione la divisa del préstamo:\n1. Colones\n2. Dólares\nElija 1 para Colones o 2 para Dólares: ";
         std::cin >> seleccionarDivisa;
 
         switch (seleccionarDivisa) {
@@ -72,20 +123,20 @@ void Operacion::crearPrestamo() {
                 int seleccionarTipoPrestamoColones;
                 bool stop1 = false;
                 while (!stop1) {
-                    std::cout << "\nEscoja el tipo de prestamo." << std::endl;
-                    std::cout << "1. Credito Personal Hipotecario colones." << std::endl;
-                    std::cout << "2. Prendario colones." << std::endl;
-                    std::cout << "3. Vivienda Consumo Cuota unica colones." << std::endl;
-                    std::cout << "4. Vehiculo Nuevo colones." << std::endl;
-                    std::cout << "5. Cancelacion de Pasivos - atraccion de clientes." << std::endl;
-                    std::cout << "6. Fiduciaria a corto plazo." << std::endl;
-                    std::cout << "7. Personal Back to Back colones." << std::endl;
-                    std::cout << "Tipo de prestamo (1,2,3,4,5,6,7): ";
+                    std::cout << "\nEscoja el tipo de préstamo:\n";
+                    std::cout << "1. Crédito Personal Hipotecario colones\n";
+                    std::cout << "2. Prendario colones\n";
+                    std::cout << "3. Vivienda Consumo Cuota única colones\n";
+                    std::cout << "4. Vehículo Nuevo colones\n";
+                    std::cout << "5. Cancelación de Pasivos - atracción de clientes\n";
+                    std::cout << "6. Fiduciaria a corto plazo\n";
+                    std::cout << "7. Personal Back to Back colones\n";
+                    std::cout << "Tipo de préstamo (1-7): ";
                     std::cin >> seleccionarTipoPrestamoColones;
 
                     switch (seleccionarTipoPrestamoColones) {
                         case 1:
-                            tipoPrestamo = "Credito Personal Hipotecario colones";
+                            tipoPrestamo = "Crédito Personal Hipotecario colones";
                             idInteres = 12;
                             stop1 = true;
                             break;
@@ -95,17 +146,17 @@ void Operacion::crearPrestamo() {
                             stop1 = true;
                             break;
                         case 3:
-                            tipoPrestamo = "Vivienda Consumo Cuota unica colones";
+                            tipoPrestamo = "Vivienda Consumo Cuota única colones";
                             idInteres = 24;
                             stop1 = true;
                             break;
                         case 4:
-                            tipoPrestamo = "Vehiculo Nuevo colones";
+                            tipoPrestamo = "Vehículo Nuevo colones";
                             idInteres = 41;
                             stop1 = true;
                             break;
                         case 5:
-                            tipoPrestamo = "Cancelacion de Pasivos - atraccion de clientes";
+                            tipoPrestamo = "Cancelación de Pasivos - atracción de clientes";
                             idInteres = 59;
                             stop1 = true;
                             break;
@@ -120,118 +171,134 @@ void Operacion::crearPrestamo() {
                             stop1 = true;
                             break;
                         default:
-                            std::cout << "Seleccione una opcion valida.";
+                            std::cout << "Seleccione una opción válida.\n";
                             stop1 = false;
                             break;
                     }
-                    std::cout << "Prestamo creado con exito." << std::endl;
                 }
                 condicion = true;
                 break;
             }
             case 2: {
-                divisa = "Dolares";
+                divisa = "Dólares";
                 tabla = "TasasDolares";
                 int seleccionarTipoPrestamoDolares;
                 bool stop = false;
                 while (!stop) {
-                    std::cout << "\nEscoja el tipo de prestamo." << std::endl;
-                    std::cout << "1. Prendario Dolares." << std::endl;
-                    std::cout << "2. Vivienda Consumo Cuota unica Dolares." << std::endl;
-                    std::cout << "3. Vehiculo Nuevo dolares." << std::endl;
-                    std::cout << "4. Personal Back to Back Dolares." << std::endl;
-                    std::cout << "5. Credito Personal Hipotecario en Dolares." << std::endl;
-                    std::cout << "Tipo de prestamo (1,2,3,4,5): ";
+                    std::cout << "\nEscoja el tipo de préstamo:\n";
+                    std::cout << "1. Prendario Dólares\n";
+                    std::cout << "2. Vivienda Consumo Cuota única Dólares\n";
+                    std::cout << "3. Vehículo Nuevo dólares\n";
+                    std::cout << "4. Personal Back to Back Dólares\n";
+                    std::cout << "5. Crédito Personal Hipotecario en Dólares\n";
+                    std::cout << "Tipo de préstamo (1-5): ";
                     std::cin >> seleccionarTipoPrestamoDolares;
 
                     switch (seleccionarTipoPrestamoDolares) {
                         case 1:
-                            tipoPrestamo = "Prendario Dolares";
+                            tipoPrestamo = "Prendario Dólares";
                             idInteres = 18;
                             stop = true;
                             break;
                         case 2:
-                            tipoPrestamo = "Vivienda Consumo Cuota unica Dolares";
+                            tipoPrestamo = "Vivienda Consumo Cuota única Dólares";
                             idInteres = 24;
                             stop = true;
                             break;
                         case 3:
-                            tipoPrestamo = "Vehiculo Nuevo dolares";
+                            tipoPrestamo = "Vehículo Nuevo dólares";
                             idInteres = 90;
                             stop = true;
                             break;
                         case 4:
-                            tipoPrestamo = "Personal Back to Back Dolares";
+                            tipoPrestamo = "Personal Back to Back Dólares";
                             idInteres = 94;
                             stop = true;
                             break;
                         case 5:
-                            tipoPrestamo = "Credito Personal Hipotecario en Dolares";
+                            tipoPrestamo = "Crédito Personal Hipotecario en Dólares";
                             idInteres = 98;
                             stop = true;
                             break;
                         default:
-                            std::cout << "Seleccione una opcion valida.";
+                            std::cout << "Seleccione una opción válida.\n";
                             stop = false;
                             break;
                     }
-                    std::cout << "Prestamo creado con con exito." << std::endl;
                 }
                 condicion = true;
                 break;
             }
             default:
-                std::cout << "Seleccione una opcion valida.";
+                std::cout << "Seleccione una opción válida.\n";
                 condicion = false;
                 break;
         }
     }
 
-    // realizar la fecha de vencimiento con el plazo
-    int plazo = std::stoi(cliente->getInfoInteres(tabla, "Plazo_Meses", idInteres));
-    int anual = plazo / 12;
-    int mensual = plazo % 12;
-    std::string fechaVencimiento = std::to_string(tiempoLocal->tm_mday) + "/" + std::to_string(tiempoLocal->tm_mon + 1 + mensual) + "/" + std::to_string(tiempoLocal->tm_year + 1900 + anual);
-
-    // monto total del prestamo
-    double montoTotal;
-    std::cout << "Ingrese el monto del prestamo: ";
-    std::cin >> montoTotal;
-
-    // tasa de interes del prestamo
-    double tasaInteres = std::stod(cliente->getInfoInteres(tabla, "Tasa_Efectiva", idInteres));
-    
-    // cuotas totales 
-    int cuotasTotales = std::stoi(cliente->getInfoInteres(tabla, "Plazo_Meses", idInteres));
-
-    // cuotas pagadas (Inicia en 0 por que se esta creando el prestamo)
-    int cuotasPagadas = 0;
-
-    // cuotas faltantes
-    int cuotasFaltantes = cuotasTotales;
-
-    // iniciar dias vencidos en 0 por que recien se crea el prestamo
-    int diasVencidos = 0;
-
-    //realizar el calculo para los dias de vencimiento
-    int diasVencimiento = round(plazo*30.4167);
-
-    //calculo del pago mensual
-    double tasaMensual = tasaInteres / 1200; // Convertir la tasa anual a mensual
-    double montoCuota = (montoTotal * tasaMensual) / (1 - pow(1 + tasaMensual, - plazo));
-
-    // Construcción de la sentencia SQL
-    std::string sql = "INSERT INTO tablaPrestamos (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    sqlite3_stmt *stmt;
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+    // Consulta para obtener plazo y tasa de interés
+    int plazo = 0;
+    double tasaInteres = 0.0;
+    sql = "SELECT Plazo_Meses, Tasa_Efectiva FROM " + tabla + " WHERE id = ?";
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, idInteres);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            tasaInteres = sqlite3_column_double(stmt, 1);
+            plazo = sqlite3_column_int(stmt, 0);
+        } else {
+            std::cerr << "Error al ejecutar la consulta: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+        sqlite3_finalize(stmt);
+    } else {
         std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
-        return;
+        return -1;
     }
 
-    sqlite3_bind_int(stmt, 1, cliente->getIdCliente());
+    // Cálculo de la fecha de vencimiento
+    std::time_t now = std::time(nullptr);
+    std::tm* future = std::localtime(&now);
+    future->tm_mon += plazo;
+    std::time_t futureTime = mktime(future);
+    std::tm* future_tm = std::localtime(&futureTime);
+    std::string fechaVencimiento = std::to_string(future->tm_year + 1900) + '-' +
+                                   std::to_string(future->tm_mon + 1) + '-' +
+                                   std::to_string(future->tm_mday);
+
+    // Ingreso del monto total del préstamo
+    double montoTotal;
+    bool montoCorrecto = false;
+    while (!montoCorrecto) {
+        std::cout << "Ingrese el monto del préstamo: ";
+        std::cin >> montoTotal;
+        if (montoTotal > 0) {
+            montoCorrecto = true;
+        } else {
+            std::cout << "Por favor, ingrese un monto válido.\n";
+        }
+    }
+
+    // Datos del préstamo
+    int cuotasTotales = plazo;
+    int cuotasPagadas = 0;
+    int cuotasFaltantes = cuotasTotales;
+    int diasVencidos = 0;
+    int diasVencimiento = round(plazo * 30.4167);
+    double tasaMensual = tasaInteres / 1200;
+    double montoCuota = (montoTotal * tasaMensual) / (1 - pow(1 + tasaMensual, -plazo));
+
+    // Inserción en la base de datos
+    sql = "INSERT INTO tablaPrestamos (IdCliente, IdPrestamo, Cedula, FechaCreacion, Divisa, FechaVencimiento, TipoPrestamo, MontoTotalPrestamo, TasaInteresP, CuotasTotales, CuotasPagadas, CuotasFaltantes, DiasVencidos, DiasVencimiento, SaldoPrestamo, MontoCuota) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
+        return -1;
+    }
+
+    sqlite3_bind_int(stmt, 1, idCliente);
     sqlite3_bind_int(stmt, 2, idPrestamo);
     sqlite3_bind_text(stmt, 3, cedula.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 4, fechaCreacion.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 4, obtenerFechaActual().c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, divisa.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 6, fechaVencimiento.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 7, tipoPrestamo.c_str(), -1, SQLITE_STATIC);
@@ -246,12 +313,15 @@ void Operacion::crearPrestamo() {
     sqlite3_bind_double(stmt, 16, montoCuota);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
-        std::cerr << "Error al ejecutar la insercion: " << sqlite3_errmsg(db) << std::endl;
-    } else {
-        std::cout << "Prestamo agregado exitosamente." << std::endl;
+        std::cerr << "Error al ejecutar la inserción: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        return -1;
     }
 
+    std::cout << "Préstamo agregado exitosamente." << std::endl;
+
     sqlite3_finalize(stmt);
+    return idPrestamo;
 }
 
 void Operacion::abonoPrestamo(){
