@@ -524,33 +524,99 @@ void Operacion::crearCDP(int idCliente) {
         }
     } while (true);
 
-    // Fecha de vencimiento del CDP
+    std::string fechaCreacion = obtenerFechaActual();
+
     std::time_t now = std::time(nullptr);
     std::tm* future = std::localtime(&now);
+
+    // Añadir el número de días especificado de manera iterativa
     future->tm_mday += tiempoCDP;
-    std::time_t futureTime = mktime(future);
+    std::time_t futureTime = std::mktime(future);
+
+    // Convertir la nueva fecha en una estructura tm
     std::tm* future_tm = std::localtime(&futureTime);
-    std::string fechaVencimiento = std::to_string(future->tm_year + 1900) + '-' +
-                                   std::to_string(future->tm_mon + 1) + '-' +
-                                   std::to_string(future->tm_mday);
 
-    // Selección de la tasa de interés
+    // Formatear la fecha en el formato deseado (YYYY-MM-DD)
+    std::string year = std::to_string(future_tm->tm_year + 1900);
+    std::string month = std::to_string(future_tm->tm_mon + 1);
+    std::string day = std::to_string(future_tm->tm_mday);
+
+    // Añadir ceros a la izquierda si es necesario
+    if (month.length() < 2) month = '0' + month;
+    if (day.length() < 2) day = '0' + day;
+
+    std::string fechaVencimiento = year + '-' + month + '-' + day;
+
     int idTasaInteres;
-    if (tiempoCDP >= 1 && tiempoCDP <= 30) {
-        idTasaInteres = 101;
-    } else if (tiempoCDP >= 31 && tiempoCDP <= 90) {
-        idTasaInteres = 102;
-    } else if (tiempoCDP >= 91 && tiempoCDP <= 180) {
-        idTasaInteres = 103;
-    } else if (tiempoCDP >= 181 && tiempoCDP <= 360) {
-        idTasaInteres = 104;
-    } else if (tiempoCDP > 360) {
-        idTasaInteres = 105;
-    } else {
-        std::cout << "Plazo fuera de rango." << std::endl;
-        return;
+    //Seleccion de tasa de interes
+    switch (tiempoCDP) {
+        case 1 ... 6:
+            idTasaInteres = 101;
+            break;
+        case 7 ... 13:
+            idTasaInteres = 102;
+            break;
+        case 14 ... 20:
+            idTasaInteres = 103;
+            break;
+        case 21 ... 29:
+            idTasaInteres = 104;
+            break;
+        case 30 ... 59:
+            idTasaInteres = 105;
+            break;
+        case 60 ... 80:
+            idTasaInteres = 106;
+            break;
+        case 90 ... 119:
+            idTasaInteres = 107;
+            break;
+        case 120 ... 149:
+            idTasaInteres = 108;
+            break;
+        case 150 ... 179:
+            idTasaInteres = 109;
+            break;
+        case 180 ... 209:
+            idTasaInteres = 110;
+            break;
+        case 210 ... 239:
+            idTasaInteres = 111;
+            break;
+        case 240 ... 269:
+            idTasaInteres = 112;
+            break;
+        case 270 ... 299:
+            idTasaInteres = 113;
+            break;
+        case 300 ... 329:
+            idTasaInteres = 114;
+            break;
+        case 330 ... 359:
+            idTasaInteres = 115;
+            break;
+        case 360 ... 539:
+            idTasaInteres = 116;
+            break;
+        case 540 ... 719:
+            idTasaInteres = 117;
+            break;
+        case 720 ... 1079:
+            idTasaInteres = 118;
+            break;
+        case 1080 ... 1439:
+            idTasaInteres = 119;
+            break;
+        case 1440 ... 1799:
+            idTasaInteres = 120;
+            break;
+        case 1800 ... INT_MAX:
+            idTasaInteres = 121;
+            break;
+        default:
+            std::cout << "Fuera de rango\n";
+            break;
     }
-
     // Consulta para obtener la tasa de interés
     double tasaInteres;
     sql = "SELECT "+ divisaTasa +" FROM TasasCDP WHERE id = ?";
@@ -590,21 +656,23 @@ void Operacion::crearCDP(int idCliente) {
     sqlite3_finalize(stmt);
 
     // Inserción del CDP en la tabla
-    sql = "INSERT INTO tablaCDP (IdCDP, Cedula, IdCliente, FechaCreacionCDP, DivisaCDP, FechaVencimientoCDP, MontoCDP, InteresesGanados, TasaInteresCDP, MesesFaltantesCDP, Plazo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    sql = "INSERT INTO tablaCDP (IdCDP, Cedula, IdCliente, FechaCreacionCDP, DivisaCDP, FechaVencimientoCDP, MontoCDP, InteresesGanados, TasaInteresCDP, MesesFaltantesCDP, Plazo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
         std::cerr << "Error al preparar la consulta: " << sqlite3_errmsg(db) << std::endl;
         return;
     }
-    sqlite3_bind_int(stmt, 1, idCliente);
+    sqlite3_bind_int(stmt, 1, idCDP);
     sqlite3_bind_text(stmt, 2, cedula.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 3, idCDP);
-    sqlite3_bind_text(stmt, 4, obtenerFechaActual().c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 3, idCliente);
+    sqlite3_bind_text(stmt, 4, fechaCreacion.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, divisa.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 6, fechaVencimiento.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_double(stmt, 7, montoCDP);
     sqlite3_bind_double(stmt, 8, interesNeto);
     sqlite3_bind_double(stmt, 9, tasaInteres);
-    sqlite3_bind_int(stmt, 10, tiempoCDP);
+    sqlite3_bind_int(stmt, 10, ceil(tiempoCDP/30.4167));
+    sqlite3_bind_text(stmt, 11, std::to_string(tiempoCDP).c_str(), -1, SQLITE_STATIC);
+
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         std::cerr << "Error al ejecutar la inserción: " << sqlite3_errmsg(db) << std::endl;
     } else {
