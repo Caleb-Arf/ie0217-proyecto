@@ -659,16 +659,17 @@ int realizarAbonoExtraordinario(sqlite3 *db, int idCuenta3, int idPrestamo2, dou
     sqlite3_finalize(stmt);
     return SQLITE_OK;
 }
-
-// Function to get input from the user
+//pide datos
 std::string getUserInput(const std::string &prompt) {
-    std::cout << prompt;
     std::string input;
+    std::cout << prompt << std::flush; // Asegura que el prompt se muestra inmediatamente
+    std::cin.ignore(); // Limpia cualquier carácter residual del buffer de entrada
     std::getline(std::cin, input);
     return input;
 }
 
-// Function to calculate the difference in months between two dates
+
+// calcula entre dos meses
 int calculateMonthsDifference(const std::string &startDate, const std::string &endDate) {
     std::tm tm_start = {};
     std::tm tm_end = {};
