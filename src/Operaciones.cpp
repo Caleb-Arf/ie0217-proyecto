@@ -5,7 +5,14 @@
 #include <vector>
 #include <climits>
 #include <cstdio>
-
+/**
+ * @file Operaciones.cpp
+ * @brief Definiciones de las operaciones financieras para clientes.
+ */
+/**
+ * @brief Función para obtener la fecha actual en formato YYYY-MM-DD.
+ * @return La fecha actual como una cadena de texto.
+ */
 std::string obtenerFechaActual() {
     time_t now = time(0);
     tm *ltm = localtime(&now);
@@ -15,9 +22,17 @@ std::string obtenerFechaActual() {
                                    std::to_string(ltm->tm_mday);
     return fechaActual;
 }
-
+    /**
+     * @brief Constructor de la clase Operacion.
+     * @param db Base de datos SQLite3.
+     * @param cliente Cliente asociado a las operaciones.
+     */
 Operacion::Operacion(sqlite3* db, Cliente* cliente) : db(db), cliente(cliente) {}
-
+    /**
+     * @brief Realiza una transferencia de dinero entre dos cuentas.
+     * @param montoTransferencia Monto a transferir.
+     * @param idDestino ID del cliente destino.
+     */
 void Operacion::transferencia(double montoTransferencia, int idDestino) {
     std::string tabla = "Clientes";
     std::string dato = "Balance";
@@ -41,6 +56,10 @@ void Operacion::transferencia(double montoTransferencia, int idDestino) {
     std::cout << "Transferencia realizada con exito." << std::endl;
 }
 
+    /**
+     * @brief Realiza un depósito en la cuenta del cliente.
+     * @param montoDeposito Monto a depositar.
+     */
 void Operacion::deposito(double montoDeposito) {
     std::string tabla = "Clientes";
     std::string dato = "Balance";
@@ -52,7 +71,11 @@ void Operacion::deposito(double montoDeposito) {
     cliente->setInfoClientes("Clientes", "Balance", std::to_string(nuevoBalance), cliente->getIdCliente());
     std::cout << "Depósito realizado con exito." << std::endl;
 }
-
+ /**
+     * @brief Crea un nuevo préstamo para el cliente.
+     * @param idCliente ID del cliente que solicita el préstamo.
+     * @return ID del préstamo creado, -1 si hay un error.
+     */
 int Operacion::crearPrestamo(int idCliente) {
     int idPrestamo;
     sqlite3_stmt *stmt = nullptr;
@@ -323,7 +346,9 @@ int Operacion::crearPrestamo(int idCliente) {
     sqlite3_finalize(stmt);
     return idPrestamo;
 }
-
+  /**
+     * @brief Realiza un abono a un préstamo existente del cliente.
+     */
 void Operacion::abonoPrestamo(){
     std::cout << "Prestamos Disponibles para el cliente" << cliente->getIdCliente() << "."<< std::endl;
     std::string sql = "SELECT IdPrestamo, TipoPrestamo, MontoTotalPrestamo FROM tablaPrestamos WHERE IdCliente = " + std::to_string(cliente->getIdCliente()) + ";";
@@ -374,7 +399,9 @@ void Operacion::abonoPrestamo(){
     cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoPrestamo, idPrestamo);
     std::cout << "Abono realizado exitosamente." << std::endl;
 }
-
+    /**
+     * @brief Realiza un abono extraordinario a un préstamo existente del cliente.
+     */
 void Operacion::abonoPrestamoExtraordinario(){
     
     std::cout << "Prestamos Disponibles para el cliente" << cliente->getIdCliente() << "."<< std::endl;
@@ -429,7 +456,10 @@ void Operacion::abonoPrestamoExtraordinario(){
     cliente->setInfoPrestamos("SaldoPrestamo", nuevoSaldoP, idPrestamo);
     std::cout << "Abono extraordinario realizado exitosamente." << std::endl;
 }
-
+    /**
+     * @brief Crea un Certificado de Depósito a Plazo (CDP) para el cliente.
+     * @param idCliente ID del cliente que solicita el CDP.
+     */
 void Operacion::crearCDP(int idCliente) {
     sqlite3_stmt *stmt = nullptr;
     std::string sql;
