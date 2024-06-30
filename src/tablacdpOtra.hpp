@@ -3,12 +3,17 @@
  * @brief Header file que interactúa con una base de datos SQLite para gestionar la tabla CDP.
  */
 
+#ifndef TABLACDPOTRA_HPP
+#define TABLACDPOTRA_HPP
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>
 #include <iomanip>
 #include <cmath> 
 #include <vector>
+
+
 
 /**
  * @brief Función para ejecutar consultas SQL.
@@ -183,3 +188,5 @@ void eliminarDatosCDP(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
+#endif //TABLACDPOTRA_HPP
