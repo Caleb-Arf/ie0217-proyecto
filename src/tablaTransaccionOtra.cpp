@@ -144,3 +144,23 @@ void eliminarDatosTransacciones(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
+int main() {
+    sqlite3* db;
+    int rc = sqlite3_open("base_de_datos.db", &db);
+
+    if (rc) {
+        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+        return rc;
+    } else {
+        std::cout << "Base de datos abierta exitosamente" << std::endl;
+    }
+
+    crearTablaTransacciones(db);
+    insertarTransacciones(db);
+    printTableHeadersTransacciones();
+    mostrarTablaTransacciones(db);
+
+    sqlite3_close(db);
+    return 0;
+}

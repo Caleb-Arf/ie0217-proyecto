@@ -165,6 +165,27 @@ void eliminarDatosPrestamos(sqlite3 *db) {
     }
 }
 
+int main() {
+    sqlite3* db;
+    int rc = sqlite3_open("base_de_datos.db", &db);
+
+    if (rc) {
+        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+        return rc;
+    } else {
+        std::cout << "Base de datos abierta exitosamente" << std::endl;
+    }
+
+    crearTablaPrestamos(db);
+    insertarPrestamos(db);
+    printTableHeadersPrestamos();
+    mostrarTablaPrestamos(db);
+
+    sqlite3_close(db);
+    return 0;
+}
+
+
 
 
 

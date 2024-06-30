@@ -6,77 +6,65 @@
 #include <cmath>
 #include "tablaTransaccionOtra.hpp"
 
-struct Transaccion {
-    std::string fecha;
-    std::string detalle;
-    double credito;
-    double debito;
-    double balance;
-};
+// Función para recibir datos de la transacción
+void regresarDatosTransaccion(sqlite3* db, int idTransaccion) {
+  const char* sql = "SELECT FechaTransaccion, Detalle, Credito, Debito, SaldoBalance FROM tablaTransacciones WHERE IdTransaccion = ?";
+  sqlite3_stmt* stmt;
 
-std::vector<Transaccion> fetchTransactions(sqlite3* db, int client_id) {
-    std::vector<Transaccion> transactions;
-    sqlite3_stmt* stmt;
-    std::string sql = "SELECT FechaTransaccion, Detalle, Credito, Debito, SaldoBalance FROM tablaTransacciones WHERE IdCliente = ?";
+  int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+  if (rc != SQLITE_OK) {
+    std::cerr << "Error preparando declaración SQL: " << sqlite3_errmsg(db) << std::endl;
+    return;
+  }
 
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, 0) != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-        return transactions;
-    }
+  // Conecta IdTransaccion a parámetro
+  sqlite3_bind_int(stmt, 1, idTransaccion);
 
-    sqlite3_bind_int(stmt, 1, client_id);
+  rc = sqlite3_step(stmt);
+  if (rc == SQLITE_ROW) {
+    // Imprime la información en tabla
+    std::cout << std::setw(20) << std::setfill(' ') << "Fecha Transaccion" << " | "
+              << std::setw(30) << "Detalle" << " | "
+              << std::setw(14) << "Credito" << " | "
+              << std::setw(14) << "Debito" << " | "
+              << std::setw(15) << "Saldo Balance" << std::endl;
+    std::cout << std::string(20, '-') << " | "
+              << std::string(30, '-') << " | "
+              << std::string(14, '-') << " | "
+              << std::string(14, '-') << " | "
+              << std::string(15, '-') << std::endl;
 
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        Transaccion transaction;
-        transaction.fecha = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-        transaction.detalle = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-        transaction.credito = sqlite3_column_double(stmt, 2);
-        transaction.debito = sqlite3_column_double(stmt, 3);
-        transaction.balance = sqlite3_column_double(stmt, 4);
-        transactions.push_back(transaction);
-    }
+    std::cout << std::setw(20) << sqlite3_column_text(stmt, 0) << " | "
+              << std::setw(30) << sqlite3_column_text(stmt, 1) << " | "
+              << std::setw(14) << sqlite3_column_double(stmt, 2) << " | "
+              << std::setw(14) << sqlite3_column_double(stmt, 3) << " | "
+              << std::setw(15) << sqlite3_column_double(stmt, 4) << std::endl;
+  } else {
+    std::cout << "No se encontró la transacción con IdTransaccion: " << idTransaccion << std::endl;
+  }
 
-    sqlite3_finalize(stmt);
-    return transactions;
-}
-
-void generarEstado(const std::vector<Transaccion>& transactions) {
-    std::cout << std::setw(15) << "Fecha" << " | "
-              << std::setw(20) << "Detalle" << " | "
-              << std::setw(10) << "Credito" << " | "
-              << std::setw(10) << "Debito" << " | "
-              << std::setw(10) << "Balance" << std::endl;
-    std::cout << std::string(15, '-') << " | "
-              << std::string(20, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(10, '-') << " | "
-              << std::string(10, '-') << std::endl;
-
-    for (const auto& transaction : transactions) {
-        std::cout << std::setw(15) << transaction.fecha << " | "
-                  << std::setw(20) << transaction.detalle << " | "
-                  << std::setw(10) << transaction.credito << " | "
-                  << std::setw(10) << transaction.debito << " | "
-                  << std::setw(10) << transaction.balance << std::endl;
-    }
+  // Finaliza la declaración
+  sqlite3_finalize(stmt);
 }
 
 int main() {
-    sqlite3* db;
-    int rc = sqlite3_open("test.db", &db);
+  sqlite3* db;
+  int rc = sqlite3_open("base_de_datos.db", &db);
 
-    if (rc) {
-        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
-        return rc;
-    } else {
-        std::cout << "Base de datos abierta exitosamente" << std::endl;
-    }
+  if (rc) {
+      std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
+      return rc;
+  } else {
+    std::cout << "Base de datos abierta exitosamente" << std::endl;
+  }
 
-    int client_id = 2; // Reemplazar con el IdCliente específico
-    std::vector<Transaccion> transactions = fetchTransactions(db, client_id);
+  // Ingresa el IdTransacción para encontrar la info
+  int idTransaccion;
+  std::cout << "Ingrese IdTransaccion: ";
+  std::cin >> idTransaccion;
 
-    generarEstado(transactions);
+  regresarDatosTransaccion(db, idTransaccion);
 
-    sqlite3_close(db);
-    return 0;
+  sqlite3_close(db);
+  return 0;
 }
