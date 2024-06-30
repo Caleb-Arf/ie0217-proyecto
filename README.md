@@ -99,9 +99,9 @@ Primero se utiliza el comando ```make clean``` para deshacerse de su objeto y ar
 
 Luego se utiliza ```make build``` para compilar todos los archivos fuente del proyecto.
 
-El siguiente comando es ```make run``` que se usa para corree el programa compilado.
+El siguiente comando es ```make run``` que se usa para correr el programa compilado.
 
-Finalmente se usa el comando ```make``` compila y ejecuta los archivos fuente.
+Finalmente se usa el comando ```make``` que compila y ejecuta los archivos fuente.
 
 ## Términos importantes a considerar
 
