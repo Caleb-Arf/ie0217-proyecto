@@ -239,15 +239,46 @@ int main() {
                                 std::string fechaInicio;
                                 std::string fechaFin;
 
-                                std::cout << "Ingrese IdCliente: ";
-                                std::cin >> IdCliente;
+                                while (true) {
+                                    std::cout << "Ingrese IdCliente (0 para salir): ";
+                                    if (!(std::cin >> IdCliente)) {
+                                        std::cerr << "Error: Debe ingresar un numero válido." << std::endl;
+                                        std::cin.clear(); // Limpia el error
+                                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                        continue;
+                                    }
+                                    if (IdCliente == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, IdCliente)) {
+                                        std::cerr << "La cuenta no existe. Intente de nuevo." << std::endl;
+                                    } else {
+                                        break;
+                                    }
+                                }
 
-                                // Ingresa el rango de fechas
-                                std::cout << "Ingrese la fecha de inicio (YYYY-MM-DD): ";
-                                std::cin >> fechaInicio;
-                                std::cout << "Ingrese la fecha de fin (YYYY-MM-DD): ";
-                                std::cin >> fechaFin;
-                            
+                                // Validación de fechas
+                                std::regex fechaRegex("\\d{4}-\\d{2}-\\d{2}");
+                                while (true) {
+                                    std::cout << "Ingrese la fecha de inicio (YYYY-MM-DD): ";
+                                    std::cin >> fechaInicio;
+                                    if (!std::regex_match(fechaInicio, fechaRegex)) {
+                                        std::cerr << "Error: Formato de fecha incorrecto. Use YYYY-MM-DD." << std::endl;
+                                        continue;
+                                    }
+                                    break;
+                                }
+
+                                while (true) {
+                                    std::cout << "Ingrese la fecha de fin (YYYY-MM-DD): ";
+                                    std::cin >> fechaFin;
+                                    if (!std::regex_match(fechaFin, fechaRegex)) {
+                                        std::cerr << "Error: Formato de fecha incorrecto. Use YYYY-MM-DD." << std::endl;
+                                              continue;
+                                    }
+                                    break;
+                                }
                                 regresarDatosTransaccion(db, IdCliente, fechaInicio, fechaFin);
                             }
                                 break;
@@ -266,7 +297,12 @@ int main() {
                                 double monto;
                                 while (true) {
                                     std::cout << "Ingrese la cuenta de origen (0 para salir): ";
-                                    std::cin >> idOrigen;
+                                    if (!(std::cin >> idOrigen)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idOrigen == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -283,7 +319,12 @@ int main() {
                                 }
                                 while (true) {
                                     std::cout << "Ingrese la cuenta de destino (0 para salir): ";
-                                    std::cin >> idDestino;
+                                    if (!(std::cin >> idDestino)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idDestino == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -300,7 +341,12 @@ int main() {
                                 }
                                 while (true) {
                                     std::cout << "Ingrese el monto a transferir (0 para salir): ";
-                                    std::cin >> monto;
+                                    if (!(std::cin >> monto)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (monto == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -327,7 +373,12 @@ int main() {
                                 double monto2;
                                 while (true) {
                                     std::cout << "Ingrese cuenta a depositar (0 para salir): ";
-                                    std::cin >> idOrigen2;
+                                    if (!(std::cin >> idOrigen2)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idOrigen2 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -345,7 +396,12 @@ int main() {
                                 }
                                  while (true) {
                                     std::cout << "Ingrese el monto a transferir (0 para salir): ";
-                                    std::cin >> monto2;
+                                    if (!(std::cin >> monto2)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (monto2 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -376,7 +432,12 @@ int main() {
                                 double monto;
                                 while (true) {
                                     std::cout << "Ingrese la cuenta a debitar (0 para salir): ";
-                                    std::cin >> idCuenta;
+                                    if (!(std::cin >> idCuenta)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idCuenta == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -395,7 +456,12 @@ int main() {
 
                                 while (true) {
                                     std::cout << "Ingrese el ID del prestamo (0 para salir): ";
-                                    std::cin >> idPrestamo;
+                                    if (!(std::cin >> idPrestamo)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idPrestamo == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -414,7 +480,12 @@ int main() {
 
                                 while (true) {
                                     std::cout << "Ingrese el monto a abonar: ";
-                                    std::cin >> monto;
+                                    if (!(std::cin >> monto)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (monto == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -439,7 +510,12 @@ int main() {
                                 
                                 while (true) {
                                     std::cout << "Ingrese la cuenta de origen (0 para salir): ";
-                                    std::cin >> idCuenta3;
+                                    if (!(std::cin >> idCuenta3)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idCuenta3 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -458,7 +534,12 @@ int main() {
                             
                                 while (true) {
                                     std::cout << "Ingrese el ID del préstamo (0 para salir): ";
-                                    std::cin >> idPrestamo2;
+                                    if (!(std::cin >> idPrestamo2)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (idPrestamo2 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
@@ -475,7 +556,12 @@ int main() {
                                 }                    
                                 while (true) {
                                     std::cout << "Ingrese el monto a abonar: ";
-                                    std::cin >> monto3;
+                                    if (!(std::cin >> monto3)) {
+                                    std::cerr << "Error: Debe ingresar un número válido." << std::endl;
+                                    std::cin.clear(); // Limpia el error
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora el resto de la línea
+                                    continue;
+                                    }
                                     if (monto3 == 0) {
                                         std::cout << "Saliendo" << std::endl;
                                         break;
