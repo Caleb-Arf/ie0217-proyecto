@@ -328,7 +328,7 @@ int main() {
                                 regresarDatosCDP(db, cedula);
 
                                 sqlite3_close(db);
-                                return 0; }
+                                break; }
 
                                 // ejecutar.consultarCDP();
                                 break;

@@ -736,8 +736,14 @@ void actualizarDiasFaltantes(sqlite3 *db, const std::string &cedula) {
             int idCDP = sqlite3_column_int(stmt, 0);
             std::string fechaCreacion = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
             std::string fechaVencimiento = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
-            int plazo = sqlite3_column_int(stmt, 3);
+            // Calculate plazo as the months from today to the creation date
+            time_t now = time(nullptr);
+            struct tm *currentDate = localtime(&now);
+            char buffer[11];
+            strftime(buffer, 11, "%Y-%m-%d", currentDate);
+            std::string currentDateString(buffer);
 
+            int plazo = calculateMonthsDifference(fechaCreacion, currentDateString);
             int totalMonths = calculateMonthsDifference(fechaCreacion, fechaVencimiento);
             int remainingMonths = totalMonths - plazo;
 
@@ -817,7 +823,7 @@ void displayExistingCDPs(sqlite3 *db, const std::string &cedula) {
                       << "Fecha de Creacion: " << fechaCreacion << "\n"
                       << "Fecha de Vencimiento: " << fechaVencimiento << "\n"
                       << "Plazo: " << plazo << "\n"
-                      << "Dias Faltantes: " << diasFaltantes << "\n"
+                      << "Meses Faltantes: " << diasFaltantes << "\n"
                       << "Monto: " << montoCDP << "\n\n";
         }
         sqlite3_finalize(stmt);
