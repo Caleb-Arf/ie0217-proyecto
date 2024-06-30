@@ -16,7 +16,7 @@ public:
     int crearPrestamo(int idCliente, sqlite3* db);
     void abonoPrestamo();
     void abonoPrestamoExtraordinario();
-    void crearCDP();
+    void crearCDP(int idCliente);
     void consultarCDP();
 };
 
