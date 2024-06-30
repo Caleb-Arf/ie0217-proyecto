@@ -13,7 +13,7 @@ public:
     Operacion(sqlite3* db, Cliente* cliente);
     void transferencia(double montoTransferencia, int idDestino);
     void deposito(double montoDeposito);
-    int crearPrestamo(int idCliente, sqlite3* db);
+    int crearPrestamo(int idCliente);
     void abonoPrestamo();
     void abonoPrestamoExtraordinario();
     void crearCDP(int idCliente);

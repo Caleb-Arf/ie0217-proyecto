@@ -53,7 +53,7 @@ void Operacion::deposito(double montoDeposito) {
     std::cout << "Depósito realizado con exito." << std::endl;
 }
 
-int Operacion::crearPrestamo(int idCliente, sqlite3* db) {
+int Operacion::crearPrestamo(int idCliente) {
     int idPrestamo;
     sqlite3_stmt *stmt = nullptr;
     std::string sql = "SELECT COUNT(*) FROM tablaPrestamos WHERE IdPrestamo = ?";
