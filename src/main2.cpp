@@ -216,7 +216,7 @@ int main() {
                         std::cout << "2. Tasas de un certificado de deposito a plazo." << std::endl;
                         std::cout << "3. Crear un certificado de deposito a plazo." << std::endl;
                         std::cout << "4. Consultar certificado de deposito a plazo." << std::endl;
-                        std::cout << "5. Consultar certificado de deposito a plazo." << std::endl;
+                        std::cout << "5. Redimir CDP." << std::endl;
                         std::cout << "6. Realizar una transferencia." << std::endl;
                         std::cout << "7. Realizar un deposito." << std::endl;
                         std::cout << "8. Solicitar un prestamo." << std::endl;
@@ -309,7 +309,7 @@ int main() {
                             case CONSULTARCDP:
                                 ejecutar.consultarCDP();
                                 break;
-                            case REDIMIRCDP:
+                            case REDIMIRCDP:{
                                 std::string cedula = getUserInput("Ingrese la cedula del cliente: ");
                                 if (cedulaExists(db, cedula)) {
                                     displayExistingCDPs(db, cedula);
@@ -318,6 +318,7 @@ int main() {
                                 } else {
                                     std::cout << "No hay CDPs para la cedula ingresada.\n";
                                 }
+                            }
                                 break;
                             case TRANSFERENCIA: {
                                 int idOrigen, idDestino;
