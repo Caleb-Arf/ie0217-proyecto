@@ -1,24 +1,22 @@
 //COMANDO PARA COMPILAR (Actualizar con cada commit para facilitar el trabajo).
-//g++ main2.cpp prestamos.cpp clientes2.cpp Operaciones.cpp -o prueba.exe -lsqlite3
+//g++ main2.cpp clientes2.cpp Operaciones.cpp -o prueba.exe -lsqlite3
 
 /*
 Pendientes:
  - hacer un generador de idPrestamos 
 */
 #include <iostream>
-#include "prestamos.hpp"
 #include <sqlite3.h>
-#include <string> // Necesario para usar std::string
-
+#include <string>
+#include <regex>
 #include "tasas.hpp"
 #include "clientes.hpp"
+#include "transferencia.hpp"
 #include "clientes2.hpp"
 #include "Operaciones.hpp"
 #include "tablacdpOtra.hpp"
 #include "tablaPrestamosOtra.hpp"
 #include "tablaTransaccionOtra.hpp"
-
-
 
 // Enum para el menu principal.
 enum Opciones {
@@ -38,9 +36,11 @@ enum Atencion {
     SOLICITARP,
     ABONARP,
     ABONAREXTRAP,
+    OBTENER,
     REGRESAR
 };
 
+// Enum para el menu de informacion.
 enum INFO {
     TIPOPRESTAMOS = 1,
     TABLAINTERES1,
@@ -49,9 +49,68 @@ enum INFO {
     REGRESAR2
 };
 
+void mostrarMenuInfo(sqlite3 *db) {
+    int operacion_info;
+    do {
+        std::cout << "\n1. Tipos de prestamos" << std::endl;
+        std::cout << "2. Tasas de interes colones" << std::endl;
+        std::cout << "3. Tasas de interes dolares" << std::endl;
+        std::cout << "4. Generar tabla de pagos esperada" << std::endl;
+        std::cout << "5. Regresar al menu principal." << std::endl;
+        std::cout << "Seleccione una opcion: ";
+        std::cin >> operacion_info;
+        std::cout << std::endl;
+
+        switch (operacion_info) {
+            case TIPOPRESTAMOS:
+                if (!tablaExiste(db, "Prestamos")) {
+                    crearInfoPrestamos(db);
+                    insertarDatosPrestamos(db);
+                }
+                imprimirDatosPrestamos(db);
+                break;
+            case TABLAINTERES1:
+                if (!tablaExiste(db, "TasasColones")) {
+                    crearTabla1(db);
+                    insertarData1(db);
+                }
+                printHeader1();
+                selectData1(db);
+                break;
+            case TABLAINTERES2:
+                if (!tablaExiste(db, "TasasDolares")) {
+                    crearDolares(db);
+                    insertarDolares(db);
+                }
+                printHeader2();
+                mostrarDolares(db);
+                break;
+            case TABLAPAGOS:
+                std::cout << "Seleccione la moneda del prestamo:" << std::endl;
+                std::cout << "1. Colones" << std::endl;
+                std::cout << "2. Dolares" << std::endl;
+                int opcionMoneda;
+                std::cout << "\nIngrese el numero correspondiente a la moneda del prestamo: ";
+                std::cin >> opcionMoneda;
+                if (opcionMoneda == 1) {
+                    imprimirMenuTipo1(db);
+                } else if (opcionMoneda == 2) {
+                    imprimirMenuTipo2(db);
+                } else {
+                    std::cerr << "Opcion no valida" << std::endl;
+                }
+                break;
+            case REGRESAR2:
+                std::cout << "Regresando al menu principal...\n";
+                break;
+            default:
+                std::cout << "Opcion no valida. Intente de nuevo...\n";
+                break;
+        }
+    } while (operacion_info != REGRESAR2);
+}
 
 int main() {
-    //acceder a tablas de tasas
     sqlite3 *db;
     int rc = sqlite3_open("base_de_datos.db", &db);
     if (rc) {
@@ -61,42 +120,34 @@ int main() {
         std::cout << "Base de datos abierta exitosamente" << std::endl;
     }
 
-    //se crean las tablas solo si no existen
-
+    // Crear tablas si no existen
     if (!tablaExiste(db, "TasasCDP")) {
-    crearTabla1(db);
-    insertarData1(db);
+        crearTabla1(db);
+        insertarData1(db);
     }
-    
     if (!tablaExiste(db, "TasasDolares")) {
-    crearDolares(db);
-    insertarDolares(db);
+        crearDolares(db);
+        insertarDolares(db);
     }
-    
     if (!tablaExiste(db, "TasasColones")) {
-    crearCdp(db);
-    insertarCdp(db);
+        crearCdp(db);
+        insertarCdp(db);
     }
-
     if (!tablaExiste(db, "Clientes")) {
-    crearTablaClientes(db);
-    insertarDatosClientes(db) ;
+        crearTablaClientes(db);
+        insertarDatosClientes(db);
     }
-   
-
     if (!tablaExiste(db, "tablaTransacciones")) {
-    crearTablaTransacciones(db);
-    insertarTransacciones(db) ;
+        crearTablaTransacciones(db);
+        insertarTransacciones(db);
     }
-
     if (!tablaExiste(db, "tablaPrestamos")) {
-    crearTablaPrestamos(db);
-    insertarPrestamos(db) ;
+        crearTablaPrestamos(db);
+        insertarPrestamos(db);
     }
-
     if (!tablaExiste(db, "tablaCDP")) {
-    crearTablaCDP(db);
-    insertarCDP(db) ;
+        crearTablaCDP(db);
+        insertarCDP(db);
     }
 
     std::string tabla;
@@ -108,193 +159,186 @@ int main() {
         std::cout << "Seleccione una opcion: ";
         std::cin >> opcion;
         std::cout << std::endl;
-        
-        switch(opcion) {
+
+        switch (opcion) {
             case ATENCION: {
-                //ponerlo en un while para la validacion
-                //agregar cliente
-                int identificador; 
-                std::cout << "Ingrese el numero de cedula o ID de cliente: ";
-                std::cin >> identificador;
-                //verificar el identificador para crear el cliente
-                //se crea el cliente con la info validada
-                Cliente cliente(db, identificador);
-                Operacion ejecutar(db, &cliente);
-                int operacion;
-                do {
-                    std::cout << "\n1. Consultar el estado de cuenta." << std::endl;
-                    std::cout << "2. Tasas de un certificado de deposito a plazo." << std::endl;
-                    std::cout << "3. Crear un certificado de deposito a plazo." << std::endl;
-                    std::cout << "4. Consultar certificado de deposito a plazo." << std::endl;
-                    std::cout << "5. Realizar una transferencia." << std::endl;
-                    std::cout << "6. Realizar un deposito." << std::endl;
-                    std::cout << "7. Solicitar un prestamo." << std::endl;
-                    std::cout << "8. Realizar un abono a un prestamo (existente)." << std::endl;
-                    std::cout << "9. Realizar un abono extraordinario a un prestamo (existente)." << std::endl;
-                    std::cout << "10. Regresar al menu principal." << std::endl;
-                    std::cout << "Seleccione una operacion a realizar: ";
-                    std::cin >> operacion;
-                    std::cout << std::endl;
+                int identificador;
+                std::string cedula;
 
-                    switch(operacion) {
-                        case ESTADO:
-
-                            break;
-                        case TASACDP:
-                            if (!tablaExiste(db, "TasasCDP")) {
-                                // Crear tabla para tasas de CDPs
-                                crearCdp(db);
-                                insertarCdp(db);
-                                printTableHeaders();
-                                mostrarTablaTasas(db);
-                            } else {
-                                printTableHeaders();
-                                mostrarTablaTasas(db);
-                            }
-                           
-                            break;
-                        case CREARCDP:
-                            ejecutar.crearCDP();
-                            break;
-                        case CONSULTARCDP:
-                            ejecutar.consultarCDP();
-                                
-                            break;
-                        case TRANSFERENCIA:
-                            int idDestino;
-                            std::cout << "Ingrese el ID de cuenta al cual desea realizar la transferencia: ";
-                            std::cin >> idDestino;
-
-                            double montoTransferencia;
-                            std::cout << "Ingrese el monto para realizar la transferencia: ";
-                            std::cin >> montoTransferencia;
-
-                            ejecutar.transferencia(montoTransferencia, idDestino);
-                            
-                            break;
-                        case DEPOSITO:
-                            double montoDeposito;
-                            std::cout << "Ingrese el monto para realizar el deposito: ";
-                            std::cin >> montoDeposito;
-
-                            ejecutar.deposito(montoDeposito);
-
-                            break;
-                        case SOLICITARP:
-                            ejecutar.crearPrestamo();  
- 
-                            break;
-                        case ABONARP:
-                            ejecutar.abonoPrestamo();
-
-                            break;
-                        case ABONAREXTRAP:
-                            ejecutar.abonoPrestamoExtraordinario();
-
-                            break;
-                        case REGRESAR:
-                            // Regresar al menu principal.
-                            std::cout << "Regresando al menu principal...\n";
-                            break;
-                        default:
-                            std::cout << "Opcion no valida. Intente de nuevo...\n";
-                            break;
+                while (true) {
+                    std::cout << "\n------Verificacion de cedula------\n";
+                    std::cout << "Ingrese la cedula (9 numeros o 0 para salir): ";
+                    std::cin >> cedula;
+                    if (cedula == "0") {
+                        std::cout << "Saliendo del registro de cliente." << std::endl;
+                        break;
                     }
-                } while(operacion != REGRESAR);
-                break;
-            }
-                case INFO: {
-                int operacion_info;
-                do {
-                    std::cout << "\n1. Tipos de prestamos" << std::endl;
-                    std::cout << "2. Tasas de interes colones" << std::endl;
-                    std::cout << "3. Tasas de interes dolares" << std::endl;
-                    std::cout << "4. Generar tabla de pagos esperada" << std::endl;
-                    std::cout << "5. Regresar al menu principal." << std::endl;
-                    std::cout << "Seleccione una opcion: ";
-                    std::cin >> operacion_info;
-                    std::cout << std::endl;
+                    if (!std::regex_match(cedula, std::regex("\\d{9}"))) {
+                        std::cerr << "Error: La cedula debe contener 9 numeros." << std::endl;
+                        continue;
+                    }
 
-                    switch(operacion_info) {
-                        case TIPOPRESTAMOS:
-                            if (!tablaExiste(db, "Prestamos")) {
-                                crearInfoPrestamos(db);
-                                insertarDatosPrestamos(db);
-                                imprimirDatosPrestamos(db);
-                             } else {
-                                imprimirDatosPrestamos(db);
-                            }
+                    if (existeCedula(db, cedula)) {
+                        imprimirInfoCliente(db, cedula);
+                    } else {
+                        int opcion;
+                        std::cout << "Cedula no encontrada. Elija una opcion:\n1. Salir\n2. Crear nuevo cliente\nOpcion: ";
+                        std::cin >> opcion;
+                        if (opcion == 1) {
                             break;
-                        case TABLAINTERES1:
-                            if (!tablaExiste(db, "TasasColones")) {
-                                // Crear tabla para prestamos en colones
-                                crearTabla1(db);
-                                insertarData1(db);
-                                printHeader1();
-                                selectData1(db);
-                            } else {
-                                printHeader1();
-                                selectData1(db);
-                            }
-                            break;
-                        case TABLAINTERES2:
-                            if (!tablaExiste(db, "TasasDolares")) {
-                                // Crear tabla para prestamos en dolares
-                                crearDolares(db);
-                                insertarDolares(db);
-                                printHeader2();
-                                mostrarDolares(db);
-                            } else {
-                                printHeader2();
-                                mostrarDolares(db);
-                            }
-                            break;
-                        case TABLAPAGOS:
-                            // Imprimir el menu de seleccion de moneda
-                            std::cout << "Seleccione la moneda del prestamo:" << std::endl;
-                            std::cout << "1. Colones" << std::endl;
-                            std::cout << "2. Dolares" << std::endl;
-                            // Solicitar al usuario seleccionar la moneda del prestamo
-                            int opcionMoneda;
-                            std::cout << "\nIngrese el numero correspondiente a la moneda del prestamo: ";
-                            std::cin >> opcionMoneda;
-                            // Mapear la opcion ingresada por el usuario a la tabla correspondiente
-                            if (opcionMoneda == 1) {
-                                tabla = "TasasColones";
-                                imprimirMenuTipo1(db);
-                            } else if (opcionMoneda == 2) {
-                                tabla = "TasasDolares";
-                                imprimirMenuTipo2(db);
-                            } else {
-                                std::cerr << "Opcion no valida" << std::endl;
+                        } else if (opcion == 2) {
+                            agregarNuevoCliente(db);
+                        }
+                    }
+
+                    Cliente cliente(db, identificador);
+                    Operacion ejecutar(db, &cliente);
+                    int operacion;
+                    do {
+                        std::cout << "\n1. Consultar el estado de cuenta." << std::endl;
+                        std::cout << "2. Tasas de un certificado de deposito a plazo." << std::endl;
+                        std::cout << "3. Crear un certificado de deposito a plazo." << std::endl;
+                        std::cout << "4. Consultar certificado de deposito a plazo." << std::endl;
+                        std::cout << "5. Realizar una transferencia." << std::endl;
+                        std::cout << "6. Realizar un deposito." << std::endl;
+                        std::cout << "7. Solicitar un prestamo." << std::endl;
+                        std::cout << "8. Realizar un abono a un prestamo (existente)." << std::endl;
+                        std::cout << "9. Realizar un abono extraordinario a un prestamo (existente)." << std::endl;
+                        std::cout << "10. Obtener informacion de prestamos." << std::endl;
+                        std::cout << "11. Regresar al menu principal." << std::endl;
+                        std::cout << "Seleccione una operacion a realizar: ";
+                        std::cin >> operacion;
+                        std::cout << std::endl;
+
+                        switch (operacion) {
+                            case ESTADO:
+                                // Consultar el estado de cuenta
+                                break;
+                            case TASACDP:
+                                if (!tablaExiste(db, "TasasCDP")) {
+                                    crearCdp(db);
+                                    insertarCdp(db);
+                                }
+                                printTableHeaders();
+                                mostrarTablaTasas(db);
+                                break;
+                            case CREARCDP:
+                                ejecutar.crearCDP();
+                                break;
+                            case CONSULTARCDP:
+                                ejecutar.consultarCDP();
+                                break;
+                            case TRANSFERENCIA: {
+                                int idOrigen, idDestino;
+                                double monto;
+
+                                while (true) {
+                                    std::cout << "Ingrese la cuenta de origen (0 para salir): ";
+                                    std::cin >> idOrigen;
+                                    if (idOrigen == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, idOrigen)) {
+                                        std::cerr << "La cuenta de origen no existe. Intente de nuevo." << std::endl;
+                                    } else {
+                                        break; // La cuenta existe, sale del bucle
+                                    }
+                                }
+
+                                if (idOrigen == 0) {
+                                    sqlite3_close(db);
+                                    return 0;
+                                }
+
+                                while (true) {
+                                    std::cout << "Ingrese la cuenta de destino (0 para salir): ";
+                                    std::cin >> idDestino;
+                                    if (idDestino == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, idDestino)) {
+                                        std::cerr << "La cuenta de destino no existe." << std::endl;
+                                    } else {
+                                        break;
+                                    }
+                                }
+
+                                if (idDestino == 0) {
+                                    sqlite3_close(db);
+                                    return 0;
+                                }
+
+                                while (true) {
+                                    std::cout << "Ingrese el monto a transferir (0 para salir): ";
+                                    std::cin >> monto;
+                                    if (monto == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (monto <= 0) {
+                                        std::cerr << "El monto de la transferencia debe ser mayor a 0." << std::endl;
+                                    } else {
+                                        break;
+                                    }
+                                }
+
+                                if (monto == 0) {
+                                    sqlite3_close(db);
+                                    return 0;
+                                }
+
+                                try {
+                                    realizarTransferencia(db, idOrigen, idDestino, monto);
+                                } catch (const std::exception &e) {
+                                    std::cerr << "Error: " << e.what() << std::endl;
+                                }
                                 break;
                             }
-                            break;
-
-                        case REGRESAR2:
-                            // Regresar al menu principal.
-                            std::cout << "Regresando al menu principal...\n";
-                            break;
-
-                        default:
-                            std::cout << "Opcion no valida. Intente de nuevo...\n";
-                            break;
-                    }
-                } while(operacion_info != REGRESAR2);
+                            case DEPOSITO: {
+                                double montoDeposito;
+                                std::cout << "Ingrese el monto para realizar el deposito: ";
+                                std::cin >> montoDeposito;
+                                ejecutar.deposito(montoDeposito);
+                                break;
+                            }
+                            case SOLICITARP:
+                                ejecutar.crearPrestamo();
+                                break;
+                            case ABONARP:
+                                ejecutar.abonoPrestamo();
+                                break;
+                            case ABONAREXTRAP:
+                                ejecutar.abonoPrestamoExtraordinario();
+                                break;
+                            case OBTENER:
+                                mostrarMenuInfo(db);
+                                break;
+                            case REGRESAR:
+                                std::cout << "Regresando al menu principal...\n";
+                                break;
+                            default:
+                                std::cout << "Opcion no valida. Intente de nuevo...\n";
+                                break;
+                        }
+                    } while (operacion != REGRESAR);
+                    break;
+                }
                 break;
             }
+            case INFO:
+                mostrarMenuInfo(db);
+                break;
             case SALIR:
                 std::cout << "Saliendo del programa...\n";
-                //QUITAR DESPUES
-                //eliminarTabla1(db);
-                //eliminarDolares(db);
-                //eliminarDatosTabla(db);
                 sqlite3_close(db);
                 break;
             default:
                 std::cout << "Opcion no valida. Intente de nuevo...\n";
                 break;
         }
-    } while(opcion != SALIR);
+    } while (opcion != SALIR);
+
     return 0;
 }
