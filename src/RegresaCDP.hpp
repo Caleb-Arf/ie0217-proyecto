@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
-#include "tablacdpOtra.hpp"
 
 // Función para recibir datos del cdp
 void regresarDatosCDP(sqlite3* db, int cedula) {
@@ -56,26 +55,4 @@ void regresarDatosCDP(sqlite3* db, int cedula) {
 
     // Finaliza la declaración
     sqlite3_finalize(stmt);
-}
-
-int main() {
-    sqlite3* db;
-    int rc = sqlite3_open("base_de_datos.db", &db);
-
-    if (rc) {
-        std::cerr << "No se puede abrir la base de datos: " << sqlite3_errmsg(db) << std::endl;
-        return rc;
-    } else {
-        std::cout << "Base de datos abierta exitosamente" << std::endl;
-    }
-
-    // Ingresa el IdCliente para encontrar la info
-    int cedula;
-    std::cout << "Ingrese cédula: ";
-    std::cin >> cedula;
-
-    regresarDatosCDP(db, cedula);
-
-    sqlite3_close(db);
-    return 0;
 }

@@ -18,6 +18,7 @@ Pendientes:
 #include "tablacdpOtra.hpp"
 #include "tablaPrestamosOtra.hpp"
 #include "tablaTransaccionOtra.hpp"
+#include "RegresaCDP.hpp"
 
 // Enum para el menu principal.
 enum Opciones {
@@ -307,8 +308,17 @@ int main() {
                                 }
                                 ejecutar.crearCDP(idClienteCDP);
                                 break;
-                            case CONSULTARCDP:
-                                ejecutar.consultarCDP();
+                            case CONSULTARCDP: {
+                                int cedula;
+                                std::cout << "Ingrese cédula: ";
+                                std::cin >> cedula;
+
+                                regresarDatosCDP(db, cedula);
+
+                                sqlite3_close(db);
+                                return 0; }
+
+                                // ejecutar.consultarCDP();
                                 break;
                             case REDIMIRCDP:{
                                 std::string cedula = getUserInput("Ingrese la cedula del cliente: ");
