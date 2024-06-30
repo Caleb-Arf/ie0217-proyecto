@@ -429,7 +429,27 @@ int main() {
                                 break;
                             }
                             case SOLICITARP:
-                                ejecutar.crearPrestamo();
+                                int idClientePrestamo;
+                                while (true) {
+                                    std::cout << "Ingrese la cuenta con la que desea solicitar el prestamo (0 para salir): ";
+                                    std::cin >> idClientePrestamo;
+                                    if (idClientePrestamo == 0) {
+                                        std::cout << "Saliendo" << std::endl;
+                                        break;
+                                    }
+                                    if (!cuentaExiste1(db, idClientePrestamo)) {
+                                        std::cerr << "La cuenta no existe. Intente de nuevo." << std::endl;
+                                    } else {
+                                        break; // La cuenta existe, sale del bucle
+                                    }
+                                }
+                                if (idClientePrestamo== 0) {
+                                    sqlite3_close(db);
+                                    break;
+                                }
+
+
+                                ejecutar.crearPrestamo(idClientePrestamo, db);
                                 break;
                             case ABONARP:
                                 int idCuenta;
