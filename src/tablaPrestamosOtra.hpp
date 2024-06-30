@@ -3,6 +3,9 @@
  * @brief Archivo que contiene las funciones para gestionar la tabla de préstamos en una base de datos SQLite.
  */
 
+#ifndef TABLAPRESTAMOSOTRA_HPP
+#define TABLAPRESTAMOSOTRA_HPP
+
 #include <iostream>
 #include <sqlite3.h>
 #include <sstream>
@@ -185,3 +188,5 @@ void eliminarDatosPrestamos(sqlite3 *db) {
         std::cout << "Datos eliminados exitosamente" << std::endl;
     }
 }
+
+#endif //TABLAPRESTAMOSOTRA_HPP
