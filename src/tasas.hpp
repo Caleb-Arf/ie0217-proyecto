@@ -10,7 +10,11 @@ void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, 
 void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, double tasaInteres, int plazoMeses);
 void obtenerTasaYPlazoDesdeTabla2(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses);
 
-// Crea la base de datos de tipos de prestamos
+/**
+ * @brief Crea la base de datos de tipos de préstamos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearInfoPrestamos(sqlite3* db) {
     const char *sql_create_table = "CREATE TABLE DescripcionPrestamos ("
                                    "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -27,7 +31,13 @@ void crearInfoPrestamos(sqlite3* db) {
     }
 }
 
-// Funcion auxiliar para insertar datos
+/**
+ * @brief Inserta un nuevo tipo de préstamo y su descripción en la tabla.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param tipo Tipo de préstamo a insertar.
+ * @param descripcion Descripción del préstamo.
+ */
 void insertarPrestamo(sqlite3* db, const char* tipo, const char* descripcion) {
     const char *sql_insert = "INSERT INTO DescripcionPrestamos (Tipo, Descripcion) VALUES (?, ?);";
     sqlite3_stmt *stmt;
@@ -51,7 +61,11 @@ void insertarPrestamo(sqlite3* db, const char* tipo, const char* descripcion) {
     sqlite3_finalize(stmt);
 }
 
-// Inserta datos de prestamos en la tabla de la base de datos
+/**
+ * @brief Inserta datos de varios préstamos en la tabla de la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void insertarDatosPrestamos(sqlite3* db) {
     insertarPrestamo(db, "Prestamos Hipotecarios", "Los prestamos hipotecarios estan destinados a la compra de bienes raices, como casas o terrenos. El bien inmueble adquirido se utiliza como garantia del prestamo.\nTasa de Interes: Varian entre el 7% y el 9% anual, dependiendo del banco y las condiciones especificas del prestamo.");
     insertarPrestamo(db, "Prestamos Prendarios", "Los prestamos prendarios son aquellos que utilizan un bien mueble, como un vehiculo, joyas, o maquinaria, como garantia del prestamo. Son comunes para obtener liquidez rapida.\nTasa de Interes: Las tasas de interes para prestamos prendarios suelen ser mas altas que las de los hipotecarios, vaiando entre el 10% y el 15% anual.");
@@ -60,7 +74,11 @@ void insertarDatosPrestamos(sqlite3* db) {
     insertarPrestamo(db, "Prestamos para Vivienda", "Estos estan destinados a la adquisicion, construccion, o mejora de una vivienda. La vivienda puede ser la garantia del prestamo.\nTasa de Interes: Oscilar entre el 6% y el 9% anual, dependiendo de las condiciones del prestamo y la institucion financiera.");
 }
 
-// Imprime los datos de la tabla de tipos de prestamos
+/**
+ * @brief Imprime los datos de la tabla de tipos de préstamos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void imprimirDatosPrestamos(sqlite3* db) {
     const char* consultaSQL = "SELECT * FROM DescripcionPrestamos;";
     sqlite3_stmt* declaracion;
@@ -90,7 +108,15 @@ void imprimirDatosPrestamos(sqlite3* db) {
 }
 
 
-// Callback para impresion de tabla de Tasas CDP
+/**
+ * @brief Callback para la impresión de la tabla de Tasas CDP.
+ *
+ * @param data Puntero a datos adicionales (no utilizado en este caso).
+ * @param argc Número de columnas en el resultado.
+ * @param argv Valores de las columnas del resultado.
+ * @param azColName Nombres de las columnas.
+ * @return int Resultado de la callback (siempre retorna 0).
+ */
 static int callback(void *data, int argc, char **argv, char **azColName) {
     // Imprime los datos de la tabla.
     std::cout << std::setw(10) << (argv[0] ? argv[0] : "NULL") << " | "
@@ -100,7 +126,11 @@ static int callback(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-//Imprime encabezados
+/**
+ * @brief Imprime encabezados.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void printTableHeaders() {
     std::cout << std::setw(40) << std::setfill(' ') << "Tasas de CDPs" << std::endl << std::endl;
     std::cout << std::setw(10) << "Id" << " | "
@@ -112,8 +142,11 @@ void printTableHeaders() {
               << std::string(13, '-') << " | "
               << std::string(12, '-') << std::endl;
 }
-
-// Crea la tabla Tasas CDP
+/**
+ * @brief Crea la tabla Tasas CDP en la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearCdp(sqlite3 *db) {
     const char *sql_create_table = 
         "CREATE TABLE IF NOT EXISTS TasasCDP ("
@@ -133,7 +166,13 @@ void crearCdp(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla Tasas CDP
+
+/**
+ * @brief Inserta datos en la tabla Tasas CDP.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
+
 void insertarCdp(sqlite3 *db) {
     const char *sql_insert_data = 
         "INSERT INTO TasasCDP (id, plazo, fisico_negociable_en_bolsa, negociable_en_banco) VALUES"
@@ -170,7 +209,11 @@ void insertarCdp(sqlite3 *db) {
     }
 }
 
-// Selecciona y muestra datos de la tabla Tasas CDP
+/**
+ * @brief Muestra los datos de la tabla Tasas CDP.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void mostrarTablaTasas(sqlite3 *db) {
     const char *sql = "SELECT * FROM TasasCDP";
     char *err_msg = nullptr;
@@ -183,7 +226,11 @@ void mostrarTablaTasas(sqlite3 *db) {
     }
 }
 
-// Elimina la tabla Tasas  CDP
+/**
+ * @brief Elimina todos los datos de la tabla Tasas CDP.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void eliminarDatosTabla(sqlite3 *db) {
     const char *sql_delete_data = "DELETE FROM TasasCDP";
     char *err_msg = nullptr;
@@ -197,7 +244,15 @@ void eliminarDatosTabla(sqlite3 *db) {
 }
 
 
-// Callback para impresion de tabla de Tasas en colones
+/**
+ * @brief Callback para la impresión de la tabla de Tasas en colones.
+ *
+ * @param data Puntero a datos adicionales (no utilizado en este caso).
+ * @param argc Número de columnas en el resultado.
+ * @param argv Valores de las columnas del resultado.
+ * @param azColName Nombres de las columnas.
+ * @return int Resultado de la callback (siempre retorna 0).
+ */
 static int callback1(void *data, int argc, char **argv, char **azColName) {
  // Imprime los datos de la tabla.
     std::cout << std::setw(55) << (argv[1] ? argv[1] : "NULL") << " | "
@@ -208,7 +263,11 @@ static int callback1(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-//Imprime encabezados
+/**
+ * @brief Crea la tabla Tasas en colones en la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void printHeader1() {
     static bool printTitle = true;
     if (printTitle) {
@@ -226,7 +285,11 @@ void printHeader1() {
               << std::string(10, '-') << std::endl;
 }
 
-// Crea la tabla Tasas en colones
+/**
+ * @brief Inserta datos en la tabla Tasas en colones.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearTabla1(sqlite3 *db) {
     const char* createTableSQL = R"(
         CREATE TABLE IF NOT EXISTS TasasColones (
@@ -248,7 +311,11 @@ void crearTabla1(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla Tasas en colones
+/**
+ * @brief Inserta datos en la tabla Tasas en colones.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void insertarData1(sqlite3 *db) {
     const char* insertDataSQL = R"(
         INSERT INTO TasasColones (id, Credito, Tasa_Efectiva, Plazo_Meses, Cuota_Millon) VALUES
@@ -272,7 +339,11 @@ void insertarData1(sqlite3 *db) {
     }
 }
 
-// Selecciona y muestra datos de la tabla Tasas en colones
+/**
+ * @brief Selecciona y muestra datos de la tabla Tasas en colones.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void selectData1(sqlite3 *db) {
     const char* selectDataSQL = "SELECT * FROM TasasColones";
     char *errMsg = nullptr;
@@ -284,8 +355,11 @@ void selectData1(sqlite3 *db) {
         std::cout << "Consulta ejecutada exitosamente" << std::endl;
     }
 }
-
-// Elimina la tabla Tasas en colones
+/**
+ * @brief Elimina la tabla Tasas en colones.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void eliminarTabla1(sqlite3 *db) {
     const char* deleteTableSQL = "DROP TABLE IF EXISTS TasasColones";
     char *errMsg = nullptr;
@@ -298,7 +372,15 @@ void eliminarTabla1(sqlite3 *db) {
     }
 }
 
-// Callback para impresion de tabla de Tasas en dolares
+/**
+ * @brief Callback para impresión de tabla de Tasas en dolares.
+ *
+ * @param data Datos opcionales.
+ * @param argc Número de columnas.
+ * @param argv Valores de las columnas.
+ * @param azColName Nombres de las columnas.
+ * @return Entero indicando el resultado del callback.
+ */
 static int callback3(void *data, int argc, char **argv, char **azColName) {  
     // Imprime los datos de la tabla.
     std::cout << std::setw(55) << (argv[1] ? argv[1] : "NULL") << " | "
@@ -309,7 +391,9 @@ static int callback3(void *data, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-//Imprime encabezados
+/**
+ * @brief Imprime encabezados para la tabla de Tasas en dolares.
+ */
 void printHeader2() {
     static bool printTitle = true;
     if (printTitle) {
@@ -327,7 +411,11 @@ void printHeader2() {
               << std::string(10, '-') << std::endl;
 }
 
-// Crea la tabla Tasas en dolares
+/**
+ * @brief Crea la tabla Tasas en dolares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void crearDolares(sqlite3 *db) {
     const char* createTableSQL = R"(
         CREATE TABLE IF NOT EXISTS TasasDolares (
@@ -349,7 +437,11 @@ void crearDolares(sqlite3 *db) {
     }
 }
 
-// Inserta datos en la tabla Tasas en dolares
+/**
+ * @brief Inserta datos en la tabla Tasas en dolares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void insertarDolares(sqlite3 *db) {
     const char* insertDataSQL = R"(
         INSERT INTO TasasDolares (id, Credito, Tasa_Efectiva, Plazo_Meses, Cuota_USD) VALUES
@@ -370,7 +462,11 @@ void insertarDolares(sqlite3 *db) {
     }
 }
 
-// Selecciona y muestra datos de la tabla Tasas en dolares
+/**
+ * @brief Selecciona y muestra datos de la tabla Tasas en dolares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void mostrarDolares(sqlite3 *db) {
     const char* selectDataSQL = "SELECT * FROM TasasDolares";
     char *errMsg = nullptr;
@@ -383,7 +479,11 @@ void mostrarDolares(sqlite3 *db) {
     }
 }
 
-// Elimina la tabla Tasas en dolares
+/**
+ * @brief Elimina la tabla Tasas en dolares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void eliminarDolares(sqlite3 *db) {
     const char *sql_delete_data = "DELETE FROM TasasDolares";
     char *err_msg = nullptr;
@@ -396,7 +496,13 @@ void eliminarDolares(sqlite3 *db) {
     }
 }
 
-// Valida si existe la tabla
+/**
+ * @brief Valida si existe la tabla especificada.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param nombreTabla Nombre de la tabla a validar.
+ * @return Verdadero si la tabla existe, falso en caso contrario.
+ */
 bool tablaExiste(sqlite3 *db, const std::string &nombreTabla) {
     std::string sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + nombreTabla + "'";
     sqlite3_stmt *stmt;
@@ -409,7 +515,11 @@ bool tablaExiste(sqlite3 *db, const std::string &nombreTabla) {
     return false;
 }
 
-// Solicita al usuario el monto del prestamo
+/**
+ * @brief Solicita al usuario el monto del préstamo.
+ *
+ * @return El monto ingresado por el usuario.
+ */
 double solicitarMonto1() {
     double monto;
     std::cout << "Ingrese el monto del prestamo: ";
@@ -417,7 +527,11 @@ double solicitarMonto1() {
     return monto;
 }
 
-// Imprime el menu de seleccion de tipo de prestamo
+/**
+ * @brief Imprime el menú de selección de tipo de préstamo en colones.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void imprimirMenuTipo1(sqlite3 *db) {
     std::cout << "Seleccione el tipo de prestamo:" << std::endl;
     std::cout << "1. Credito Personal Hipotecario" << std::endl;
@@ -478,7 +592,14 @@ void imprimirMenuTipo1(sqlite3 *db) {
     }
 }
 
-// Obtiene la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+/**
+ * @brief Imprime un resumen de los detalles del préstamo seleccionado.
+ *
+ * @param tipoPrestamo Tipo de préstamo seleccionado.
+ * @param monto Monto del préstamo.
+ * @param tasaInteres Tasa de interés del préstamo.
+ * @param plazoMeses Plazo en meses del préstamo.
+ */
 void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses) {
     std::string consultaSQL = "SELECT Tasa_Efectiva, Plazo_Meses FROM TasasColones WHERE Credito = '" + tipoPrestamo + "'";
     sqlite3_stmt *stmt;
@@ -496,7 +617,14 @@ void obtenerTasaYPlazoDesdeTabla1(sqlite3 *db, const std::string& tipoPrestamo, 
     sqlite3_finalize(stmt);
 }
 
-// Imprime un resumen de los detalles del prestamo seleccionado
+/**
+ * @brief Calcula el pago mensual basado en la fórmula de amortización.
+ *
+ * @param monto Monto del préstamo.
+ * @param tasaInteres Tasa de interés del préstamo.
+ * @param plazoMeses Plazo en meses del préstamo.
+ * @return El pago mensual calculado.
+ */
 void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, double tasaInteres, int plazoMeses) {
     std::cout << "\nResumen del prestamo:" << std::endl;
     std::cout << "Tipo de prestamo: " << tipoPrestamo << std::endl;
@@ -505,13 +633,26 @@ void imprimirResumenPrestamo1(const std::string& tipoPrestamo, double monto, dou
     std::cout << "Plazo (meses): " << plazoMeses << std::endl;
 }
 
-// Calcula el pago mensual basado en la formula de amortizacion
+/**
+ * @brief Calcula el pago mensual basado en la fórmula de amortización.
+ *
+ * @param monto Monto del préstamo.
+ * @param tasaInteres Tasa de interés del préstamo.
+ * @param plazoMeses Plazo en meses del préstamo.
+ * @return El pago mensual calculado.
+ */
 double calcularPagoMensual1(double monto, double tasaInteres, int plazoMeses) {
     double tasaMensual = tasaInteres / 1200; // Convertir la tasa anual a mensual
     return (monto * tasaMensual) / (1 - pow(1 + tasaMensual, -plazoMeses));
 }
 
-// Imprime la tabla de amortizacion
+/**
+ * @brief Imprime la tabla de amortización del préstamo.
+ *
+ * @param monto Monto del préstamo.
+ * @param tasaInteres Tasa de interés del préstamo.
+ * @param plazoMeses Plazo en meses del préstamo.
+ */
 void imprimirTablaAmortizacion1(double monto, double tasaInteres, int plazoMeses) {
     std::cout << "\nTabla de amortizacion" << std::endl;
     std::cout << "\nMes\tPago\t\tInteres\t\tPrincipal\tSaldo" << std::endl;
@@ -531,7 +672,11 @@ void imprimirTablaAmortizacion1(double monto, double tasaInteres, int plazoMeses
     std::cout << "Total:\t" << " " << "\t\t" << interesTotal << "\t" << principalTotal << "\t" << std::fixed << std::setprecision(2) << std::abs(saldo) << std::endl;
 }
 
-// Imprime el menu de seleccion de tipo de prestamo
+/**
+ * @brief Imprime el menú de selección de tipo de préstamo en dólares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void imprimirMenuTipo2(sqlite3 *db) {
     std::cout << "Seleccione el tipo de prestamo:" << std::endl;
     std::cout << "1. Credito Personal Hipotecario" << std::endl;
@@ -585,7 +730,14 @@ void imprimirMenuTipo2(sqlite3 *db) {
     }
 }
 
-// Funcion para obtener la tasa de interes y el plazo desde la tabla segun el tipo de prestamo
+/**
+ * @brief Obtiene la tasa de interés y el plazo desde la tabla según el tipo de préstamo en dólares.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param tipoPrestamo Tipo de préstamo seleccionado.
+ * @param tasaInteres Variable donde se almacenará la tasa de interés obtenida.
+ * @param plazoMeses Variable donde se almacenará el plazo en meses obtenido.
+ */
 void obtenerTasaYPlazoDesdeTabla2(sqlite3 *db, const std::string& tipoPrestamo, double& tasaInteres, int& plazoMeses) {
     std::string consultaSQL = "SELECT Tasa_Efectiva, Plazo_Meses FROM TasasDolares WHERE Credito = '" + tipoPrestamo + "'";
     sqlite3_stmt *stmt;

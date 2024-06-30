@@ -7,7 +7,22 @@
 #include <cstdlib> // Para generar numeros aleatorios
 #include <cstring>
 
-// Crea la tabla Clientes
+/**
+ * @file clientes.hpp
+ * 
+ * @author Evelyn Feng, Daniel De La O, Caleb Arias
+ * @date 30/06/24
+ * @license MIT License
+ * Este programa está sujeto a los términos y condiciones de la licencia resente en el archivo 'licencia.txt'.
+ */
+
+
+/**
+ * @brief Crea la tabla de clientes en la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @return SQLITE_OK si la operación fue exitosa, de lo contrario el código de error.
+ */
 int crearTablaClientes(sqlite3 *db) {
     const char* createTableSQL = R"(
         CREATE TABLE IF NOT EXISTS Clientes (
@@ -31,7 +46,12 @@ int crearTablaClientes(sqlite3 *db) {
     return SQLITE_OK;
 }
 
-// Agrega datos en la tabla de clientes
+/**
+ * @brief Inserta datos de ejemplo en la tabla de clientes.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @return SQLITE_OK si la operación fue exitosa, de lo contrario el código de error.
+ */
 int insertarDatosClientes(sqlite3 *db) {
     const char* insertDataSQL = R"(
         INSERT INTO Clientes (IdCliente, Cedula, Nombre, Telefono, Direccion, Correo, Balance, TipoCuenta) VALUES
@@ -52,7 +72,13 @@ int insertarDatosClientes(sqlite3 *db) {
     return rc;
 }
 
-// Verifica si la cedula existe en la base de datos
+/**
+ * @brief Verifica si una cédula existe en la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param cedula Cédula a buscar en la base de datos.
+ * @return true si la cédula existe, false si no.
+ */
 bool existeCedula(sqlite3 *db, const std::string &cedula) {
     std::string sql = "SELECT 1 FROM Clientes WHERE Cedula = ?;";
     sqlite3_stmt *stmt;
@@ -66,7 +92,13 @@ bool existeCedula(sqlite3 *db, const std::string &cedula) {
     return existe;
 }
 
-// Imprime la informacion del cliente
+/**
+ * @brief Imprime la informacion del cliente.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param cedula Cédula a buscar en la base de datos.
+ * @return imprime datos.
+ */
 void imprimirInfoCliente(sqlite3 *db, const std::string &cedula) {
     std::string sql = "SELECT Cedula, Nombre, Balance FROM Clientes WHERE Cedula = ?;";
     sqlite3_stmt *stmt;
@@ -84,36 +116,60 @@ void imprimirInfoCliente(sqlite3 *db, const std::string &cedula) {
     }
 }
 
-// Validacion de datos usando regex
-// Validar nombre (solo letras y espacios)
+/**
+ * @brief Valida el nombre ingresado, permitiendo solo letras y espacios. Usando regex.
+ *
+ * @param nombre Nombre a validar.
+ * @throws std::invalid_argument Si el nombre contiene caracteres no permitidos.
+ */
 void validarNombre(const std::string& nombre) {
     if (!std::regex_match(nombre, std::regex("^[a-zA-Z ]+$"))) {
         throw std::invalid_argument("El nombre solo debe contener letras y espacios.");
     }
 }
 
-// Validar telefono (formato: 12345678)
+/**
+ * @brief Valida el número de teléfono ingresado, en formato 12345678.
+ *
+ * @param telefono Teléfono a validar.
+ * @throws std::invalid_argument Si el formato del teléfono es incorrecto.
+ */
 void validarTelefono(const std::string& telefono) {
     if (!std::regex_match(telefono, std::regex("\\d{8}"))) {
         throw std::invalid_argument("El telefono debe estar en el formato 12345678.");
     }
 }
 
-// Validar direccion (solo letras, numeros y espacios)
+/**
+ * @brief Valida la dirección ingresada, permitiendo solo letras, números y espacios.
+ *
+ * @param direccion Dirección a validar.
+ * @throws std::invalid_argument Si la dirección contiene caracteres no permitidos.
+ */
 void validarDireccion(const std::string& direccion) {
     if (!std::regex_match(direccion, std::regex("^[a-zA-Z0-9 ]+$"))) {
         throw std::invalid_argument("La direccion solo debe contener letras, numeros y espacios.");
     }
 }
 
-// Validar correo (formato: ejemplo@dominio.com)
+/**
+ * @brief Valida el correo electrónico ingresado, en formato ejemplo@dominio.com.
+ *
+ * @param correo Correo electrónico a validar.
+ * @throws std::invalid_argument Si el formato del correo electrónico es incorrecto.
+ */
 void validarCorreo(const std::string& correo) {
     if (!std::regex_match(correo, std::regex("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$"))) {
         throw std::invalid_argument("El correo debe estar en el formato ejemplo@dominio.com.");
     }
 }
 
-// Validar tipo de cuenta (solo "Dolares" o "Colones")
+/**
+ * @brief Valida el tipo de cuenta ingresado, permitiendo solo "Dolares" o "Colones".
+ *
+ * @param tipoCuenta Tipo de cuenta a validar.
+ * @throws std::invalid_argument Si el tipo de cuenta no es "Dolares" ni "Colones".
+ */
 void validarTipoCuenta(const std::string& tipoCuenta) {
     if (tipoCuenta != "Dolares" && tipoCuenta != "Colones") {
         throw std::invalid_argument("El tipo de cuenta debe ser 'Dolares' o 'Colones'.");
@@ -121,8 +177,11 @@ void validarTipoCuenta(const std::string& tipoCuenta) {
 }
 
 
-// Pide datos
-// Agrega un nuevo cliente a la base de datos
+/**
+ * @brief Agrega un nuevo cliente a la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
 void agregarNuevoCliente(sqlite3 *db) {
     std::string cedula, nombre, telefono, direccion, correo, tipoCuenta;
     double balance = 0.0;
@@ -254,7 +313,11 @@ void agregarNuevoCliente(sqlite3 *db) {
 
     std::cout << "El ID de la cuenta en " << tipoCuenta << "es: " << id << std::endl;
 
-//Agrega nuevo cliente a la base de datos
+/**
+ * @brief Agrega un nuevo cliente a la base de datos.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ */
     sql = R"(
         INSERT INTO Clientes (IdCliente, Cedula, Nombre, Telefono, Direccion, Correo, Balance, TipoCuenta) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);
@@ -281,6 +344,12 @@ void agregarNuevoCliente(sqlite3 *db) {
    
 }
 
+/**
+ * @brief Imprime los IDs de cliente y tipos de cuenta asociados a una cédula dada.
+ *
+ * @param db Puntero a la base de datos SQLite.
+ * @param cedula Cédula del cliente para buscar en la base de datos.
+ */
 void imprimirIdClientesPorCedula(sqlite3* db, const std::string& cedula) {
     const char* sql = "SELECT IdCliente, TipoCuenta FROM Clientes WHERE Cedula = ?";
     sqlite3_stmt* stmt;
