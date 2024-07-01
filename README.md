@@ -17,6 +17,9 @@ Evelyn Feng Wu - B82870
 I Semestre 2024
 
 
+# Link de Netlify
+https://6681f44e8770a6b93dec81ed--joyful-capybara-f288f8.netlify.app/files.html
+
 # Investigación, diseño e implementación de un sistema de gestión bancaria
 
 ## Objetivo principal
